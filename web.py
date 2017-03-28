@@ -27,6 +27,8 @@ if conf.LOAD_CUSTOM_CSS_FILE:
     CSS_JS += '<link rel="stylesheet" href="static/css/custom.css">'
 if conf.LOAD_CUSTOM_JS_FILE:
     CSS_JS += '<script type="text/javascript" src="static/js/custom.js"></script>'
+if conf.PAYPAL:
+    SOCIAL_LINKS += '<a class="map_btn paypal-icon" target="_blank" href="' + conf.PAYPAL + '"></a>' 
 if conf.FB_PAGE_ID:
     SOCIAL_LINKS += '<a class="map_btn facebook-icon" target="_blank" href="https://www.facebook.com/' + conf.FB_PAGE_ID + '"></a>'
 if conf.TWITTER_SCREEN_NAME:
