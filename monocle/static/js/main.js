@@ -13,8 +13,8 @@ var PokemonIcon = L.Icon.extend({
         var div = document.createElement('div');
         div.innerHTML =
             '<div class="pokemarker">' +
-              '<div class="pokeimg">' +
-                   '<img class="leaflet-marker-icon" src="' + this.options.iconUrl + '" />' +
+              '<div class="sprite">' +
+                   '<span class="sprite-' + this.options.iconID + '" /></span>' +
               '</div>' +
               '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
             '</div>';
@@ -118,7 +118,7 @@ function getOpacity (diff) {
 }
 
 function PokemonMarker (raw) {
-    var icon = new PokemonIcon({iconUrl: '/static/monocle-icons/icons/' + raw.pokemon_id + '.png', expires_at: raw.expires_at});
+    var icon = new PokemonIcon({iconID: raw.pokemon_id, expires_at: raw.expires_at});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
     var intId = parseInt(raw.id.split('-')[1]);
@@ -472,7 +472,7 @@ function populateSettingsPanels(){
     var newHtml = '';
     for (var i = 1; i <= _pokemon_count; i++){
         var partHtml = `<div class="text-center">
-                <img src="static/monocle-icons/icons/`+i+`.png">
+                <div id="menu" class="sprite"><span class="sprite-`+i+`"></span></div>
                 <div class="btn-group" role="group" data-group="filter-`+i+`">
                   <button type="button" class="btn btn-default" data-id="`+i+`" data-value="pokemon">Pokémon</button>
                   <button type="button" class="btn btn-default" data-id="`+i+`" data-value="trash">Trash</button>
