@@ -222,7 +222,6 @@ LOAD_CUSTOM_HTML_FILE = False # File path MUST be 'templates/custom.html'
 LOAD_CUSTOM_CSS_FILE = False  # File path MUST be 'static/css/custom.css'
 LOAD_CUSTOM_JS_FILE = False  # File path MUST be 'static/js/custom.js'
 
-#PAYPAL = None   # URL for PayPal link 
 #FB_PAGE_ID = None
 #TWITTER_SCREEN_NAME = None  # Username withouth '@' char
 #DISCORD_INVITE_ID = None
