@@ -65,6 +65,10 @@
     background-image: url('../img/my-location.png');
 }
 
+.paypal-icon {
+    background-image: url('../img/paypal.png');
+}
+
 .facebook-icon {
     background-image: url('../img/facebook.png');
 }
