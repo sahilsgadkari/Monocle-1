@@ -53,12 +53,12 @@ var PokestopIcon = L.Icon.extend({
 
 var markers = {};
 var overlays = {
-    Pokemon: L.layerGroup([]),
+    Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
     Trash: L.layerGroup([]),
     Gyms: L.layerGroup([]),
     Pokestops: L.layerGroup([]),
     Workers: L.layerGroup([]),
-    Spawns: L.layerGroup([]),
+    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
     ScanArea: L.layerGroup([])
 };
 
@@ -159,7 +159,8 @@ function PokemonMarker (raw) {
         if (diff > 0) {
             marker.setOpacity(getOpacity(diff));
         } else {
-            marker.removeFrom(overlays[marker.overlay]);
+            overlays.Pokemon.removeLayer(marker);
+            overlays.Pokemon.refreshClusters();
             markers[marker.raw.id] = undefined;
             clearInterval(marker.opacityInterval);
         }
@@ -372,7 +373,7 @@ else{
   var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 13);
 }
 
-overlays.Pokemon.addTo(map);
+map.addLayer(overlays.Pokemon);
 overlays.ScanArea.addTo(map);
 
 var control = L.control.layers(null, overlays).addTo(map);
