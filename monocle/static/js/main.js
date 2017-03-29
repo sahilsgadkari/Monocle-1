@@ -357,7 +357,20 @@ function getWorkers() {
     });
 }
 
-var map = L.map('main-map', {preferCanvas: true}).setView(_MapCoords, 13);
+var params = {};
+window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+                             params[key] = value;
+                             });
+if(parseFloat(params.lat) && parseFloat(params.lon)){
+  var map = new L.Map('main-map', {
+                      center: [params.lat, params.lon],
+                      maxZoom: 18,
+                      zoom: params.zoom || 13
+                      });
+}
+else{
+  var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 13);
+}
 
 overlays.Pokemon.addTo(map);
 overlays.ScanArea.addTo(map);
