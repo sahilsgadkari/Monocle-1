@@ -46,7 +46,7 @@ app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'),
 def fullmap():
     return render_template(
         MAPFILE,
-        area_name=area,
+        area_name=conf.AREA_NAME,
         map_center=center,
         map_provider_url=conf.MAP_PROVIDER_URL,
         map_provider_attribution=conf.MAP_PROVIDER_ATTRIBUTION,
