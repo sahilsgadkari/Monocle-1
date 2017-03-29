@@ -53,7 +53,7 @@ var PokestopIcon = L.Icon.extend({
 
 var markers = {};
 var overlays = {
-    Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 15 }),
+    Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Trash: L.layerGroup([]),
     Gyms: L.layerGroup([]),
     Pokestops: L.layerGroup([]),
