@@ -53,12 +53,12 @@ var PokestopIcon = L.Icon.extend({
 
 var markers = {};
 var overlays = {
-    Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
+    Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     Trash: L.layerGroup([]),
     Gyms: L.layerGroup([]),
     Pokestops: L.layerGroup([]),
     Workers: L.layerGroup([]),
-    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
+    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     ScanArea: L.layerGroup([])
 };
 
@@ -365,11 +365,11 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
   var map = new L.Map('main-map', {
                       center: [params.lat, params.lon],
                       maxZoom: 18,
-                      zoom: params.zoom || 13
+                      zoom: params.zoom || 16
                       });
 }
 else{
-  var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 12);
+  var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 16);
 }
 
 map.addLayer(overlays.Pokemon);
