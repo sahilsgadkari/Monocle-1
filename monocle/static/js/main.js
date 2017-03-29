@@ -373,9 +373,7 @@ else{
 }
 
 map.addLayer(overlays.Pokemon);
-overlays.ScanArea.addTo(map);
 
-var control = L.control.layers(null, overlays).addTo(map);
 L.tileLayer(_MapProviderUrl, {
     opacity: 0.75,
     attribution: _MapProviderAttribution

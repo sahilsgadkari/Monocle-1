@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Monocle - {{ area_name }}</title>
+    <title>PoGoSD - {{ area_name }}</title>
     <link rel="stylesheet" href='static/css/leaflet.css'>
     <link rel="stylesheet" href='static/css/bootstrap.min.css'>
     <link rel="stylesheet" href='static/css/main.css'>
@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
-    <h1>Monocle is initializing, please wait.</h1>
+    <h1>PoGoSD is initializing, please wait.</h1>
 
     <script>
         var _MapCoords = [{{ map_center[0] }}, {{ map_center[1] }}];
@@ -23,20 +23,21 @@
     </script>
 
     <div id="main-map" class="map"></div>
+<!-- Remove My Location Button until HTTPS is enabled
     <a class="map_btn my-location"></a>
+-->
     <a class="map_btn my-settings"></a>
     {{ social_links }}
 
     <div id="settings" class="container text-center">
         <button type="button" class="close scroll-up glyphicon glyphicon glyphicon-circle-arrow-up"></button>
         <div class="page-header">
-            <h2>Monocle Settings<button id="settings_close_btn" type="button" class="close">&times;</button></h2>
+            <h2>PoGo SD Settings<button id="settings_close_btn" type="button" class="close">&times;</button></h2>
         </div>
         <ul class="nav nav-pills nav-justified nav-settings">
             <li class="active"><a href="#" data-panel="filters">Filters</a></li>
             <li><a href="#" data-panel="more">More</a></li>
-            <!-- New item example -->
-            <!-- <li><a href="#" data-panel="example">Example</a></li> -->
+            <li><a href="#" data-panel="donate">Donate</a></li>
         </ul>
         <div class="panel panel-default settings-panel active" data-panel="filters">
             <div class="panel-heading">Filter Settings</div>
@@ -61,13 +62,17 @@
                 <button id="reset_btn" type="button" class="btn btn-danger">Reset</button>
             </div>
         </div>
-        <!-- New item example -->
-        <!--
-        <div class="panel panel-default settings-panel" data-panel="example">
-            <div class="panel-heading">Example Settings</div>
-            <div class="panel-body">Panel Content</div>
+        <div class="panel panel-default settings-panel" data-panel="donate">
+          <div class="panel-heading">Donations Welcome</div>
+          <div class="panel-body"><br>Maps are free to use. Donations are more than welcome to help fund the scans that power these maps.<br><br>
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+              <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">
+                  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                      </form>
+          </div>
         </div>
-        -->
     </div>
 
     <script>{{ init_js_vars }}</script>
