@@ -91,22 +91,21 @@ function getPopupContent (item) {
         var totaliv = 100 * (item.atk + item.def + item.sta) / 45;
         content += ' - <b>' + totaliv.toFixed(2) + '%</b><br>';
         content += 'Disappears in: ' + expires_at + '<br>';
-        content += 'Move 1: ' + item.move1 + ' ( ' + item.damage1 + ' dps )<br>';
-        content += 'Move 2: ' + item.move2 + ' ( ' + item.damage2 + ' dps )<br>';
+        content += 'Quick Move: ' + item.move1 + ' ( ' + item.damage1 + ' dps )<br>';
+        content += 'Charge Move: ' + item.move2 + ' ( ' + item.damage2 + ' dps )<br>';
         content += 'IV: ' + item.atk + ' atk, ' + item.def + ' def, ' + item.sta + ' sta<br>'
     } else {
         content += '<br>Disappears in: ' + expires_at + '<br>';
     }
-    content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Hidden" class="popup_filter_link">Hide</a>';
-    content += '&nbsp; | &nbsp;';
 
     var userPref = getPreference('filter-'+item.pokemon_id);
     if (userPref == 'trash'){
-        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Pokemon" class="popup_filter_link">Move to Pokemon</a>';
+        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Pokemon" class="popup_filter_link">Display</a>';
     }else{
-        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Trash" class="popup_filter_link">Move to Trash</a>';
+        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Trash" class="popup_filter_link">Hide</a>';
     }
-    content += '<br>=&gt; <a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    content += '&nbsp; | &nbsp;';
+    content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
     return content;
 }
 
@@ -488,9 +487,8 @@ function populateSettingsPanels(){
         var partHtml = `<div class="text-center">
                 <div id="menu" class="sprite"><span class="sprite-`+i+`"></span></div>
                 <div class="btn-group" role="group" data-group="filter-`+i+`">
-                  <button type="button" class="btn btn-default" data-id="`+i+`" data-value="pokemon">Pokémon</button>
-                  <button type="button" class="btn btn-default" data-id="`+i+`" data-value="trash">Trash</button>
-                  <button type="button" class="btn btn-default" data-id="`+i+`" data-value="hidden">Hide</button>
+                  <button type="button" class="btn btn-default" data-id="`+i+`" data-value="pokemon">Display</button>
+                  <button type="button" class="btn btn-default" data-id="`+i+`" data-value="trash">Hide</button>
                 </div>
             </div>
         `;
