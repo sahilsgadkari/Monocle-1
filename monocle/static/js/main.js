@@ -11,13 +11,24 @@ var PokemonIcon = L.Icon.extend({
     },
     createIcon: function() {
         var div = document.createElement('div');
-        div.innerHTML =
-            '<div class="pokemarker">' +
-              '<div class="sprite">' +
-                   '<span class="sprite-' + this.options.iconID + '" /></span>' +
-              '</div>' +
-              '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
-            '</div>';
+        if ( this.options.iv > 0 ) {
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="sprite">' +
+                        '<span class="sprite-' + this.options.iconID + '" />' +
+                    '</div>' +
+                    '<div class="iv_text">' + this.options.iv.toFixed(0) + '%</div>' +
+                    '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                '</div>';
+        }else{
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="sprite">' +
+                        '<span class="sprite-' + this.options.iconID + '" />' +
+                    '</div>' +
+                    '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    '</div>';
+        }
         return div;
     }
 });
@@ -117,7 +128,8 @@ function getOpacity (diff) {
 }
 
 function PokemonMarker (raw) {
-    var icon = new PokemonIcon({iconID: raw.pokemon_id, expires_at: raw.expires_at});
+    var totaliv = 100 * (raw.atk + raw.def + raw.sta) / 45;
+    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, expires_at: raw.expires_at});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
     var intId = parseInt(raw.id.split('-')[1]);
