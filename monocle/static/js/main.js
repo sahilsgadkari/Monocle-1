@@ -1,23 +1,32 @@
 var _last_pokemon_id = 0;
 var _pokemon_count = 251;
 var _WorkerIconUrl = 'static/monocle-icons/assets/ball.png';
-var _NotificationIconUrl = 'static/monocle-icons/assets/ultra.png';
 var _PokestopIconUrl = 'static/monocle-icons/assets/stop.png';
 
 var PokemonIcon = L.Icon.extend({
     options: {
-        //iconSize: [30, 30],
         popupAnchor: [0, -15]
     },
     createIcon: function() {
         var div = document.createElement('div');
-        div.innerHTML =
-            '<div class="pokemarker">' +
-              '<div class="sprite">' +
-                   '<span class="sprite-' + this.options.iconID + '" /></span>' +
-              '</div>' +
-              '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
-            '</div>';
+        if ( this.options.iv > 0 ) {
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="sprite">' +
+                        '<span class="sprite-' + this.options.iconID + '" />' +
+                    '</div>' +
+                    '<div class="iv_text">' + this.options.iv.toFixed(0) + '%</div>' +
+                    '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                '</div>';
+        }else{
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="sprite">' +
+                        '<span class="sprite-' + this.options.iconID + '" />' +
+                    '</div>' +
+                    '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    '</div>';
+        }
         return div;
     }
 });
@@ -34,13 +43,6 @@ var WorkerIcon = L.Icon.extend({
         iconSize: [20, 20],
         className: 'worker-icon',
         iconUrl: _WorkerIconUrl
-    }
-});
-var NotificationIcon = L.Icon.extend({
-    options: {
-        iconSize: [30, 30],
-        className: 'notification-icon',
-        iconUrl: _NotificationIconUrl
     }
 });
 var PokestopIcon = L.Icon.extend({
@@ -117,7 +119,8 @@ function getOpacity (diff) {
 }
 
 function PokemonMarker (raw) {
-    var icon = new PokemonIcon({iconID: raw.pokemon_id, expires_at: raw.expires_at});
+    var totaliv = 100 * (raw.atk + raw.def + raw.sta) / 45;
+    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, expires_at: raw.expires_at});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
     var intId = parseInt(raw.id.split('-')[1]);
