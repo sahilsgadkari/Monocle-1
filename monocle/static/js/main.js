@@ -9,7 +9,7 @@ var PokemonIcon = L.Icon.extend({
     },
     createIcon: function() {
         var div = document.createElement('div');
-        if ( this.options.iv > 0 ) {
+        if ( this.options.iv > 0 && this.options.iv < 80 ) {
             div.innerHTML =
                 '<div class="pokemarker">' +
                     '<div class="sprite">' +
@@ -17,7 +17,25 @@ var PokemonIcon = L.Icon.extend({
                     '</div>' +
                     '<div class="iv_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
-                '</div>';
+                    '</div>';
+        }else if ( this.options.iv >= 80 && this.options.iv < 90 ) {
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="sprite">' +
+                        '<span class="sprite-' + this.options.iconID + '" />' +
+                    '</div>' +
+                    '<div class="iv_gt_80_text">' + this.options.iv.toFixed(0) + '%</div>' +
+                    '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    '</div>';
+        }else if ( this.options.iv >= 90 ) {
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="sprite">' +
+                        '<span class="sprite-' + this.options.iconID + '" />' +
+                    '</div>' +
+                    '<div class="iv_gt_90_text">' + this.options.iv.toFixed(0) + '%</div>' +
+                    '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    '</div>';
         }else{
             div.innerHTML =
                 '<div class="pokemarker">' +
