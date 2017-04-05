@@ -27,7 +27,7 @@ var PokemonIcon = L.Icon.extend({
                     '<div class="iv_gt_80_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     '</div>';
-        }else if ( this.options.iv >= 90 ) {
+        }else if ( this.options.iv >= 90 && this.options.iv < 100) {
             div.innerHTML =
                 '<div class="pokemarker">' +
                     '<div class="sprite">' +
@@ -36,6 +36,15 @@ var PokemonIcon = L.Icon.extend({
                     '<div class="iv_gt_90_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     '</div>';
+        }else if ( this.options.iv == 100 ) {
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                '<div class="sprite">' +
+                '<span class="sprite-' + this.options.iconID + '" />' +
+                '</div>' +
+                '<div class="iv_eq_100_img"><img class="iv_eq_100_img" src="static/img/100.png"></div>' +
+                '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                '</div>';
         }else{
             div.innerHTML =
                 '<div class="pokemarker">' +
