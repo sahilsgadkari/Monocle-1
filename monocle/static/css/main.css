@@ -157,6 +157,12 @@
     font-weight: bold;
 }
 
+.iv_eq_100_img {
+    width: 30px;
+    height: 30px;
+    display: block;
+}
+
 .remaining_text {
     border-radius: 25px;
     background-color: black;
