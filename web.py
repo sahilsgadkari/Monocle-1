@@ -51,8 +51,10 @@ app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'),
 def social_links():
     social_links = ''
 
+    if conf.PAYPAL_URL:
+        social_lings = '<a class="map_btn paypal-icon" target="_blank" href="' + conf.PAYPAL_URL + '"></a>'
     if conf.FB_PAGE_ID:
-        social_links = '<a class="map_btn facebook-icon" target="_blank" href="https://www.facebook.com/' + conf.FB_PAGE_ID + '"></a>'
+        social_links += '<a class="map_btn facebook-icon" target="_blank" href="https://www.facebook.com/' + conf.FB_PAGE_ID + '"></a>'
     if conf.TWITTER_SCREEN_NAME:
         social_links += '<a class="map_btn twitter-icon" target="_blank" href="https://www.twitter.com/' + conf.TWITTER_SCREEN_NAME + '"></a>'
     if conf.DISCORD_INVITE_ID:
