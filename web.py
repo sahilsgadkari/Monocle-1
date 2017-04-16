@@ -18,33 +18,6 @@ from monocle.web_utils import *
 from monocle.bounds import area, center
 
 
-GOOGLE_MAPS_KEY = conf.GOOGLE_MAPS_KEY if conf.REPORT_MAPS else None
-MAPFILE = 'custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html'
-
-CSS_JS = ''
-SOCIAL_LINKS = ''
-JS_VARS = Markup(
-    "_defaultSettings['FIXED_OPACITY'] = '{:d}'; "
-    "_defaultSettings['SHOW_TIMER'] = '{:d}'; "
-    "_defaultSettings['TRASH_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, ', '.join(str(p_id) for p_id in conf.TRASH_IDS))
-)
-if conf.LOAD_CUSTOM_CSS_FILE:
-    CSS_JS += '<link rel="stylesheet" href="static/css/custom.css">'
-if conf.LOAD_CUSTOM_JS_FILE:
-    CSS_JS += '<script type="text/javascript" src="static/js/custom.js"></script>'
-if conf.PAYPAL_URL:
-    SOCIAL_LINKS += '<a class="map_btn paypal-icon" target="_blank" href="' + conf.PAYPAL_URL + '"></a>'
-if conf.FB_PAGE_ID:
-    SOCIAL_LINKS += '<a class="map_btn facebook-icon" target="_blank" href="https://www.facebook.com/' + conf.FB_PAGE_ID + '"></a>'
-if conf.TWITTER_SCREEN_NAME:
-    SOCIAL_LINKS += '<a class="map_btn twitter-icon" target="_blank" href="https://www.twitter.com/' + conf.TWITTER_SCREEN_NAME + '"></a>'
-if conf.DISCORD_INVITE_ID:
-    SOCIAL_LINKS += '<a class="map_btn discord-icon" target="_blank" href="https://discord.gg/' + conf.DISCORD_INVITE_ID + '"></a>'
-if conf.TELEGRAM_USERNAME:
-    SOCIAL_LINKS += '<a class="map_btn telegram-icon" target="_blank" href="https://www.telegram.me/' + conf.TELEGRAM_USERNAME + '"></a>'
-CSS_JS = Markup(CSS_JS)
-SOCIAL_LINKS = Markup(SOCIAL_LINKS)
-
 app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'), static_folder=resource_filename('monocle', 'static'))
 
 
