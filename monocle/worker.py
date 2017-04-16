@@ -1,10 +1,9 @@
-from asyncio import sleep, Lock, Semaphore, gather
-from random import choice, randint, uniform, triangular
+from asyncio import gather, Lock, Semaphore, sleep, CancelledError
+from cyrandom import choice, randint, uniform
 from time import time, monotonic
 from queue import Empty
 from itertools import cycle
 from sys import exit
-from concurrent.futures import CancelledError
 from distutils.version import StrictVersion
 
 from aiopogo import PGoApi, json_loads, exceptions as ex
@@ -15,8 +14,7 @@ from pogeo import get_distance
 from .db import SIGHTING_CACHE, MYSTERY_CACHE
 from .utils import round_coords, load_pickle, get_device_info, get_spawn_id, get_start_coords, Units, randomize_point
 from .shared import get_logger, LOOP, SessionManager, run_threaded, ACCOUNTS
-from .db_proc import DB_PROC
-from . import avatar, bounds, spawns, sanitized as conf
+from . import avatar, bounds, db_proc, spawns, sanitized as conf
 
 if conf.NOTIFY:
     from .notification import Notifier
@@ -29,6 +27,7 @@ if conf.CACHE_CELLS:
         from pogeo import get_cell_ids
 else:
     from pogeo import get_cell_ids
+
 
 _unit = getattr(Units, conf.SPEED_UNIT.lower())
 if conf.SPIN_POKESTOPS:
@@ -112,7 +111,7 @@ class Worker:
         # State variables
         self.busy = Lock(loop=LOOP)
         # Other variables
-        self.after_spawn = None
+        self.after_spawn = 0
         self.speed = 0
         self.total_seen = 0
         self.error_code = 'INIT'
@@ -160,6 +159,8 @@ class Worker:
                         provider=self.account.get('provider') or 'ptc',
                         timeout=conf.LOGIN_TIMEOUT
                     )
+            except ex.UnexpectedAuthError as e:
+                await self.swap_account('unexpected auth error')
             except ex.AuthException as e:
                 err = e
                 await sleep(2, loop=LOOP)
@@ -467,7 +468,8 @@ class Worker:
                 self.log.info('Auth error on {}: {}', self.username, e)
                 err = e
                 await sleep(3, loop=LOOP)
-                await self.login(reauth=True)
+                if not await self.login(reauth=True):
+                    await self.swap_account(reason='reauth failed')
             except ex.TimeoutException as e:
                 self.error_code = 'TIMEOUT'
                 if not isinstance(e, type(err)):
@@ -749,22 +751,22 @@ class Worker:
                         try:
                             await self.encounter(normalized, pokemon['spawn_point_id'])
                         except CancelledError:
-                            DB_PROC.add(normalized)
+                            db_proc.add(normalized)
                             raise
                         except Exception as e:
                             self.log.warning('{} during encounter', e.__class__.__name__)
 
                 if notify_conf and self.notifier.eligible(normalized):
-                    if encounter_conf and 'move1' not in normalized:
+                    if encounter_conf and 'move_1' not in normalized:
                         try:
                             await self.encounter(normalized, pokemon['spawn_point_id'])
                         except CancelledError:
-                            DB_PROC.add(normalized)
+                            db_proc.add(normalized)
                             raise
                         except Exception as e:
                             self.log.warning('{} during encounter', e.__class__.__name__)
                     LOOP.create_task(self.notifier.notify(normalized, time_of_day))
-                DB_PROC.add(normalized)
+                db_proc.add(normalized)
 
             for fort in map_cell.get('forts', ()):
                 if not fort.get('enabled'):
@@ -775,9 +777,9 @@ class Worker:
                         norm = self.normalize_lured(fort, request_time_ms)
                         pokemon_seen += 1
                         if norm not in SIGHTING_CACHE:
-                            DB_PROC.add(norm)
+                            db_proc.add(norm)
                     pokestop = self.normalize_pokestop(fort)
-                    DB_PROC.add(pokestop)
+                    db_proc.add(pokestop)
                     if (self.pokestops and not self.bag_full()
                             and time() > self.next_spin
                             and (not conf.SMART_THROTTLE or
@@ -786,7 +788,7 @@ class Worker:
                         if not cooldown or time() > cooldown / 1000:
                             await self.spin_pokestop(pokestop)
                 else:
-                    DB_PROC.add(self.normalize_gym(fort))
+                    db_proc.add(self.normalize_gym(fort))
 
             if more_points:
                 try:
@@ -1180,7 +1182,6 @@ class Worker:
 
     @staticmethod
     def normalize_lured(raw, now):
-        spawn_id = -1 if conf.SPAWN_ID_INT else 'LURED'
         return {
             'type': 'pokemon',
             'encounter_id': raw['lure_info']['encounter_id'],
@@ -1188,7 +1189,7 @@ class Worker:
             'expire_timestamp': raw['lure_info']['lure_expires_timestamp_ms'] // 1000,
             'lat': raw['latitude'],
             'lon': raw['longitude'],
-            'spawn_id': spawn_id,
+            'spawn_id': -1 if conf.SPAWN_ID_INT else 'LURED',
             'time_till_hidden': (raw['lure_info']['lure_expires_timestamp_ms'] - now) // 1000,
             'inferred': 'pokestop'
         }
