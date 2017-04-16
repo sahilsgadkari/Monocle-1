@@ -18,7 +18,6 @@ from monocle.web_utils import *
 from monocle.bounds import area, center
 
 
-<<<<<<< HEAD
 GOOGLE_MAPS_KEY = conf.GOOGLE_MAPS_KEY if conf.REPORT_MAPS else None
 MAPFILE = 'custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html'
 
@@ -46,8 +45,6 @@ if conf.TELEGRAM_USERNAME:
 CSS_JS = Markup(CSS_JS)
 SOCIAL_LINKS = Markup(SOCIAL_LINKS)
 
-=======
->>>>>>> Noctem/develop
 app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'), static_folder=resource_filename('monocle', 'static'))
 
 
