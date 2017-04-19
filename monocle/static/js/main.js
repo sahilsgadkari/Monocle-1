@@ -325,7 +325,7 @@ function getPokemon () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/data?last_id='+_last_pokemon_id, function (response) {
+        $.get('/north_sd/data?last_id='+_last_pokemon_id, function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -338,7 +338,7 @@ function getGyms () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/gym_data', function (response) {
+        $.get('/north_sd/gym_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -348,7 +348,7 @@ function getGyms () {
 
 function getSpawnPoints() {
     new Promise(function (resolve, reject) {
-        $.get('/spawnpoints', function (response) {
+        $.get('/north_sd/spawnpoints', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -358,7 +358,7 @@ function getSpawnPoints() {
 
 function getPokestops() {
     new Promise(function (resolve, reject) {
-        $.get('/pokestops', function (response) {
+        $.get('/north_sd/pokestops', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -368,7 +368,7 @@ function getPokestops() {
 
 function getScanAreaCoords() {
     new Promise(function (resolve, reject) {
-        $.get('/scan_coords', function (response) {
+        $.get('/north_sd/scan_coords', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -381,7 +381,7 @@ function getWorkers() {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/workers_data', function (response) {
+        $.get('/north_sd/workers_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
