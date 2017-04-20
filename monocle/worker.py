@@ -6,9 +6,8 @@ from itertools import cycle
 from sys import exit
 from distutils.version import StrictVersion
 
-from aiopogo import PGoApi, json_loads, exceptions as ex
+from aiopogo import PGoApi, HashServer, json_loads, exceptions as ex
 from aiopogo.auth_ptc import AuthPtc
-from aiopogo.hash_server import HashServer
 from pogeo import get_distance
 
 from .db import SIGHTING_CACHE, MYSTERY_CACHE
@@ -1020,7 +1019,7 @@ class Worker:
                 'pageurl': responses.get('CHECK_CHALLENGE', {}).get('challenge_url'),
                 'json': 1
             }
-            async with session.post('http://2captcha.com/in.php', params=params, timeout=10) as resp:
+            async with session.post('http://2captcha.com/in.php', params=params) as resp:
                 response = await resp.json(loads=json_loads)
         except CancelledError:
             raise
