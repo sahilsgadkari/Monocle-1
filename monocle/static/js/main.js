@@ -15,7 +15,7 @@ var PokemonIcon = L.Icon.extend({
                     '<div class="sprite">' +
                         '<span class="sprite-' + this.options.iconID + '" />' +
                     '</div>' +
-                    '<div class="iv_text" data-iv="' + this.options.iv + '">' + formatIV(this.options.iv) + '</div>' +
+                    '<div class="iv_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     '</div>';
         }else if ( this.options.iv >= 80 && this.options.iv < 90 ) {
@@ -24,7 +24,7 @@ var PokemonIcon = L.Icon.extend({
                     '<div class="sprite">' +
                         '<span class="sprite-' + this.options.iconID + '" />' +
                     '</div>' +
-                    '<div class="iv_gt_80_text" data-iv="' + this.options.iv + '">' + formatIV(this.options.iv) + '</div>' +
+                    '<div class="iv_gt_80_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     '</div>';
         }else if ( this.options.iv >= 90 && this.options.iv < 100) {
@@ -33,7 +33,7 @@ var PokemonIcon = L.Icon.extend({
                     '<div class="sprite">' +
                         '<span class="sprite-' + this.options.iconID + '" />' +
                     '</div>' +
-                    '<div class="iv_gt_90_text" data-iv="' + this.options.iv + '">' + formatIV(this.options.iv) + '</div>' +
+                    '<div class="iv_gt_90_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     '</div>';
         }else if ( this.options.iv == 100 ) {
@@ -42,7 +42,7 @@ var PokemonIcon = L.Icon.extend({
                 '<div class="sprite">' +
                 '<span class="sprite-' + this.options.iconID + '" />' +
                 '</div>' +
-                '<div class="iv_eq_100_img" data-iv="' + this.options.iv + '"><img class="iv_eq_100_img" src="static/img/100.png"></div>' +
+                '<div class="iv_eq_100_img"><img class="iv_eq_100_img" src="static/img/100.png"></div>' +
                 '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                 '</div>';
         }else{
@@ -146,7 +146,11 @@ function getOpacity (diff) {
 }
 
 function PokemonMarker (raw) {
-    var totaliv = 100 * (raw.atk + raw.def + raw.sta) / 45;
+    if (getPreference("SHOW_IV") === "1"){
+        var totaliv = 100 * (raw.atk + raw.def + raw.sta) / 45;
+    }else{
+        var totaliv = 0;
+    }
     var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, expires_at: raw.expires_at});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
@@ -191,7 +195,7 @@ function PokemonMarker (raw) {
             marker.setOpacity(getOpacity(diff));
         } else {
             overlays.Pokemon.removeLayer(marker);
-            overlays.Pokemon.refreshClusters();
+            overlays.Pokemon.refreshClusters(marker);
             markers[marker.raw.id] = undefined;
             clearInterval(marker.opacityInterval);
         }
@@ -249,8 +253,7 @@ function addPokemonToMap (data, map) {
         if (marker.overlay !== "Hidden"){
             marker.addTo(overlays[marker.overlay])
         }
-    });
-    updateIV();  
+    }); 
     updateTime();
     if (_updateTimeInterval === null){
         _updateTimeInterval = setInterval(updateTime, 1000);
@@ -331,6 +334,7 @@ function getPokemon () {
         });
     }).then(function (data) {
         addPokemonToMap(data, map);
+        overlays.Pokemon.refreshClusters();
     });
 }
 
@@ -395,7 +399,7 @@ window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) 
                              params[key] = value;
                              });
 if(parseFloat(params.lat) && parseFloat(params.lon)){
-  var map = new L.Map('main-map', {
+    var map = new L.Map('main-map', {
                       center: [params.lat, params.lon],
                       maxZoom: 18,
                       zoom: params.zoom || 16
@@ -595,46 +599,6 @@ function updateTime() {
         });
     }else{
         $(".remaining_text").each(function() {
-            $(this).css('visibility', 'hidden');
-        });
-    }
-}
-
-function formatIV(total_iv) {
-    var totaliv = total_iv;
-    totaliv = totaliv.toFixed(0) + '%';
-    return totaliv;
-}
-
-function updateIV() {
-    if (getPreference("SHOW_IV") === "1"){
-        $(".iv_text").each(function() {
-            $(this).css('visibility', 'visible');
-            this.innerHTML = formatIV($(this).data('iv'));
-        });
-        $(".iv_gt_80_text").each(function() {
-            $(this).css('visibility', 'visible');
-            this.innerHTML = formatIV($(this).data('iv'));
-        });
-        $(".iv_gt_90_text").each(function() {
-            $(this).css('visibility', 'visible');
-            this.innerHTML = formatIV($(this).data('iv'));
-        });
-        $(".iv_eq_100_img").each(function() {
-            $(this).css('visibility', 'visible');
-            this.innerHTML = formatIV($(this).data('iv'));
-        });
-    }else{
-        $(".iv_text").each(function() {
-            $(this).css('visibility', 'hidden');
-        });
-        $(".iv_gt_80_text").each(function() {
-            $(this).css('visibility', 'hidden');
-        });
-        $(".iv_gt_90_text").each(function() {
-            $(this).css('visibility', 'hidden');
-        });
-        $(".iv_eq_100_img").each(function() {
             $(this).css('visibility', 'hidden');
         });
     }
