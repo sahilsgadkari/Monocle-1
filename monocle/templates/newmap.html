@@ -9,6 +9,7 @@
     <link rel="stylesheet" href='static/css/spritesheet.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.default.css'>
+    <link rel="stylesheet" href='static/css/ticker.css'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
@@ -21,6 +22,14 @@
         _defaultSettings = {};
         _updateTimeInterval = null;
     </script>
+
+    <div id="message_ticker">
+      <div class="ticker">
+        <p>Funds are running low to pay for monthly hash key. </p>
+        <p>Please consider donating for all maps and feeds to continue.</p>
+        <p>Click on the PayPal button on the bottom left to donate.</p>
+      </div>
+    </div>
 
     <div id="main-map" class="map"></div>
 <!-- Remove My Location Button until HTTPS is enabled
@@ -89,6 +98,7 @@
     <script src='static/js/leaflet.markercluster.js'></script>
     <script src='static/js/bootstrap.min.js'></script>
     <script src='static/js/main.js'></script>
+    <script src='static/js/ticker.js'></script>
 
     {{ extra_css_js }}
 </body>
