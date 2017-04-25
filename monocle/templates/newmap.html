@@ -23,21 +23,13 @@
         _updateTimeInterval = null;
     </script>
 
-    <div id="message_ticker">
-      <div class="ticker">
-        <p>Funds are running low to pay for monthly hash key. </p>
-        <p>Please consider donating for all maps and feeds to continue.</p>
-        <p>Click on the PayPal button on the bottom left to donate.</p>
-      </div>
-    </div>
-
     <div id="main-map" class="map"></div>
 <!-- Remove My Location Button until HTTPS is enabled
     <a class="map_btn my-location"></a>
 -->
     <a class="map_btn my-settings"></a>
     {{ social_links }}
-
+    {{ ticker_items }}
     <div id="settings" class="container text-center">
         <button type="button" class="close scroll-up glyphicon glyphicon glyphicon-circle-arrow-up"></button>
         <div class="page-header">
