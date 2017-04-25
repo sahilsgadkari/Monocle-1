@@ -5,7 +5,7 @@
   left: 0;
   top: 0;
   background-color: rgba(124, 35, 28, .85);
-  z-index: 1000;
+  z-index: 100000;
 }
 
 .ticker {
@@ -15,7 +15,7 @@
   right: 0px;
   bottom: 0;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 100000;
 }
 
 .ticker p {
@@ -25,5 +25,5 @@
   width: auto;
   color: white;
   font-size: 75%;
-  z-index: 1000;
+  z-index: 100000;
 }
