@@ -9,6 +9,7 @@
     <link rel="stylesheet" href='static/css/spritesheet.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.default.css'>
+    <link rel="stylesheet" href='static/css/ticker.css'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
@@ -28,7 +29,7 @@
 -->
     <a class="map_btn my-settings"></a>
     {{ social_links }}
-
+    {{ ticker_items }}
     <div id="settings" class="container text-center">
         <button type="button" class="close scroll-up glyphicon glyphicon glyphicon-circle-arrow-up"></button>
         <div class="page-header">
@@ -89,6 +90,7 @@
     <script src='static/js/leaflet.markercluster.js'></script>
     <script src='static/js/bootstrap.min.js'></script>
     <script src='static/js/main.js'></script>
+    <script src='static/js/ticker.js'></script>
 
     {{ extra_css_js }}
 </body>
