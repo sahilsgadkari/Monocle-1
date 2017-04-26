@@ -235,6 +235,8 @@ LOAD_CUSTOM_JS_FILE = False   # File path MUST be 'static/js/custom.js'
 FIXED_OPACITY = False  # Make marker opacity independent of remaining time
 SHOW_TIMER = False  # Show remaining time on a label under each pokemon marker
 SHOW_IV = False # Show IV below each pokemon marker
+TICKER_ITEMS = None # Display red horizontal ticker at the top. Use '<p>text</p>' format
+MOTD = None # Display a blocking message. Use 'text' format to enter text into blue banner
 
 ### OPTIONS BELOW THIS POINT ARE ONLY NECESSARY FOR NOTIFICATIONS ###
 NOTIFY = False  # enable notifications
