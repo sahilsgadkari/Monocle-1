@@ -27,6 +27,13 @@ def ticker():
         ticker_items = '<div id="message_ticker"><div class="ticker">' + conf.TICKER_ITEMS + '</div></div>'
     return Markup(ticker_items)
 
+def motd():
+    motd = ''
+
+    if conf.MOTD:
+        motd = '<div class="motd">' + conf.MOTD + '</div>'
+    return Markup(motd)
+
 def social_links():
     social_links = ''
 
@@ -65,6 +72,7 @@ def render_map():
         map_provider_url=conf.MAP_PROVIDER_URL,
         map_provider_attribution=conf.MAP_PROVIDER_ATTRIBUTION,
         ticker_items=ticker(),
+        motd=motd(),
         social_links=social_links(),
         init_js_vars=js_vars,
         extra_css_js=Markup(css_js)
