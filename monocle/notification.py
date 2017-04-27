@@ -787,6 +787,7 @@ class Notifier:
             data['message']['height'] = pokemon['height']
             data['message']['weight'] = pokemon['weight']
             data['message']['gender'] = pokemon['gender']
+            data['message']['level_iv'] = pokemon['level_iv']
         except KeyError:
             pass
 

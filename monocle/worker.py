@@ -947,6 +947,7 @@ class Worker:
             pokemon['height'] = pdata['height_m']
             pokemon['weight'] = pdata['weight_kg']
             pokemon['gender'] = pdata['pokemon_display']['gender']
+            pokemon['level_iv'] = self.account.get('level')
         except KeyError:
             self.log.error('Missing Pokemon data in encounter response.')
         self.error_code = '!'
