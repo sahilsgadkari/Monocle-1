@@ -412,7 +412,7 @@ else{
 map.addLayer(overlays.Pokemon);
 
 L.tileLayer(_MapProviderUrl, {
-    opacity: 0.75,
+    opacity: 1,
     attribution: _MapProviderAttribution
 }).addTo(map);
 map.whenReady(function () {
