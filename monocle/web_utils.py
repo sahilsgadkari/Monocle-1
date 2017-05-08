@@ -94,6 +94,8 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE):
         'lat': pokemon.lat,
         'lon': pokemon.lon,
         'expires_at': pokemon.expire_timestamp,
+        'encounter_id': pokemon.encounter_id,
+        'spawn_point_id': pokemon.spawn_id,
     }
     move1 = pokemon.move_1
     if pokemon.move_1:
