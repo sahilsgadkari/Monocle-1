@@ -135,7 +135,7 @@ if conf.MAP_WORKERS:
 
 
 
-@app.route('/north_sd/report')
+@app.route('/report')
 def report_main(area_name=conf.AREA_NAME,
                 names=POKEMON,
                 key=conf.GOOGLE_MAPS_KEY if conf.REPORT_MAPS else None):
@@ -197,7 +197,7 @@ def report_main(area_name=conf.AREA_NAME,
     )
 
 
-@app.route('/north_sd/report/<int:pokemon_id>')
+@app.route('/report/<int:pokemon_id>')
 def report_single(pokemon_id,
                   area_name=conf.AREA_NAME,
                   key=conf.GOOGLE_MAPS_KEY if conf.REPORT_MAPS else None):
@@ -226,7 +226,7 @@ def report_single(pokemon_id,
         )
 
 
-@app.route('/north_sd/report/heatmap')
+@app.route('/report/heatmap')
 def report_heatmap():
     pokemon_id = request.args.get('id')
     with db.session_scope() as session:
