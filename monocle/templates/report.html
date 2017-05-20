@@ -125,7 +125,7 @@
     <p><b>Top 30</b> that spawned the most number of times during above period:</p>
     <div class="text-center">
       {% for icon in icons.top30 %}
-        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}
@@ -136,7 +136,7 @@
     places:</p>
     <div class="text-center">
       {% for icon in icons.bottom30 %}
-        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}
@@ -148,7 +148,7 @@
     their spawning places:</p>
     <div class="text-center">
       {% for icon in icons.rare %}
-        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}
@@ -162,7 +162,7 @@
     <p>Those Pokemon didn't spawn during data gathering period:</p>
     <div class="text-center">
       {% for icon in icons.nonexistent %}
-        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}
