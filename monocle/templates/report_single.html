@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Monocle Report: {{ pokemon_name }} in {{ area_name }}</title>
-  <link rel="stylesheet" href="static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/sw_sd/static/css/bootstrap.min.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
@@ -23,7 +23,7 @@
             max-height: 100%;
         }
   </style>
-  <script type="text/javascript" src='/static/js/jquery-3.2.1.min.js'></script>
+  <script type="text/javascript" src='/sw_sd/static/js/jquery-3.2.1.min.js'></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
         google.charts.load('current', {'packages':['corechart']});
@@ -74,7 +74,7 @@
 
         $(function () {
             var heatmapPoints;
-            $.get('/report/heatmap?id={{ pokemon_id }}').done(function (result) {
+            $.get('/sw_sd/report/heatmap?id={{ pokemon_id }}').done(function (result) {
                 heatmapPoints = JSON.parse(result).map(function (elem) {
                     return new google.maps.LatLng(elem[0], elem[1]);
                 });
@@ -97,7 +97,7 @@
     Pokemon missing from this report. Your mileage may vary.</p>
     <p>This report contains statistics about data gathered from scanning {{ area_name }} for single species - {{
     pokemon_name }}.</p>
-    <div class="pokemon-image"><img src="/static/monocle-icons/original-icons/{{ pokemon_id }}.png" alt=
+    <div class="pokemon-image"><img src="/sw_sd/static/monocle-icons/original-icons/{{ pokemon_id }}.png" alt=
     "{{ pokemon_name }}"></div>
     <p>During that session, <b>{{ total_spawn_count }}</b> sightings of {{ pokemon_name }} have been seen on an area of
     about <b>{{ area_size }} square km</b>. Data gathering started on <b>{{ session_start.strftime('%Y-%m-%d %H:%M:%S')
