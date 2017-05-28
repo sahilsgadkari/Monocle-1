@@ -985,19 +985,6 @@ class Worker:
         responses = await self.call(request, action=2.25)
 
         try:
-<<<<<<< HEAD
-            pdata = responses['ENCOUNTER']['wild_pokemon']['pokemon_data']
-            pokemon['move_1'] = pdata['move_1']
-            pokemon['move_2'] = pdata['move_2']
-            pokemon['individual_attack'] = pdata.get('individual_attack', 0)
-            pokemon['individual_defense'] = pdata.get('individual_defense', 0)
-            pokemon['individual_stamina'] = pdata.get('individual_stamina', 0)
-            pokemon['height'] = pdata['height_m']
-            pokemon['weight'] = pdata['weight_kg']
-            pokemon['gender'] = pdata['pokemon_display']['gender']
-            pokemon['level_iv'] = self.account.get('level')
-            pokemon['cp'] = pdata['cp']
-=======
             pdata = responses['ENCOUNTER'].wild_pokemon.pokemon_data
             pokemon['move_1'] = pdata.move_1
             pokemon['move_2'] = pdata.move_2
@@ -1007,7 +994,8 @@ class Worker:
             pokemon['height'] = pdata.height_m
             pokemon['weight'] = pdata.weight_kg
             pokemon['gender'] = pdata.pokemon_display.gender
->>>>>>> Noctem/develop
+            pokemon['level_iv'] = self.player_level
+            pokemon['cp'] = pdata.cp
         except KeyError:
             self.log.error('Missing encounter response.')
         self.error_code = '!'
