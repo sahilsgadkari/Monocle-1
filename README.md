@@ -52,6 +52,7 @@ Since it uses [Leaflet](http://leafletjs.com/) for mapping, the appearance and d
   * Optionally `pip3 install` additional packages listed in optional-requirements
     * *asyncpushbullet* is required for PushBullet notifications
     * *peony-twitter* is required for Twitter notifications
+    * *gpsoauth* is required for logging in to Google accounts
     * *shapely* is required for landmarks or boundary polygons
     * *selenium* (and [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)) are required for manually solving CAPTCHAs
     * *uvloop* provides better event loop performance
@@ -67,7 +68,7 @@ Since it uses [Leaflet](http://leafletjs.com/) for mapping, the appearance and d
   * Optionally run the live map interface and reporting system: `python3 web.py`
 
 
-**Note**: Monocle works with Python 3.5 or later only. Python 2.7 is **not supported** and is not compatible at all since I moved from threads to coroutines. Seriously, it's 2016, Python 2.7 hasn't been developed for 6 years, why don't you upgrade already?
+**Note**: Monocle works with Python 3.5 or later only. Python 2.7 is **not supported** and is not compatible at all since I moved from threads to coroutines. Seriously, it's 2017, Python 2.7 hasn't been developed for 6 years, why don't you upgrade already?
 
 Note that if you want more than 10 workers simultaneously running, SQLite is likely not the best choice. I personally use and recommend PostgreSQL, but MySQL and SQLite should also work.
 
