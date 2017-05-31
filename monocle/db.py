@@ -7,8 +7,6 @@ from time import time, mktime
 from sqlalchemy import Column, Integer, String, Float, SmallInteger, BigInteger, ForeignKey, UniqueConstraint, create_engine, cast, func, desc, asc, and_, exists
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.types import TypeDecorator, Numeric, Text
-from sqlalchemy.dialects.mysql import TINYINT, MEDIUMINT, BIGINT, DOUBLE
-from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
 from sqlalchemy.ext.declarative import declarative_base
 
 from . import bounds, spawns, db_proc, sanitized as conf
@@ -23,11 +21,15 @@ except AssertionError:
 log = get_logger(__name__)
 
 if conf.DB_ENGINE.startswith('mysql'):
+    from sqlalchemy.dialects.mysql import TINYINT, MEDIUMINT, BIGINT, DOUBLE
+
     TINY_TYPE = TINYINT(unsigned=True)          # 0 to 255
     MEDIUM_TYPE = MEDIUMINT(unsigned=True)      # 0 to 4294967295
     HUGE_TYPE = BIGINT(unsigned=True)           # 0 to 18446744073709551615
     FLOAT_TYPE = DOUBLE(precision=17, scale=14, asdecimal=False)
 elif conf.DB_ENGINE.startswith('postgres'):
+    from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
+
     class NumInt(TypeDecorator):
         '''Modify Numeric type for integers'''
         impl = Numeric
@@ -101,11 +103,11 @@ class SightingCache:
     def __contains__(self, raw_sighting):
         try:
             expire_timestamp = self.store[raw_sighting['spawn_id']]
+            return (
+                expire_timestamp > raw_sighting['expire_timestamp'] - 2 and
+                expire_timestamp < raw_sighting['expire_timestamp'] + 2)
         except KeyError:
             return False
-        return (
-            expire_timestamp > raw_sighting['expire_timestamp'] - 2 and
-            expire_timestamp < raw_sighting['expire_timestamp'] + 2)
 
 
 class MysteryCache:
@@ -169,7 +171,7 @@ class FortCache:
 
     def __contains__(self, sighting):
         try:
-            return self.gyms[sighting['external_id']] == sighting['last_modified']
+            return self.gyms[sighting.id] == sighting.last_modified_timestamp_ms // 1000
         except KeyError:
             return False
 
@@ -458,8 +460,6 @@ def add_mystery(session, pokemon):
 
 
 def add_fort_sighting(session, raw_fort):
-    if raw_fort in FORT_CACHE:
-        return
     # Check if fort exists
     fort = session.query(Fort) \
         .filter(Fort.external_id == raw_fort['external_id']) \
@@ -491,8 +491,6 @@ def add_fort_sighting(session, raw_fort):
 
 def add_pokestop(session, raw_pokestop):
     pokestop_id = raw_pokestop['external_id']
-    if pokestop_id in FORT_CACHE.pokestops:
-        return
     if session.query(exists().where(
             Pokestop.external_id == pokestop_id)).scalar():
         FORT_CACHE.pokestops.add(pokestop_id)
