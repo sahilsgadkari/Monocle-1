@@ -136,7 +136,7 @@ function getPopupContent (item) {
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
     content += '&nbsp; | &nbsp;';
-    content += '<a href="http://127.0.0.1:8080/iv?pokemon_id=' + item.pokemon_id + '&encounter_id=' + this.btoa(item.encounter_id) + '&spawn_point_id=' + item.spawn_point_id + '&latitude=' + item.lat + '&longitude=' + item.lon + '">Check IV</a>';
+    content += '<a href="http://127.0.0.1:8080/iv?pokemon_id=' + item.pokemon_id + '&latitude=' + item.lat + '&longitude=' + item.lon + '">Check IV</a>';
     return content;
 }
 
