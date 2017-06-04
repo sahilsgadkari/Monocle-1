@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>North San Diego Region - {{ area_name }}</title>
-  <link rel="stylesheet" href="/north_sd/static/css/bootstrap.min.css">
+  <title>Monocle Report - {{ area_name }}</title>
+  <link rel="stylesheet" href="static/css/bootstrap.min.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
@@ -15,7 +15,7 @@
             height: 1000px;
         }
   </style>
-  <script type="text/javascript" src='/north_sd/static/js/jquery-3.2.1.min.js'></script>
+  <script type="text/javascript" src='/static/js/jquery-3.2.1.min.js'></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script defer type="text/javascript">
         google.charts.load('current', {'packages':['corechart']});
@@ -89,7 +89,7 @@
 
         $(function () {
             var heatmapPoints;
-            $.get('/north_sd/report/heatmap').done(function (result) {
+            $.get('/report/heatmap').done(function (result) {
                 heatmapPoints = JSON.parse(result).map(function (elem) {
                     return new google.maps.LatLng(elem[0], elem[1]);
                 });
@@ -104,7 +104,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>North San Diego Region Report</h1>
+    <h1>Monocle Report</h1>
     <h4>Generated on {{ current_date.strftime('%Y-%m-%d %H:%M:%S') }}</h4>
     <p><b>Disclaimer:</b> data may be incomplete due to various issues that might have happened (bugs, unstable
     servers, bugs on the servers etc.). If there is data about a sighting of a Pokemon, that spawn almost certainly
@@ -125,7 +125,7 @@
     <p><b>Top 30</b> that spawned the most number of times during above period:</p>
     <div class="text-center">
       {% for icon in icons.top30 %}
-        <a href="/north_sd/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}
@@ -136,7 +136,7 @@
     places:</p>
     <div class="text-center">
       {% for icon in icons.bottom30 %}
-        <a href="/north_sd/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}
@@ -148,7 +148,7 @@
     their spawning places:</p>
     <div class="text-center">
       {% for icon in icons.rare %}
-        <a href="/north_sd/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}
@@ -162,7 +162,7 @@
     <p>Those Pokemon didn't spawn during data gathering period:</p>
     <div class="text-center">
       {% for icon in icons.nonexistent %}
-        <a href="/north_sd/report/{{ icon[0] }}"><img src="/north_sd/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
+        <a href="/report/{{ icon[0] }}"><img src="/static/monocle-icons/larger-icons/{{ icon[0] }}.png" title="#{{ icon[0] }} {{ icon[1] }}"></a>
         {% if loop.index > 0 and loop.index % 10 == 0 %}
           <br>
         {% endif %}

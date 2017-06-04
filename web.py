@@ -20,14 +20,6 @@ from monocle.bounds import area, center
 
 app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'), static_folder=resource_filename('monocle', 'static'))
 
-def balance():
-    show_balance = ''
-    
-    if conf.BALANCE and conf.FUNDING_GOAL:
-        show_balance = '<div>Monthly Operational Cost: $' + conf.FUNDING_GOAL + '</div>'
-        show_balance += '<div>Current Balance: $' + conf.BALANCE + ' (updated daily)</div>'
-    return Markup(show_balance)
-
 def ticker():
     ticker_items = ''
     
@@ -81,7 +73,6 @@ def render_map():
         map_provider_attribution=conf.MAP_PROVIDER_ATTRIBUTION,
         ticker_items=ticker(),
         motd=motd(),
-        show_balance=balance(),
         social_links=social_links(),
         init_js_vars=js_vars,
         extra_css_js=Markup(css_js)
