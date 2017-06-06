@@ -505,10 +505,8 @@ $('#settings').on('click', '.settings-panel button', function () {
             value = "1";
         item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
         });
+        item.removeClass("active");
     }
-    
-    item.parent().children("button").removeClass("active");
-    item.addClass("active");
     
     if (key.indexOf('filter-') > -1){
         // This is a pokemon's filter button
@@ -539,9 +537,8 @@ function moveToLayer(id, layer){
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml = '<br><div class="btn-group" role="group" data-group="display_all_none">' +
-                      '<button type="button" class="btn btn-default" data-value="pokemon">Display All</button>' +
                       '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
-                    '</div><br><br><br>';
+                  '</div><br><br><br>';
     for (var i = 1; i <= _pokemon_count; i++){
         var partHtml = '<div class="text-center">' +
                 '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
