@@ -253,7 +253,7 @@ function addPokemonToMap (data, map) {
         if (marker.overlay !== "Hidden"){
             marker.addTo(overlays[marker.overlay])
         }
-    }); 
+    });
     updateTime();
     if (_updateTimeInterval === null){
         _updateTimeInterval = setInterval(updateTime, 1000);
@@ -468,6 +468,7 @@ $('#reset_btn').on('click', function () {
     }
 });
 
+
 $('body').on('click', '.popup_filter_link', function () {
     var id = $(this).data("pokeid");
     var layer = $(this).data("newlayer").toLowerCase();
@@ -489,6 +490,24 @@ $('#settings').on('click', '.settings-panel button', function () {
     item.parent().children("button").removeClass("active");
     item.addClass("active");
 
+    if (key === "display_all_none") {
+        for (var id = 1; id <= _pokemon_count; id++){
+            moveToLayer(id, value);
+        }
+        
+        $("#settings div.btn-group").each(function(){
+        var item = $(this);
+        var key = item.data('group');
+        var value = getPreference(key);
+        if (value === false)
+            value = "0";
+        else if (value === true)
+            value = "1";
+        item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
+        });
+        item.removeClass("active");
+    }
+    
     if (key.indexOf('filter-') > -1){
         // This is a pokemon's filter button
         moveToLayer(id, value);
@@ -517,16 +536,17 @@ function moveToLayer(id, layer){
 
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
-    var newHtml = '';
+    var newHtml = '<br><div class="btn-group" role="group" data-group="display_all_none">' +
+                      '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
+                  '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
     for (var i = 1; i <= _pokemon_count; i++){
-        var partHtml = `<div class="text-center">
-                <div id="menu" class="sprite"><span class="sprite-`+i+`"></span></div>
-                <div class="btn-group" role="group" data-group="filter-`+i+`">
-                  <button type="button" class="btn btn-default" data-id="`+i+`" data-value="pokemon">Display</button>
-                  <button type="button" class="btn btn-default" data-id="`+i+`" data-value="trash">Hide</button>
-                </div>
-            </div>
-        `;
+        var partHtml = '<div class="text-center">' +
+                '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
+                '<div class="btn-group" role="group" data-group="filter-'+i+'">' +
+                  '<button type="button" class="btn btn-default" data-id="'+i+'" data-value="pokemon">Display</button>' +
+                  '<button type="button" class="btn btn-default" data-id="'+i+'" data-value="trash">Hide</button>' +
+                '</div>' +
+            '</div>';
 
         newHtml += partHtml
     }
