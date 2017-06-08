@@ -994,11 +994,6 @@ class Worker:
             pokemon['height'] = pdata.height_m
             pokemon['weight'] = pdata.weight_kg
             pokemon['gender'] = pdata.pokemon_display.gender
-            #Check form just for Unown
-            #if pdata.pokemon_id == 201 and pdata.pokemon_display.form > 0:
-            #    pokemon['form'] = pdata.pokemon_display.form
-            #else:
-            #    pokemon['form'] = None
         except KeyError:
             self.log.error('Missing encounter response.')
         self.error_code = '!'
@@ -1223,6 +1218,7 @@ class Worker:
         tsm = raw.last_modified_timestamp_ms
         tss = round(tsm / 1000)
         tth = raw.time_till_hidden_ms
+        #Check form just for Unown
         if raw.pokemon_data.pokemon_id == 201 and raw.pokemon_data.pokemon_display.form > 0:
             unown_form = raw.pokemon_data.pokemon_display.form
         else:
