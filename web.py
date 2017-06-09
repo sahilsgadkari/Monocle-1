@@ -58,6 +58,12 @@ def social_links():
 
     return Markup(social_links)
 
+def announcements():
+    announcements = ''
+
+    if conf.ANNOUNCEMENTS:
+        announcements = '<div class="info-body"><ul type="square">' + conf.ANNOUNCEMENTS + '</ul></div>'
+    return Markup(announcements)
 
 def render_map():
     css_js = ''
@@ -83,6 +89,7 @@ def render_map():
         motd=motd(),
         show_balance=balance(),
         social_links=social_links(),
+        announcements=announcements(),
         init_js_vars=js_vars,
         extra_css_js=Markup(css_js)
     )
