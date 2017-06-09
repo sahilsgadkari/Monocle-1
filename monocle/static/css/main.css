@@ -121,6 +121,10 @@
         height: 348px;
         overflow: auto;
     }
+    
+    .settings-panel>.panel-body>.info-body{
+        text-align: left;
+    }
 
     .nav>li>a {
         position: relative;
@@ -161,10 +165,6 @@
     width: 30px;
     height: 30px;
     display: block;
-}
-
-.settings-panel>.panel-body>.info-body{
-    text-align: left;
 }
 
 .motd {
