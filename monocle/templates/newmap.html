@@ -43,6 +43,7 @@
             <li class="active"><a href="#" data-panel="filters">Filters</a></li>
             <li><a href="#" data-panel="more">More</a></li>
             <li><a href="#" data-panel="donate">Donate</a></li>
+            <li><a href="#" data-panel="info">Info</a></li>
         </ul>
         <div class="panel panel-default settings-panel active" data-panel="filters">
             <div class="panel-heading">Filter Settings</div>
@@ -85,6 +86,12 @@
             </form>
           <br>Monthly operational costs and current balance will be provided when funds run low.<br><br>
           {{ show_balance }}
+          </div>
+        </div>
+        <div class="panel panel-default settings-panel" data-panel="info">
+          <div class="panel-heading">Information/Announcements</div>
+          <div class="panel-body">
+          {{ announcements }}
           </div>
         </div>
     </div>
