@@ -135,6 +135,10 @@
     }
 }
 
+.settings-panel>.panel-body>.info-body{
+    text-align: left;
+}
+
 .iv_text {
     border-radius: 10px;
     background-color: rgba(100, 100, 100, 0.7);
