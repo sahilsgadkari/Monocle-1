@@ -410,6 +410,7 @@ else{
 }
 
 map.addLayer(overlays.Pokemon);
+map.addLayer(overlays.ScanArea);
 
 L.tileLayer(_MapProviderUrl, {
     opacity: 0.85,
