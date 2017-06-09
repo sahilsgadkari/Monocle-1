@@ -121,6 +121,10 @@
         height: 348px;
         overflow: auto;
     }
+    
+    .settings-panel>.panel-body>.info-body{
+        text-align: left;
+    }
 
     .nav>li>a {
         position: relative;
@@ -133,10 +137,6 @@
         display:table-cell !important;
         width: 1%;
     }
-}
-
-.settings-panel>.panel-body>.info-body{
-    text-align: left;
 }
 
 .iv_text {
