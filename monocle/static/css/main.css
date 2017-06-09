@@ -163,6 +163,10 @@
     display: block;
 }
 
+.settings-panel>.panel-body>.info-body{
+    text-align: left;
+}
+
 .motd {
     width: 300px;
     height: 200px;
