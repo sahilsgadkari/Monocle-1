@@ -122,10 +122,6 @@
         overflow: auto;
     }
 
-    .settings-panel>.panel-body>.info-body{
-        text-align: left;
-    }
-
     .nav>li>a {
         position: relative;
         display: block;
@@ -137,6 +133,10 @@
         display:table-cell !important;
         width: 1%;
     }
+}
+
+.info-body{
+   text-align: left;
 }
 
 .iv_text {
