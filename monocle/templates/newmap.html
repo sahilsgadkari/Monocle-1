@@ -22,8 +22,12 @@
     <h1>PoGoSD is initializing, please wait.</h1>
     <script>
         var _MapCoords = [{{ map_center[0] }}, {{ map_center[1] }}];
-        var _MapProviderUrl = '{{ map_provider_url }}';
-        var _MapProviderAttribution = '{{ map_provider_attribution|safe }}';
+        var _DarkMapProviderUrl = '{{ dark_map_provider_url }}';
+        var _DarkMapProviderAttribution = '{{ dark_map_provider_attribution|safe }}';
+        var _DarkMapOpacity = '{{ dark_map_opacity }}';
+        var _LightMapProviderUrl = '{{ light_map_provider_url }}';
+        var _LightMapProviderAttribution = '{{ light_map_provider_attribution|safe }}';
+        var _LightMapOpacity = '{{ light_map_opacity }}';
         _defaultSettings = {};
         _updateTimeInterval = null;
     </script>
@@ -70,6 +74,12 @@
                   <button type="button" class="btn btn-default" data-value="0" onClick="window.location.reload()">No</button>
                 </div>
                 <h6>*IV not accurate at this time</h6>
+                <hr />
+                <h5>Change Map</h5>
+                <div id="map_choice" class="btn-group" role="group" data-group="MAP_CHOICE">
+                  <button type="button" class="btn btn-default" data-value="1">Dark</button>
+                  <button type="button" class="btn btn-default" data-value="0">Light</button>
+                </div>
                 <hr />
                 <h5>Reset all preferences</h5>
                 <button id="reset_btn" type="button" class="btn btn-danger">Reset</button>
