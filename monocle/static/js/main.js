@@ -2,6 +2,8 @@ var _last_pokemon_id = 0;
 var _pokemon_count = 251;
 var _WorkerIconUrl = 'static/monocle-icons/assets/ball.png';
 var _PokestopIconUrl = 'static/monocle-icons/assets/stop.png';
+var _dark = L.tileLayer(_DarkMapProviderUrl, {opacity: _DarkMapOpacity, attribution: _DarkMapProviderAttribution});
+var _light = L.tileLayer(_LightMapProviderUrl, {opacity: _LightMapOpacity, attribution: _LightMapProviderAttribution});
 
 var PokemonIcon = L.Icon.extend({
     options: {
@@ -412,10 +414,7 @@ else{
 map.addLayer(overlays.Pokemon);
 map.addLayer(overlays.ScanArea);
 
-L.tileLayer(_MapProviderUrl, {
-    opacity: 0.85,
-    attribution: _MapProviderAttribution
-}).addTo(map);
+loadMapLayer();
 map.whenReady(function () {
     $('.my-location').on('click', function () {
         map.locate({ enableHighAccurracy: true, setView: true });
@@ -459,6 +458,12 @@ $('.my-settings').on('click', function () {
     $("#settings").show().animate({
         opacity: 1
     }, 250);
+});
+
+$('#map_choice').on('click', function () {
+    // Switch map
+    loadMapLayer();
+    location.reload();
 });
 
 $('#reset_btn').on('click', function () {
@@ -622,5 +627,15 @@ function updateTime() {
         $(".remaining_text").each(function() {
             $(this).css('visibility', 'hidden');
         });
+    }
+}
+
+function loadMapLayer() {
+    if (getPreference("MAP_CHOICE") === "1"){
+        map.removeLayer(_light);
+        map.addLayer(_dark);
+    }else{
+        map.removeLayer(_dark);
+        map.addLayer(_light);
     }
 }
