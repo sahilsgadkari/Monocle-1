@@ -77,14 +77,19 @@ def render_map():
         "_defaultSettings['FIXED_OPACITY'] = '{:d}'; "
         "_defaultSettings['SHOW_TIMER'] = '{:d}'; "
         "_defaultSettings['SHOW_IV'] = '{:d}'; "
-        "_defaultSettings['TRASH_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_IV, ', '.join(str(p_id) for p_id in conf.TRASH_IDS)))
+        "_defaultSettings['MAP_CHOICE'] = '{:d}'; "
+        "_defaultSettings['TRASH_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_IV, 1, ', '.join(str(p_id) for p_id in conf.TRASH_IDS)))
 
     template = app.jinja_env.get_template('custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html')
     return template.render(
         area_name=conf.AREA_NAME,
         map_center=center,
-        map_provider_url=conf.MAP_PROVIDER_URL,
-        map_provider_attribution=conf.MAP_PROVIDER_ATTRIBUTION,
+        dark_map_opacity=conf.DARK_MAP_OPACITY,
+        dark_map_provider_url=conf.DARK_MAP_PROVIDER_URL,
+        dark_map_provider_attribution=conf.DARK_MAP_PROVIDER_ATTRIBUTION,
+        light_map_opacity=conf.LIGHT_MAP_OPACITY,
+        light_map_provider_url=conf.LIGHT_MAP_PROVIDER_URL,
+        light_map_provider_attribution=conf.LIGHT_MAP_PROVIDER_ATTRIBUTION,
         ticker_items=ticker(),
         motd=motd(),
         show_balance=balance(),
@@ -100,8 +105,10 @@ def render_worker_map():
     return template.render(
         area_name=conf.AREA_NAME,
         map_center=center,
-        map_provider_url=conf.MAP_PROVIDER_URL,
-        map_provider_attribution=conf.MAP_PROVIDER_ATTRIBUTION,
+        dark_map_provider_url=conf.DARK_MAP_PROVIDER_URL,
+        dark_map_provider_attribution=conf.DARK_MAP_PROVIDER_ATTRIBUTION,
+        light_map_provider_url=conf.LIGHT_MAP_PROVIDER_URL,
+        light_map_provider_attribution=conf.LIGHT_MAP_PROVIDER_ATTRIBUTION,
         social_links=social_links()
     )
 
