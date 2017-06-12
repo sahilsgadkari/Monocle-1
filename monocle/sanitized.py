@@ -80,12 +80,9 @@ _valid_types = {
     'MANAGER_ADDRESS': (str, tuple, list),
     'MAP_END': sequence,
     'MAP_FILTER_IDS': sequence,
-<<<<<<< HEAD
     'MAP_PROVIDER_ATTRIBUTION': str,
     'MAP_PROVIDER_URL': str,
     'MAP_SHOW_DETAILS': bool,
-=======
->>>>>>> north_sd_unown_map_chooser
     'MAP_START': sequence,
     'MAP_WORKERS': bool,
     'MAX_CAPTCHAS': int,
@@ -204,12 +201,9 @@ _defaults = {
     'LOGIN_TIMEOUT': 2.5,
     'MANAGER_ADDRESS': None,
     'MAP_FILTER_IDS': None,
-<<<<<<< HEAD
     'MAP_PROVIDER_URL': '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     'MAP_PROVIDER_ATTRIBUTION': '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     'MAP_SHOW_DETAILS': True,
-=======
->>>>>>> north_sd_unown_map_chooser
     'MAP_WORKERS': True,
     'MAX_CAPTCHAS': 0,
     'MAX_RETRIES': 3,
