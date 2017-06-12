@@ -65,6 +65,19 @@ def announcements():
         announcements = '<div class="info-body"><ul type="square">' + conf.ANNOUNCEMENTS + '</ul></div>'
     return Markup(announcements)
 
+def show_iv_menu_item():
+    show_iv_menu_item = ''
+
+    if conf.MAP_SHOW_DETAILS:
+        show_iv_menu_item = '<hr />'
+        show_iv_menu_item += '<h5>Show IV under marker</h5>'
+        show_iv_menu_item += '<div class="btn-group" role="group" data-group="SHOW_IV">'
+        show_iv_menu_item += '<button type="button" class="btn btn-default" data-value="1" onClick="window.location.reload()">Yes</button>'
+        show_iv_menu_item += '<button type="button" class="btn btn-default" data-value="0" onClick="window.location.reload()">No</button>'
+        show_iv_menu_item += '</div>'
+        show_iv_menu_item += '<h6>*IV not accurate at this time</h6>'
+    return Markup(show_iv_menu_item)
+
 def render_map():
     css_js = ''
 
@@ -95,6 +108,7 @@ def render_map():
         show_balance=balance(),
         social_links=social_links(),
         announcements=announcements(),
+        show_iv_menu_item=show_iv_menu_item(),
         init_js_vars=js_vars,
         extra_css_js=Markup(css_js)
     )
