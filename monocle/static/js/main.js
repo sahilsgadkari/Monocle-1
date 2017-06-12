@@ -460,12 +460,6 @@ $('.my-settings').on('click', function () {
     }, 250);
 });
 
-$('#map_choice').on('click', function () {
-    // Switch map
-    loadMapLayer();
-    location.reload();
-});
-
 $('#reset_btn').on('click', function () {
     // Reset button in Settings>More
     if (confirm("This will reset all your preferences. Are you sure?")){
@@ -512,7 +506,18 @@ $('#settings').on('click', '.settings-panel button', function () {
         item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
         });
     }
-    
+
+    if (key === "MAP_CHOICE"){
+        setPreference("MAP_CHOICE", value);
+        if(getPreference("MAP_CHOICE") === "1"){
+            map.removeLayer(_light);
+            map.addLayer(_dark);
+        }else{
+            map.removeLayer(_dark);
+            map.addLayer(_light);
+        }
+    }
+
     item.parent().children("button").removeClass("active");
     item.addClass("active");
     
