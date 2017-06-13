@@ -2,8 +2,16 @@ var _last_pokemon_id = 0;
 var _pokemon_count = 251;
 var _WorkerIconUrl = 'static/monocle-icons/assets/ball.png';
 var _PokestopIconUrl = 'static/monocle-icons/assets/stop.png';
+var _LocationMarker;
+var _LocationRadar;
 var _dark = L.tileLayer(_DarkMapProviderUrl, {opacity: _DarkMapOpacity, attribution: _DarkMapProviderAttribution});
 var _light = L.tileLayer(_LightMapProviderUrl, {opacity: _LightMapOpacity, attribution: _LightMapProviderAttribution});
+var ultraIcon = L.icon({
+    iconUrl: 'static/img/ultra-ball.png',
+    iconSize:     [50, 50], // size of the icon
+    iconAnchor:   [25, 25], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, -27] // point from which the popup should open relative to the iconAnchor
+});
 
 var PokemonIcon = L.Icon.extend({
     options: {
@@ -418,6 +426,11 @@ loadMapLayer();
 map.whenReady(function () {
     $('.my-location').on('click', function () {
         map.locate({ enableHighAccurracy: true, setView: true });
+        if(_LocationMarker && _LocationRadar) {
+            map.removeLayer(_LocationMarker);
+            map.removeLayer(_LocationRadar);
+        }
+        map.on('locationfound', onLocationFound);
     });
     overlays.Gyms.once('add', function(e) {
         getGyms();
@@ -645,4 +658,9 @@ function loadMapLayer() {
         map.removeLayer(_dark);
         map.addLayer(_light);
     }
+}
+
+function onLocationFound(e) {
+    _LocationMarker = L.marker(e.latlng, {icon: ultraIcon}).bindPopup('Your Location').addTo(map);
+    _LocationRadar = L.circle(e.latlng, {radius: 35, weight: 1, fillOpacity: 0.1}).addTo(map);
 }
