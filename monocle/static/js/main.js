@@ -519,6 +519,7 @@ $('#settings').on('click', '.settings-panel button', function () {
             value = "1";
         item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
         });
+        item.removeClass("active");
     }
 
     if (key === "MAP_CHOICE"){
@@ -531,9 +532,6 @@ $('#settings').on('click', '.settings-panel button', function () {
             map.addLayer(_light);
         }
     }
-
-    item.parent().children("button").removeClass("active");
-    item.addClass("active");
     
     if (key.indexOf('filter-') > -1){
         // This is a pokemon's filter button
