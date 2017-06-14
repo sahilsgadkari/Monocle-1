@@ -6,13 +6,25 @@ var _LocationMarker;
 var _LocationRadar;
 var _dark = L.tileLayer(_DarkMapProviderUrl, {opacity: _DarkMapOpacity, attribution: _DarkMapProviderAttribution});
 var _light = L.tileLayer(_LightMapProviderUrl, {opacity: _LightMapOpacity, attribution: _LightMapProviderAttribution});
-var ultraIcon = L.icon({
-    iconUrl: 'static/img/ultra-ball.png',
-    iconSize:     [50, 50], // size of the icon
-    iconAnchor:   [25, 25], // point of the icon which will correspond to marker's location
-    popupAnchor:  [0, -27] // point from which the popup should open relative to the iconAnchor
-});
-
+var ultraIconSmall = new L.icon({
+            iconUrl: 'static/img/ultra-ball.png',
+            iconSize: [10, 10],
+            iconAnchor:   [5, 5], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -15] // point from which the popup should open relative to the iconAnchor
+        });
+var ultraIconMedium = new L.icon({
+            iconUrl: 'static/img/ultra-ball.png',
+            iconSize: [20, 20],
+            iconAnchor:   [10, 10], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -27] // point from which the popup should open relative to the iconAnchor
+        });
+var ultraIconLarge = new L.icon({
+            iconUrl: 'static/img/ultra-ball.png',
+            iconSize: [35, 35],
+            iconAnchor:   [17.5, 17.5], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -27] // point from which the popup should open relative to the iconAnchor
+        });
+        
 var PokemonIcon = L.Icon.extend({
     options: {
         popupAnchor: [0, -15]
@@ -430,8 +442,11 @@ map.whenReady(function () {
             map.removeLayer(_LocationMarker);
             map.removeLayer(_LocationRadar);
         }
+        
         map.on('locationfound', onLocationFound);
+        $('.hide-marker').show(); //Show hide My Location marker
     });
+
     overlays.Gyms.once('add', function(e) {
         getGyms();
     })
@@ -464,6 +479,13 @@ $("#settings_close_btn").on('click', function(){
     $("#settings").animate({
         opacity: 0
     }, 250, function(){ $(this).hide(); });
+});
+
+$('.hide-marker').on('click', function(){
+    // Button action to hide My Location marker
+    map.removeLayer(_LocationMarker);
+    $(this).hide();
+    console.log("Clicked");
 });
 
 $('.my-settings').on('click', function () {
@@ -661,6 +683,20 @@ function loadMapLayer() {
 }
 
 function onLocationFound(e) {
-    _LocationMarker = L.marker(e.latlng, {icon: ultraIcon}).bindPopup('Your Location').addTo(map);
+    _LocationMarker = L.marker(e.latlng, {icon: ultraIconMedium}).bindPopup('Your Location').addTo(map);
     _LocationRadar = L.circle(e.latlng, {radius: 35, weight: 1, fillOpacity: 0.1}).addTo(map);
+    map.setZoom(17);
+    map.on('zoomend', function() {
+            var currentZoom = map.getZoom();
+           
+            if (currentZoom == 18) {
+                _LocationMarker.setIcon(ultraIconLarge);
+            } else if (currentZoom == 17) {
+                _LocationMarker.setIcon(ultraIconMedium);
+            } else {
+                _LocationMarker.setIcon(ultraIconSmall);
+            }
+    });
+  
+  
 }
