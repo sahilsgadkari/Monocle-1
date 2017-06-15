@@ -231,6 +231,11 @@
     margin-bottom: 10px;
 }
 
+.hide-marker{
+    background-image: url('../img/hide_marker.png');
+    display: none;
+}
+
 .my-settings {
     background-image: url('../img/settings.png');
 }
