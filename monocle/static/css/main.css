@@ -233,6 +233,7 @@
 }
 
 .hide-marker{
+    background-image: url('../img/hide_marker.png');
     display: none;
 }
 
