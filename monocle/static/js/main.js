@@ -465,13 +465,14 @@ map.whenReady(function () {
     setInterval(getGyms, 110000)
 });
 
-$("#settings>ul.nav>li>a").on('click', function(){
+$("#settings>ul.nav>li>a").on('click', function(e){
     // Click handler for each tab button.
     $(this).parent().parent().children("li").removeClass('active');
     $(this).parent().addClass('active');
     var panel = $(this).data('panel');
     var item = $("#settings>.settings-panel").removeClass('active')
         .filter("[data-panel='"+panel+"']").addClass('active');
+    e.preventDefault(); //Prevent trailing # and causing refresh issue
 });
 
 $("#settings_close_btn").on('click', function(){
@@ -582,7 +583,7 @@ function moveToLayer(id, layer){
 
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
-    var newHtml = '<br><div class="btn-group" role="group" data-group="display_all_none">' +
+    var newHtml = '<br><div data-group="display_all_none">' +
                       '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
                   '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
     for (var i = 1; i <= _pokemon_count; i++){
