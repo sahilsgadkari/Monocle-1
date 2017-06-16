@@ -149,8 +149,10 @@ def spawn_points():
 
 
 @app.route('/pokestops')
-def get_pokestops():
-    return jsonify(get_pokestop_markers())
+def get_pokestops(_scope=db.session_scope, _stop=db.Pokestop):
+    with _scope() as session:
+        pokestops = session.query(_stop.external_id, _stop.lat, _stop.lon, _stop.lure_expiration)
+        return jsonify(pokestops.all())
 
 
 @app.route('/scan_coords')

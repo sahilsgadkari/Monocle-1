@@ -2,6 +2,7 @@ var _last_pokemon_id = 0;
 var _pokemon_count = 251;
 var _WorkerIconUrl = 'static/monocle-icons/assets/ball.png';
 var _PokestopIconUrl = 'static/monocle-icons/assets/stop.png';
+var _PokestopLuredIconUrl = 'static/monocle-icons/assets/stop_lured.png';
 var _LocationMarker;
 var _LocationRadar;
 var _dark = L.tileLayer(_DarkMapProviderUrl, {opacity: _DarkMapOpacity, attribution: _DarkMapProviderAttribution});
@@ -101,13 +102,20 @@ var PokestopIcon = L.Icon.extend({
         iconUrl: _PokestopIconUrl
     }
 });
+var PokestopLuredIcon = L.Icon.extend({
+    options: {
+        iconSize: [10, 20],
+        className: 'pokestop-lured-icon',
+        iconUrl: _PokestopLuredIconUrl
+    }
+});
 
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Trash: L.layerGroup([]),
     Gyms: L.layerGroup([]),
-    Pokestops: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
+    Pokestops: L.layerGroup([]),
     Workers: L.layerGroup([]),
     Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     ScanArea: L.layerGroup([])
@@ -322,10 +330,18 @@ function addSpawnsToMap (data, map) {
 function addPokestopsToMap (data, map) {
     data.forEach(function (item) {
         var icon = new PokestopIcon();
-        var marker = L.marker([item.lat, item.lon], {icon: icon});
+        var expireDate = "";
+        if (item[3] != null) {
+            icon = new PokestopLuredIcon();
+            var expiration = new Date(item[3] * 1000);
+            expireDate = expiration.getHours() + ":" + expiration.getMinutes();
+        }
+        var marker = L.marker([item[1], item[2]], {icon: icon});
         marker.raw = item;
-        marker.bindPopup('<b>Pokestop: ' + item.external_id + '</b>' +
-                         '<br><a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>');
+        marker.bindPopup(
+            '<b>Pokestop: ' + expireDate + '</b>' +
+            '<br>=&gt; <a href=https://www.google.com/maps/?daddr=' + item[1] + ',' + item[2] +
+            ' target="_blank" title="See in Google Maps">Get directions</a>');
         marker.addTo(overlays.Pokestops);
     });
 }
@@ -454,9 +470,9 @@ map.whenReady(function () {
         getGyms();
     })
 
-    getPokestops();
+    getPokestops(); //Load all in the beginning.
+    setInterval(getPokestops, 110000);
     getScanAreaCoords();
-    setInterval(getGyms, 110000)
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
@@ -480,7 +496,6 @@ $('.hide-marker').on('click', function(){
     // Button action to hide My Location marker
     map.removeLayer(_LocationMarker);
     $(this).hide();
-    console.log("Clicked");
 });
 
 $('.my-settings').on('click', function () {
