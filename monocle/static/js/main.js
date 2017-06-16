@@ -106,7 +106,7 @@ var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Trash: L.layerGroup([]),
-    Gyms: L.layerGroup([]),
+    Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
     Pokestops: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
     Workers: L.layerGroup([]),
     Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
@@ -129,8 +129,8 @@ function monitor (group, initial) {
 
 monitor(overlays.Pokemon, true)
 monitor(overlays.Trash, true)
-monitor(overlays.Gyms, true)
-monitor(overlays.Pokestops, false)
+monitor(overlays.Gyms, false)
+monitor(overlays.Pokestops, true)
 monitor(overlays.Workers, true)
 monitor(overlays.Spawns, true)
 
@@ -251,7 +251,7 @@ function FortMarker (raw) {
             content += '<br>Prestige: ' + raw.prestige +
                        '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')';
         }
-        content += '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        content += '<br><a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
         event.popup.setContent(content);
     });
     marker.bindPopup();
@@ -433,7 +433,7 @@ else{
   var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 16);
 }
 
-map.addLayer(overlays.Pokestops);
+map.addLayer(overlays.Gyms);
 
 loadMapLayer();
 map.whenReady(function () {
@@ -450,11 +450,7 @@ map.whenReady(function () {
         $('.hide-marker').show(); //Show hide My Location marker
     });
 
-    overlays.Gyms.once('add', function(e) {
-        getGyms();
-    })
-
-    getPokestops();
+    getGyms();
     getScanAreaCoords();
     setInterval(getGyms, 110000)
 });
