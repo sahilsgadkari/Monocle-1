@@ -434,6 +434,7 @@ else{
 map.addLayer(overlays.Pokemon);
 map.addLayer(overlays.ScanArea);
 
+var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 loadMapLayer();
 map.whenReady(function () {
     $('.my-location').on('click', function () {
