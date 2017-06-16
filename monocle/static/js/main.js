@@ -437,12 +437,14 @@ map.addLayer(overlays.ScanArea);
 loadMapLayer();
 map.whenReady(function () {
     $('.my-location').on('click', function () {
-        map.locate({ enableHighAccurracy: true, setView: true });
+        var currentZoom = map.getZoom();
+        map.locate({ enableHighAccurracy: true, setView: true, maxZoom: currentZoom });
+        
         if(_LocationMarker && _LocationRadar) {
             map.removeLayer(_LocationMarker);
             map.removeLayer(_LocationRadar);
         }
-        
+        map.setZoom(currentZoom);
         map.on('locationfound', onLocationFound);
         $('.hide-marker').show(); //Show hide My Location marker
     });
@@ -682,12 +684,23 @@ function loadMapLayer() {
 }
 
 function onLocationFound(e) {
+    var currentZoom = map.getZoom();
     _LocationMarker = L.marker(e.latlng, {icon: ultraIconMedium}).bindPopup('Your Location').addTo(map);
     _LocationRadar = L.circle(e.latlng, {radius: 35, weight: 1, fillOpacity: 0.1}).addTo(map);
-    map.setZoom(17);
+
+    //Set marker size when initial location found
+    if (currentZoom == 18) {
+        _LocationMarker.setIcon(ultraIconLarge);
+    } else if (currentZoom == 17) {
+        _LocationMarker.setIcon(ultraIconMedium);
+    } else {
+        _LocationMarker.setIcon(ultraIconSmall);
+    }
+
     map.on('zoomend', function() {
             var currentZoom = map.getZoom();
-           
+ 
+            //Set marker size when zooming in and out
             if (currentZoom == 18) {
                 _LocationMarker.setIcon(ultraIconLarge);
             } else if (currentZoom == 17) {
