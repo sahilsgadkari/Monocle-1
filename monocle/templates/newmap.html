@@ -45,59 +45,38 @@
             <h2>PoGo SD Settings<button id="settings_close_btn" type="button" class="close">×</button></h2>
         </div>
         <ul class="nav nav-pills nav-justified nav-settings">
-            <li class="active"><a href="#" data-panel="filters">Filters</a></li>
-            <li><a href="#" data-panel="more">More</a></li>
+            <li class="active"><a href="#" data-panel="more">Settings</a></li>
             <li><a href="#" data-panel="donate">Donate</a></li>
             <li><a href="#" data-panel="info">Info</a></li>
         </ul>
-        <div class="panel panel-default settings-panel active" data-panel="filters">
-            <div class="panel-heading">Filter Settings</div>
-            <div class="panel-body">Panel Content</div>
-        </div>
-        <div class="panel panel-default settings-panel" data-panel="more">
-            <div class="panel-heading">More Settings</div>
+        <div class="panel panel-default settings-panel active" data-panel="more">
+            <div class="panel-heading">Settings</div>
             <div class="panel-body">
-                <h5>Fixed markers opacity</h5>
-                <div class="btn-group" role="group" data-group="FIXED_OPACITY">
-                  <button type="button" class="btn btn-default" data-value="1">Yes</button>
-                  <button type="button" class="btn btn-default" data-value="0">No</button>
-                </div>
-                <hr />
-                <h5>Show timer under markers</h5>
-                <div class="btn-group" role="group" data-group="SHOW_TIMER">
-                  <button type="button" class="btn btn-default" data-value="1">Yes</button>
-                  <button type="button" class="btn btn-default" data-value="0">No</button>
-                </div>
-                {{ show_iv_menu_item }}
-                <hr />
                 <h5>Change Map</h5>
                 <div class="btn-group" role="group" data-group="MAP_CHOICE">
                   <button type="button" class="btn btn-default" data-value="1">Dark</button>
                   <button type="button" class="btn btn-default" data-value="0">Light</button>
                 </div>
-                <hr />
-                <h5>Reset all preferences</h5>
-                <button id="reset_btn" type="button" class="btn btn-danger">Reset</button>
             </div>
         </div>
         <div class="panel panel-default settings-panel" data-panel="donate">
-          <div class="panel-heading">Donations Welcome</div>
-          <div class="panel-body"><br>Maps are free to use. Donations are more than welcome to help fund the scans that power these maps.<br><br>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-              <input type="hidden" name="cmd" value="_s-xclick">
-              <input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">
-              <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+            <div class="panel-heading">Donations Welcome</div>
+            <div class="panel-body"><br>Maps are free to use. Donations are more than welcome to help fund the scans that power these maps.<br><br>
+              <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-            </form>
-          <br>Monthly operational costs and current balance will be provided when funds run low.<br><br>
-          {{ show_balance }}
-          </div>
+              </form>
+            <br>Monthly operational costs and current balance will be provided when funds run low.<br><br>
+            {{ show_balance }}
+            </div>
         </div>
         <div class="panel panel-default settings-panel" data-panel="info">
-          <div class="panel-heading">Information/Announcements</div>
-          <div class="panel-body">
-          {{ announcements }}
-          </div>
+            <div class="panel-heading">Information/Announcements</div>
+            <div class="panel-body">
+            {{ announcements }}
+            </div>
         </div>
     </div>
 

@@ -107,7 +107,7 @@ var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Trash: L.layerGroup([]),
     Gyms: L.layerGroup([]),
-    Pokestops: L.layerGroup([]),
+    Pokestops: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
     Workers: L.layerGroup([]),
     Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     ScanArea: L.layerGroup([])
@@ -127,10 +127,12 @@ function monitor (group, initial) {
     group.on('remove', setHidden);
 }
 
-monitor(overlays.Pokemon, false)
+monitor(overlays.Pokemon, true)
 monitor(overlays.Trash, true)
 monitor(overlays.Gyms, true)
-monitor(overlays.Workers, false)
+monitor(overlays.Pokestops, false)
+monitor(overlays.Workers, true)
+monitor(overlays.Spawns, true)
 
 function getPopupContent (item) {
     var diff = (item.expires_at - new Date().getTime() / 1000);
@@ -323,7 +325,7 @@ function addPokestopsToMap (data, map) {
         var marker = L.marker([item.lat, item.lon], {icon: icon});
         marker.raw = item;
         marker.bindPopup('<b>Pokestop: ' + item.external_id + '</b>' +
-                         '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>');
+                         '<br><a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>');
         marker.addTo(overlays.Pokestops);
     });
 }
@@ -431,10 +433,8 @@ else{
   var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 16);
 }
 
-map.addLayer(overlays.Pokemon);
-map.addLayer(overlays.ScanArea);
+map.addLayer(overlays.Pokestops);
 
-var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 loadMapLayer();
 map.whenReady(function () {
     $('.my-location').on('click', function () {
@@ -453,18 +453,9 @@ map.whenReady(function () {
     overlays.Gyms.once('add', function(e) {
         getGyms();
     })
-    overlays.Spawns.once('add', function(e) {
-        getSpawnPoints();
-    })
-    overlays.Pokestops.once('add', function(e) {
-        getPokestops();
-    })
+
+    getPokestops();
     getScanAreaCoords();
-    getWorkers();
-    overlays.Workers.hidden = true;
-    setInterval(getWorkers, 14000);
-    getPokemon();
-    setInterval(getPokemon, 30000);
     setInterval(getGyms, 110000)
 });
 
