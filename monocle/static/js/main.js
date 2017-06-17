@@ -470,9 +470,10 @@ map.whenReady(function () {
         getGyms();
     })
 
-    getPokestops(); //Load all in the beginning.
+    getPokemon();
+    setInterval(getPokemon, 30000);
+    setInterval(getGyms, 110000)
     setInterval(getPokestops, 110000);
-    getScanAreaCoords();
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
