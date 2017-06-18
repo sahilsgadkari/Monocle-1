@@ -251,7 +251,7 @@ function WorkerMarker(raw) {
   return group;
 }
 
-function addPokemonToMap(data) {
+function addPokemonToMap(data, map) {
   data.forEach(function(item) {
     // Already placed? No need to do anything, then
     if (item.id in markers) {
@@ -339,7 +339,8 @@ function getPokemon() {
       resolve(response);
     });
   }).then(function(data) {
-    addPokemonToMap(data);
+    addPokemonToMap(data, map);
+    overlays.Pokemon.refreshClusters();
   });
 }
 
