@@ -20,10 +20,53 @@ from monocle.web_utils import *
 
 app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'), static_folder=resource_filename('monocle', 'static'))
 
+def balance():
+    show_balance = ''
+    
+    if conf.BALANCE and conf.FUNDING_GOAL:
+        show_balance = '<div>Monthly Operational Cost: $' + conf.FUNDING_GOAL + '</div>'
+        show_balance += '<div>Current Balance: $' + conf.BALANCE + ' (updated daily)</div>'
+    return Markup(show_balance)
+
+def ticker():
+    ticker_items = ''
+    
+    if conf.TICKER_ITEMS:
+        ticker_items = '<div id="message_ticker"><div class="ticker">' + conf.TICKER_ITEMS + '</div></div>'
+    return Markup(ticker_items)
+
+def motd():
+    motd = ''
+
+    if conf.MOTD:
+        motd = '<div class="motd">' + conf.MOTD + '</div>'
+    return Markup(motd)
+
+def announcements():
+    announcements = ''
+
+    if conf.ANNOUNCEMENTS:
+        announcements = '<div class="info-body"><ul type="square">' + conf.ANNOUNCEMENTS + '</ul></div>'
+    return Markup(announcements)
+
+def show_iv_menu_item():
+    show_iv_menu_item = ''
+
+    if conf.MAP_SHOW_DETAILS:
+        show_iv_menu_item = '<hr />'
+        show_iv_menu_item += '<h5>Show IV under marker</h5>'
+        show_iv_menu_item += '<div class="btn-group" role="group" data-group="SHOW_IV">'
+        show_iv_menu_item += '<button type="button" class="btn btn-default" data-value="1" onClick="window.location.reload()">Yes</button>'
+        show_iv_menu_item += '<button type="button" class="btn btn-default" data-value="0" onClick="window.location.reload()">No</button>'
+        show_iv_menu_item += '</div>'
+        show_iv_menu_item += '<h6>*IV not accurate at this time</h6>'
+    return Markup(show_iv_menu_item)
 
 def social_links():
     social_links = ''
 
+    if conf.PAYPAL_URL:
+        social_links = '<a class="map_btn paypal-icon" target="_blank" href="' + conf.PAYPAL_URL + '"></a>'
     if conf.FB_PAGE_ID:
         social_links = '<a class="map_btn facebook-icon" target="_blank" href="https://www.facebook.com/' + conf.FB_PAGE_ID + '"></a>'
     if conf.TWITTER_SCREEN_NAME:
@@ -47,7 +90,9 @@ def render_map():
     js_vars = Markup(
         "_defaultSettings['FIXED_OPACITY'] = '{:d}'; "
         "_defaultSettings['SHOW_TIMER'] = '{:d}'; "
-        "_defaultSettings['TRASH_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, ', '.join(str(p_id) for p_id in conf.TRASH_IDS)))
+        "_defaultSettings['SHOW_IV'] = '{:d}'; "
+        "_defaultSettings['MAP_CHOICE'] = '{:d}'; "
+        "_defaultSettings['TRASH_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_IV, 1, ', '.join(str(p_id) for p_id in conf.TRASH_IDS)))
 
     template = app.jinja_env.get_template('custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html')
     return template.render(
@@ -55,7 +100,18 @@ def render_map():
         map_center=bounds.center,
         map_provider_url=conf.MAP_PROVIDER_URL,
         map_provider_attribution=conf.MAP_PROVIDER_ATTRIBUTION,
+        dark_map_opacity=conf.DARK_MAP_OPACITY,
+        dark_map_provider_url=conf.DARK_MAP_PROVIDER_URL,
+        dark_map_provider_attribution=conf.DARK_MAP_PROVIDER_ATTRIBUTION,
+        light_map_opacity=conf.LIGHT_MAP_OPACITY,
+        light_map_provider_url=conf.LIGHT_MAP_PROVIDER_URL,
+        light_map_provider_attribution=conf.LIGHT_MAP_PROVIDER_ATTRIBUTION,
+        ticker_items=ticker(),
+        motd=motd(),
+        show_balance=balance(),
         social_links=social_links(),
+        announcements=announcements(),
+        show_iv_menu_item=show_iv_menu_item(),
         init_js_vars=js_vars,
         extra_css_js=Markup(css_js)
     )
@@ -68,6 +124,10 @@ def render_worker_map():
         map_center=bounds.center,
         map_provider_url=conf.MAP_PROVIDER_URL,
         map_provider_attribution=conf.MAP_PROVIDER_ATTRIBUTION,
+        dark_map_provider_url=conf.DARK_MAP_PROVIDER_URL,
+        dark_map_provider_attribution=conf.DARK_MAP_PROVIDER_ATTRIBUTION,
+        light_map_provider_url=conf.LIGHT_MAP_PROVIDER_URL,
+        light_map_provider_attribution=conf.LIGHT_MAP_PROVIDER_ATTRIBUTION,
         social_links=social_links()
     )
 

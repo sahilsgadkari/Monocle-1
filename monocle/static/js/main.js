@@ -2,6 +2,28 @@ var _last_pokemon_id = 0;
 var _pokemon_count = 251;
 var _WorkerIconUrl = 'static/monocle-icons/assets/ball.png';
 var _PokestopIconUrl = 'static/monocle-icons/assets/stop.png';
+var _LocationMarker;
+var _LocationRadar;
+var _dark = L.tileLayer(_DarkMapProviderUrl, {opacity: _DarkMapOpacity, attribution: _DarkMapProviderAttribution});
+var _light = L.tileLayer(_LightMapProviderUrl, {opacity: _LightMapOpacity, attribution: _LightMapProviderAttribution});
+var ultraIconSmall = new L.icon({
+            iconUrl: 'static/img/ultra-ball.png',
+            iconSize: [10, 10],
+            iconAnchor:   [5, 5], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -15] // point from which the popup should open relative to the iconAnchor
+        });
+var ultraIconMedium = new L.icon({
+            iconUrl: 'static/img/ultra-ball.png',
+            iconSize: [20, 20],
+            iconAnchor:   [10, 10], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -27] // point from which the popup should open relative to the iconAnchor
+        });
+var ultraIconLarge = new L.icon({
+            iconUrl: 'static/img/ultra-ball.png',
+            iconSize: [35, 35],
+            iconAnchor:   [17.5, 17.5], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -27] // point from which the popup should open relative to the iconAnchor
+        });
 
 var PokemonIcon = L.Icon.extend({
   options: {popupAnchor: [0, -15]},
@@ -27,12 +49,12 @@ var PokestopIcon = L.Icon.extend(
 
 var markers = {};
 var overlays = {
-  Pokemon: L.layerGroup([]),
+  Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
   Trash: L.layerGroup([]),
   Gyms: L.layerGroup([]),
   Pokestops: L.layerGroup([]),
   Workers: L.layerGroup([]),
-  Spawns: L.layerGroup([]),
+  Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
   ScanArea: L.layerGroup([])
 };
 
@@ -53,7 +75,7 @@ function monitor(group, initial) {
 monitor(overlays.Pokemon, false);
 monitor(overlays.Trash, true);
 monitor(overlays.Gyms, true);
-monitor(overlays.Workers, false);
+monitor(overlays.Workers, true);
 
 function getPopupContent(item) {
   var diff = (item.expire - new Date().getTime() / 1000);
@@ -66,25 +88,23 @@ function getPopupContent(item) {
     var totaliv = 100 * (item.atk + item.def + item.sta) / 45;
     content += ' - <b>' + totaliv.toFixed(2) + '%</b><br>';
     content += 'Disappears in: ' + expire + '<br>';
-    content += 'Move 1: ' + item.move1 + ' ( ' + item.damage1 + ' dps )<br>';
-    content += 'Move 2: ' + item.move2 + ' ( ' + item.damage2 + ' dps )<br>';
+    content += 'Quick Move: ' + item.move1 + ' ( ' + item.damage1 + ' dps )<br>';
+    content += 'Charge Move: ' + item.move2 + ' ( ' + item.damage2 + ' dps )<br>';
     content += 'IV: ' + item.atk + ' atk, ' + item.def + ' def, ' + item.sta + ' sta<br>';
   } else {
     content += '<br>Disappears in: ' + expire + '<br>';
   }
-  content += '<a href="#" data-pokeid="' + item.pid +
-      '" data-newlayer="Hidden" class="popup_filter_link">Hide</a>';
-  content += '&nbsp; | &nbsp;';
 
   var userPref = getPreference('filter-' + item.pid);
   if (userPref == 'trash') {
     content += '<a href="#" data-pokeid="' + item.pid +
-        '" data-newlayer="Pokemon" class="popup_filter_link">Move to Pokemon</a>';
+        '" data-newlayer="Pokemon" class="popup_filter_link">Display</a>';
   } else {
     content += '<a href="#" data-pokeid="' + item.pid +
-        '" data-newlayer="Trash" class="popup_filter_link">Move to Trash</a>';
+        '" data-newlayer="Trash" class="popup_filter_link">Hide</a>';
   }
-  content += '<br>=&gt; <a href="https://www.google.com/maps/?daddr=' + item.lat + ',' + item.lon +
+  content += '&nbsp; | &nbsp;';
+  content += '<a href="https://www.google.com/maps/?daddr=' + item.lat + ',' + item.lon +
       '" target="_blank" title="See in Google Maps">Get directions</a>';
   return content;
 }
@@ -97,8 +117,13 @@ function getOpacity(diff) {
 }
 
 function PokemonMarker(raw) {
+  if (getPreference("SHOW_IV") === "1"){
+      var totaliv = 100 * (raw.atk + raw.def + raw.sta) / 45;
+  }else{
+      var totaliv = 0;
+  }
   var icon = new PokemonIcon(
-      {iconUrl: '/static/monocle-icons/icons/' + raw.pid + '.png', expire: raw.expire});
+      {iconUrl: '/static/monocle-icons/icons/' + raw.pid + '.png', iv: totaliv, expire: raw.expire});
   var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
   if (_last_pokemon_id < raw.id) {
@@ -337,13 +362,27 @@ function getWorkers() {
   });
 }
 
-var map = L.map('main-map', {preferCanvas: true}).setView(_MapCoords, 13);
+//Take URL arguments to center map location
+var params = {};
+window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+                             params[key] = value;
+                             });
+if(parseFloat(params.lat) && parseFloat(params.lon)){
+    var map = new L.Map('main-map', {
+                      center: [params.lat, params.lon],
+                      maxZoom: 18,
+                      zoom: params.zoom || 16
+                      });
+}
+else{
+    var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 16);
+}
 
-overlays.Pokemon.addTo(map);
-overlays.ScanArea.addTo(map);
+map.addLayer(overlays.Pokemon);
+map.addLayer(overlays.ScanArea);
 
-var control = L.control.layers(null, overlays).addTo(map);
-L.tileLayer(_MapProviderUrl, {opacity: 0.75, attribution: _MapProviderAttribution}).addTo(map);
+var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
+loadMapLayer();
 map.whenReady(function() {
   $('.my-location').on('click', function() {
     map.locate({enableHighAccurracy: true, setView: true});
@@ -366,7 +405,7 @@ map.whenReady(function() {
   setInterval(getGyms, 110000);
 });
 
-$('#settings>ul.nav>li>a').on('click', function() {
+$('#settings>ul.nav>li>a').on('click', function(e) {
   // Click handler for each tab button.
   $(this).parent().parent().children('li').removeClass('active');
   $(this).parent().addClass('active');
@@ -375,6 +414,7 @@ $('#settings>ul.nav>li>a').on('click', function() {
                  .removeClass('active')
                  .filter('[data-panel=\'' + panel + '\']')
                  .addClass('active');
+  e.preventDefault(); //Prevent trailing # and causing refresh issue
 });
 
 $('#settings_close_btn').on('click', function() {
@@ -418,6 +458,35 @@ $('#settings').on('click', '.settings-panel button', function() {
   item.parent().children('button').removeClass('active');
   item.addClass('active');
 
+  if (key === "display_all_none") {
+    for (var id = 1; id <= _pokemon_count; id++){
+      moveToLayer(id, value);
+    }
+        
+    $("#settings div.btn-group").each(function(){
+      var item = $(this);
+      var key = item.data('group');
+      var value = getPreference(key);
+      if (value === false)
+        value = "0";
+      else if (value === true)
+        value = "1";
+      item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
+      });
+      item.removeClass("active");
+    }
+
+  if (key === "MAP_CHOICE"){
+    setPreference("MAP_CHOICE", value);
+    if(getPreference("MAP_CHOICE") === "1"){
+      map.removeLayer(_light);
+      map.addLayer(_dark);
+    }else{
+      map.removeLayer(_dark);
+      map.addLayer(_light);
+    }
+  }
+
   if (key.indexOf('filter-') > -1) {
     // This is a pokemon's filter button
     moveToLayer(id, value);
@@ -448,17 +517,13 @@ function populateSettingsPanels() {
   var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
   var newHtml = '';
   for (var i = 1; i <= _pokemon_count; i++) {
-    var partHtml = `<div class="text-center">
-                <img src="static/monocle-icons/icons/` +
-        i + `.png">
-                <div class="btn-group" role="group" data-group="filter-` + i + `">
-                  <button type="button" class="btn btn-default" data-id="` + i + `" data-value="pokemon">Pokémon</button>
-                  <button type="button" class="btn btn-default" data-id="` +
-        i + `" data-value="trash">Trash</button>
-                  <button type="button" class="btn btn-default" data-id="` + i + `" data-value="hidden">Hide</button>
-                </div>
-            </div>
-        `;
+    var partHtml = '<div class="text-center">' +
+                '<img src="static/monocle-icons/icons/'+i+'.png">' +
+                '<div class="btn-group" role="group" data-group="filter-'+i+'">' +
+                '<button type="button" class="btn btn-default" data-id="'+i+'" data-value="pokemon">Display</button>' +
+                '<button type="button" class="btn btn-default" data-id="'+i+'" data-value="trash">Hide</button>' +
+                '</div>' +
+            '</div>';
 
     newHtml += partHtml
   }
@@ -537,4 +602,42 @@ function updateTime() {
       $(this).css('visibility', 'hidden');
     });
   }
+}
+
+function loadMapLayer() {
+    if (getPreference('MAP_CHOICE') === '1'){
+        map.removeLayer(_light);
+        map.addLayer(_dark);
+    }else{
+        map.removeLayer(_dark);
+        map.addLayer(_light);
+    }
+}
+
+function onLocationFound(e) {
+    var currentZoom = map.getZoom();
+    _LocationMarker = L.marker(e.latlng, {icon: ultraIconMedium}).bindPopup('Your Location').addTo(map);
+    _LocationRadar = L.circle(e.latlng, {radius: 35, weight: 1, fillOpacity: 0.1}).addTo(map);
+
+    //Set marker size when initial location found
+    if (currentZoom == 18) {
+        _LocationMarker.setIcon(ultraIconLarge);
+    } else if (currentZoom == 17) {
+        _LocationMarker.setIcon(ultraIconMedium);
+    } else {
+        _LocationMarker.setIcon(ultraIconSmall);
+    }
+
+    map.on('zoomend', function() {
+            var currentZoom = map.getZoom();
+ 
+            //Set marker size when zooming in and out
+            if (currentZoom == 18) {
+                _LocationMarker.setIcon(ultraIconLarge);
+            } else if (currentZoom == 17) {
+                _LocationMarker.setIcon(ultraIconMedium);
+            } else {
+                _LocationMarker.setIcon(ultraIconSmall);
+            }
+    });
 }
