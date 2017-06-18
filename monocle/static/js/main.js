@@ -29,13 +29,51 @@ var PokemonIcon = L.Icon.extend({
   options: {popupAnchor: [0, -15]},
   createIcon: function() {
     var div = document.createElement('div');
-    div.innerHTML = '<div class="pokemarker">' +
+    if ( this.options.iv > 0 && this.options.iv < 80 ) {
+      div.innerHTML = '<div class="pokemarker">' +
         '<div class="pokeimg">' +
-        '<img class="leaflet-marker-icon" src="' + this.options.iconUrl + '" />' +
+        '<span class="sprite-' + this.options.iconID + '" />' +
+        '</div>' +
+        '<div class="iv_text">' + this.options.iv.toFixed(0) + '%</div>' +
+        '<div class="remaining_text" data-expire="' + this.options.expire + '">' +
+          calculateRemainingTime(this.options.expire) + '</div>' +
+        '</div>';
+    }else if ( this.options.iv >= 80 && this.options.iv < 90 ) {
+      div.innerHTML = '<div class="pokemarker">' +
+        '<div class="sprite">' +
+        '<span class="sprite-' + this.options.iconID + '" />' +
+        '</div>' +
+        '<div class="iv_gt_80_text">' + this.options.iv.toFixed(0) + '%</div>' +
+        '<div class="remaining_text" data-expire="' + this.options.expire + '">' +
+          calculateRemainingTime(this.options.expire) + '</div>' +
+        '</div>';
+    }else if ( this.options.iv >= 90 && this.options.iv < 100) {
+      div.innerHTML = '<div class="pokemarker">' +
+        '<div class="sprite">' +
+        '<span class="sprite-' + this.options.iconID + '" />' +
+        '</div>' +
+        '<div class="iv_gt_90_text">' + this.options.iv.toFixed(0) + '%</div>' +
+        '<div class="remaining_text" data-expire="' + this.options.expire + '">' +
+          calculateRemainingTime(this.options.expire) + '</div>' +
+        '</div>';
+    }else if ( this.options.iv == 100 ) {
+      div.innerHTML = '<div class="pokemarker">' +
+        '<div class="sprite">' +
+        '<span class="sprite-' + this.options.iconID + '" />' +
+        '</div>' +
+        '<div class="iv_eq_100_img"><img class="iv_eq_100_img" src="static/img/100.png"></div>' +
+        '<div class="remaining_text" data-expire="' + this.options.expire + '">' +
+          calculateRemainingTime(this.options.expire) + '</div>' +
+        '</div>';
+    }else{
+      div.innerHTML = '<div class="pokemarker">' +
+        '<div class="sprite">' +
+        '<span class="sprite-' + this.options.iconID + '" />' +
         '</div>' +
         '<div class="remaining_text" data-expire="' + this.options.expire + '">' +
-        calculateRemainingTime(this.options.expire) + '</div>' +
+          calculateRemainingTime(this.options.expire) + '</div>' +
         '</div>';
+    }
     return div;
   }
 });
@@ -122,8 +160,7 @@ function PokemonMarker(raw) {
   }else{
       var totaliv = 0;
   }
-  var icon = new PokemonIcon(
-      {iconUrl: '/static/monocle-icons/icons/' + raw.pid + '.png', iv: totaliv, expire: raw.expire});
+  var icon = new PokemonIcon({iconID: raw.pid, iv: totaliv, expire: raw.expire});
   var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
   if (_last_pokemon_id < raw.id) {
@@ -385,7 +422,16 @@ var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 loadMapLayer();
 map.whenReady(function() {
   $('.my-location').on('click', function() {
-    map.locate({enableHighAccurracy: true, setView: true});
+    var currentZoom = map.getZoom();
+    map.locate({enableHighAccurracy: true, setView: true, maxZoom: currentZoom});
+    
+    if(_LocationMarker && _LocationRadar) {
+      map.removeLayer(_LocationMarker);
+      map.removeLayer(_LocationRadar);
+    }
+    map.setZoom(currentZoom);
+    map.on('locationfound', onLocationFound);
+    $('.hide-marker').show(); //Show hide My Location marker
   });
   overlays.Gyms.once('add', function(e) {
     getGyms();
@@ -424,6 +470,12 @@ $('#settings_close_btn').on('click', function() {
   });
 });
 
+$('.hide-marker').on('click', function(){
+    // Button action to hide My Location marker
+    map.removeLayer(_LocationMarker);
+    $(this).hide();
+});
+
 $('.my-settings').on('click', function() {
   // Settings button on bottom-left corner
   $('#settings').show().animate({opacity: 1}, 250);
@@ -458,27 +510,27 @@ $('#settings').on('click', '.settings-panel button', function() {
   item.parent().children('button').removeClass('active');
   item.addClass('active');
 
-  if (key === "display_all_none") {
+  if (key === 'hide_all') {
     for (var id = 1; id <= _pokemon_count; id++){
       moveToLayer(id, value);
     }
         
-    $("#settings div.btn-group").each(function(){
+    $('#settings div.btn-group').each(function(){
       var item = $(this);
       var key = item.data('group');
       var value = getPreference(key);
       if (value === false)
-        value = "0";
+        value = '0';
       else if (value === true)
-        value = "1";
-      item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
+        value = '1';
+      item.children('button').removeClass('active').filter('[data-value="'+value+'"]').addClass('active');
       });
-      item.removeClass("active");
+      item.removeClass('active');
     }
 
-  if (key === "MAP_CHOICE"){
-    setPreference("MAP_CHOICE", value);
-    if(getPreference("MAP_CHOICE") === "1"){
+  if (key === 'MAP_CHOICE'){
+    setPreference('MAP_CHOICE', value);
+    if(getPreference('MAP_CHOICE') === '1'){
       map.removeLayer(_light);
       map.addLayer(_dark);
     }else{
@@ -515,10 +567,12 @@ function moveToLayer(id, layer) {
 
 function populateSettingsPanels() {
   var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
-  var newHtml = '';
+  var newHtml = '<br><div data-group="hide_all">' +
+                      '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
+                    '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
   for (var i = 1; i <= _pokemon_count; i++) {
     var partHtml = '<div class="text-center">' +
-                '<img src="static/monocle-icons/icons/'+i+'.png">' +
+                '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
                 '<div class="btn-group" role="group" data-group="filter-'+i+'">' +
                 '<button type="button" class="btn btn-default" data-id="'+i+'" data-value="pokemon">Display</button>' +
                 '<button type="button" class="btn btn-default" data-id="'+i+'" data-value="trash">Hide</button>' +
@@ -605,21 +659,33 @@ function updateTime() {
 }
 
 function loadMapLayer() {
-    if (getPreference('MAP_CHOICE') === '1'){
-        map.removeLayer(_light);
-        map.addLayer(_dark);
-    }else{
-        map.removeLayer(_dark);
-        map.addLayer(_light);
-    }
+  if (getPreference('MAP_CHOICE') === '1'){
+      map.removeLayer(_light);
+      map.addLayer(_dark);
+  }else{
+      map.removeLayer(_dark);
+      map.addLayer(_light);
+  }
 }
 
 function onLocationFound(e) {
-    var currentZoom = map.getZoom();
-    _LocationMarker = L.marker(e.latlng, {icon: ultraIconMedium}).bindPopup('Your Location').addTo(map);
-    _LocationRadar = L.circle(e.latlng, {radius: 35, weight: 1, fillOpacity: 0.1}).addTo(map);
+  var currentZoom = map.getZoom();
+  _LocationMarker = L.marker(e.latlng, {icon: ultraIconMedium}).bindPopup('Your Location').addTo(map);
+  _LocationRadar = L.circle(e.latlng, {radius: 35, weight: 1, fillOpacity: 0.1}).addTo(map);
 
-    //Set marker size when initial location found
+  //Set marker size when initial location found
+  if (currentZoom == 18) {
+      _LocationMarker.setIcon(ultraIconLarge);
+  } else if (currentZoom == 17) {
+      _LocationMarker.setIcon(ultraIconMedium);
+  } else {
+      _LocationMarker.setIcon(ultraIconSmall);
+  }
+
+  map.on('zoomend', function() {
+    var currentZoom = map.getZoom();
+
+    //Set marker size when zooming in and out
     if (currentZoom == 18) {
         _LocationMarker.setIcon(ultraIconLarge);
     } else if (currentZoom == 17) {
@@ -627,17 +693,5 @@ function onLocationFound(e) {
     } else {
         _LocationMarker.setIcon(ultraIconSmall);
     }
-
-    map.on('zoomend', function() {
-            var currentZoom = map.getZoom();
- 
-            //Set marker size when zooming in and out
-            if (currentZoom == 18) {
-                _LocationMarker.setIcon(ultraIconLarge);
-            } else if (currentZoom == 17) {
-                _LocationMarker.setIcon(ultraIconMedium);
-            } else {
-                _LocationMarker.setIcon(ultraIconSmall);
-            }
-    });
+  });
 }
