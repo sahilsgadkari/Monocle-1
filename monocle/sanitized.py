@@ -174,7 +174,7 @@ _defaults = {
     'FIXED_OPACITY': False,
     'FORCED_KILL': None,
     'FULL_TIME': 1800,
-    'FUNDING_GOAL': 250,
+    'FUNDING_GOAL': None,
     'GIVE_UP_KNOWN': 75,
     'GIVE_UP_UNKNOWN': 60,
     'GOOD_ENOUGH': 0.1,
