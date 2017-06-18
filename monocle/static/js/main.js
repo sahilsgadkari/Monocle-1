@@ -588,7 +588,7 @@ function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml = '<br><div data-group="display_all_none">' +
                       '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
-                    '</div><br><br><br>';
+                    '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
     for (var i = 1; i <= _pokemon_count; i++){
         var partHtml = '<div class="text-center">' +
                 '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
