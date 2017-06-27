@@ -590,6 +590,28 @@ def _get_forts(session):
 
 get_forts = _get_forts_sqlite if DB_TYPE == 'sqlite' else _get_forts
 
+def _get_raids(session):
+    return session.execute('''
+        SELECT
+            fr.fort_id,
+            fr.id,
+            fr.raid_battle_ms,
+            fr.raid_spawn_ms,
+            fr.raid_end_ms,
+            fr.raid_level,
+            fr.complete,
+            fr.pokemon_id,
+            fr.cp,
+            fr.move_1,
+            fr.move_2,
+            f.lat,
+            f.lon
+        FROM fort_raids fr
+        JOIN forts f ON f.id=fr.fort_id
+    ''').fetchall()
+
+get_raids = _get_raids_sqlite if DB_TYPE == 'sqlite' else _get_raids
+
 
 def get_session_stats(session):
     query = session.query(func.min(Sighting.expire_timestamp),

@@ -87,6 +87,16 @@ var FortIcon = L.Icon.extend({
         className: 'fort-icon'
     }
 });
+
+var RaidIcon = L.Icon.extend({
+    options: {
+        iconSize: [20, 20],
+        popupAnchor: [0, -10],
+        iconAnchor: [10, 25],
+        className: 'raid-icon'
+    }
+});
+
 var WorkerIcon = L.Icon.extend({
     options: {
         iconSize: [20, 20],
@@ -105,11 +115,8 @@ var PokestopIcon = L.Icon.extend({
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    Trash: L.layerGroup([]),
+    Raids: L.layerGroup([]),
     Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
-    Pokestops: L.markerClusterGroup({ disableClusteringAtZoom: 13 }),
-    Workers: L.layerGroup([]),
-    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     ScanArea: L.layerGroup([])
 };
 
@@ -128,11 +135,8 @@ function monitor (group, initial) {
 }
 
 monitor(overlays.Pokemon, true)
-monitor(overlays.Trash, true)
+monitor(overlays.Raids, false)
 monitor(overlays.Gyms, false)
-monitor(overlays.Pokestops, true)
-monitor(overlays.Workers, true)
-monitor(overlays.Spawns, true)
 
 function getPopupContent (item) {
     var diff = (item.expires_at - new Date().getTime() / 1000);
@@ -159,6 +163,33 @@ function getPopupContent (item) {
     }
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    return content;
+}
+
+function getRaidPopupContent (item) {
+    var diff = (item.raid_end - new Date().getTime() / 1000);
+    var minutes = parseInt(diff / 60);
+    var seconds = parseInt(diff - (minutes * 60));
+    var raid_ends_at = minutes + 'm ' + seconds + 's';
+    var raid_starts_at = calculateRemainingTime(item.raid_battle);
+  
+    var content = '';
+    if (item.raid_level === 4) {
+        content += '<b>Level 4 Raid</b>'
+    } else if (item.raid_level === 3 ) {
+        content += '<b>Level 3 Raid</b>'
+    } else if (item.raid_level === 2 ) {
+        content += '<b>Level 2 Raid</b>'
+    } else if (item.raid_level === 1 ) {
+        content += '<b>Level 1 Raid!</b>'
+    }
+    content += '<br><b>Boss:</b> ' + item.raid_pokemon_name + ' (#' + item.raid_pokemon_id + ')' +
+               '<br><b>CP:</b> ' + item.raid_pokemon_cp +
+               '<br><b>Quick Move:</b> ' + item.raid_pokemon_move_1 +
+               '<br><b>Charge Move:</b> ' + item.raid_pokemon_move_2 +
+               '<br><b>Raid Starts:</b> ' + raid_starts_at +
+               '<br><b>Raid Ends:</b> ' + raid_ends_at;
+    content += '<br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
     return content;
 }
 
@@ -230,7 +261,8 @@ function PokemonMarker (raw) {
 
 function FortMarker (raw) {
     var icon = new FortIcon({iconUrl: '/static/monocle-icons/forts/' + raw.team + '.png'});
-    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
+    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1, zIndexOffset: 1000});
+
     marker.raw = raw;
     markers[raw.id] = marker;
     marker.on('popupopen',function popupopen (event) {
@@ -256,6 +288,25 @@ function FortMarker (raw) {
     });
     marker.bindPopup();
     return marker;
+}
+
+function RaidMarker (raw) {
+    var raid_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+    var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_icon, opacity: 1, zIndexOffset: 2000});
+  
+    raid_marker.raw = raw;
+    markers[raw.id] = raid_marker;
+    raid_marker.on('popupopen',function popupopen (event) {
+        event.popup.options.autoPan = true; // Pan into view once
+        event.popup.setContent(getRaidPopupContent(event.target.raw));
+        event.target.popupInterval = setInterval(function () {
+            event.popup.setContent(getRaidPopupContent(event.target.raw));
+            event.popup.options.autoPan = false; // Don't fight user panning
+        }, 1000);
+    });
+  
+    raid_marker.bindPopup();
+    return raid_marker;
 }
 
 function WorkerMarker (raw) {
@@ -298,6 +349,26 @@ function addGymsToMap (data, map) {
         marker = FortMarker(item);
         marker.addTo(overlays.Gyms);
     });
+}
+
+function addRaidsToMap (data, map) {
+    data.forEach(function (item) {
+        // No change since last time? Then don't do anything
+        var existing = markers[item.id];
+        if (typeof existing !== 'undefined') {
+            if (existing.raw.id === item.id) {
+                return;
+            }
+            existing.removeFrom(overlays.Raids);
+            markers[item.id] = undefined;
+        }
+        marker = RaidMarker(item);
+        marker.addTo(overlays.Raids);
+    });
+    updateTime();
+    if (_updateTimeInterval === null){
+        _updateTimeInterval = setInterval(updateTime, 1000);
+    }
 }
 
 function addSpawnsToMap (data, map) {
@@ -375,6 +446,19 @@ function getGyms () {
     });
 }
 
+function getRaids () {
+    if (overlays.Raids.hidden) {
+        return;
+    }
+    new Promise(function (resolve, reject) {
+        $.get('/raid_data', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addRaidsToMap(data, map);
+    });
+}
+
 function getSpawnPoints() {
     new Promise(function (resolve, reject) {
         $.get('/spawnpoints', function (response) {
@@ -433,7 +517,10 @@ else{
   var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 16);
 }
 
+map.addLayer(overlays.Raids);
 map.addLayer(overlays.Gyms);
+
+var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 
 loadMapLayer();
 map.whenReady(function () {
@@ -450,9 +537,11 @@ map.whenReady(function () {
         $('.hide-marker').show(); //Show hide My Location marker
     });
 
+    getRaids();
     getGyms();
     getScanAreaCoords();
     setInterval(getGyms, 110000)
+    setInterval(getRaids, 30000);
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
