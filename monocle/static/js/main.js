@@ -87,6 +87,16 @@ var FortIcon = L.Icon.extend({
         className: 'fort-icon'
     }
 });
+
+var RaidIcon = L.Icon.extend({
+    options: {
+        iconSize: [20, 20],
+        popupAnchor: [0, -10],
+        iconAnchor: [10, 25],
+        className: 'raid-icon'
+    }
+});
+
 var WorkerIcon = L.Icon.extend({
     options: {
         iconSize: [20, 20],
@@ -110,6 +120,7 @@ var overlays = {
     Pokestops: L.layerGroup([]),
     Workers: L.layerGroup([]),
     Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
+    Raids: L.layerGroup([]),
     ScanArea: L.layerGroup([])
 };
 
@@ -157,6 +168,33 @@ function getPopupContent (item) {
     }
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    return content;
+}
+
+function getRaidPopupContent (item) {
+    var diff = (item.raid_end - new Date().getTime() / 1000);
+    var minutes = parseInt(diff / 60);
+    var seconds = parseInt(diff - (minutes * 60));
+    var raid_ends_at = minutes + 'm ' + seconds + 's';
+    var raid_starts_at = calculateRemainingTime(item.raid_battle);
+  
+    var content = '';
+    if (item.raid_level === 4) {
+        content += '<b>Level 4 Raid</b>'
+    } else if (item.raid_level === 3 ) {
+        content += '<b>Level 3 Raid</b>'
+    } else if (item.raid_level === 2 ) {
+        content += '<b>Level 2 Raid</b>'
+    } else if (item.raid_level === 1 ) {
+        content += '<b>Level 1 Raid!</b>'
+    }
+    content += '<br><b>Boss:</b> ' + item.raid_pokemon_name + ' (#' + item.raid_pokemon_id + ')' +
+               '<br><b>CP:</b> ' + item.raid_pokemon_cp +
+               '<br><b>Quick Move:</b> ' + item.raid_pokemon_move_1 +
+               '<br><b>Charge Move:</b> ' + item.raid_pokemon_move_2 +
+               '<br><b>Raid Starts:</b> ' + raid_starts_at +
+               '<br><b>Raid Ends:</b> ' + raid_ends_at;
+    content += '<br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
     return content;
 }
 
@@ -228,7 +266,8 @@ function PokemonMarker (raw) {
 
 function FortMarker (raw) {
     var icon = new FortIcon({iconUrl: '/static/monocle-icons/forts/' + raw.team + '.png'});
-    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
+    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1, zIndexOffset: 1000});
+
     marker.raw = raw;
     markers[raw.id] = marker;
     marker.on('popupopen',function popupopen (event) {
@@ -249,11 +288,30 @@ function FortMarker (raw) {
             content += '<br>Prestige: ' + raw.prestige +
                        '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')';
         }
-        content += '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        content += '<br><a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
         event.popup.setContent(content);
     });
     marker.bindPopup();
     return marker;
+}
+
+function RaidMarker (raw) {
+    var raid_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+    var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_icon, opacity: 1, zIndexOffset: 2000});
+  
+    raid_marker.raw = raw;
+    markers[raw.id] = raid_marker;
+    raid_marker.on('popupopen',function popupopen (event) {
+        event.popup.options.autoPan = true; // Pan into view once
+        event.popup.setContent(getRaidPopupContent(event.target.raw));
+        event.target.popupInterval = setInterval(function () {
+            event.popup.setContent(getRaidPopupContent(event.target.raw));
+            event.popup.options.autoPan = false; // Don't fight user panning
+        }, 1000);
+    });
+  
+    raid_marker.bindPopup();
+    return raid_marker;
 }
 
 function WorkerMarker (raw) {
@@ -298,6 +356,26 @@ function addGymsToMap (data, map) {
     });
 }
 
+function addRaidsToMap (data, map) {
+    data.forEach(function (item) {
+        // No change since last time? Then don't do anything
+        var existing = markers[item.id];
+        if (typeof existing !== 'undefined') {
+            if (existing.raw.id === item.id) {
+                return;
+            }
+            existing.removeFrom(overlays.Raids);
+            markers[item.id] = undefined;
+        }
+        marker = RaidMarker(item);
+        marker.addTo(overlays.Raids);
+    });
+    updateTime();
+    if (_updateTimeInterval === null){
+        _updateTimeInterval = setInterval(updateTime, 1000);
+    }
+}
+
 function addSpawnsToMap (data, map) {
     data.forEach(function (item) {
         var circle = L.circle([item.lat, item.lon], 5, {weight: 2});
@@ -323,7 +401,7 @@ function addPokestopsToMap (data, map) {
         var marker = L.marker([item.lat, item.lon], {icon: icon});
         marker.raw = item;
         marker.bindPopup('<b>Pokestop: ' + item.external_id + '</b>' +
-                         '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>');
+                         '<br><a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>');
         marker.addTo(overlays.Pokestops);
     });
 }
@@ -370,6 +448,19 @@ function getGyms () {
         });
     }).then(function (data) {
         addGymsToMap(data, map);
+    });
+}
+
+function getRaids () {
+    if (overlays.Raids.hidden) {
+        return;
+    }
+    new Promise(function (resolve, reject) {
+        $.get('/raid_data', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addRaidsToMap(data, map);
     });
 }
 
@@ -433,8 +524,11 @@ else{
 
 map.addLayer(overlays.Pokemon);
 map.addLayer(overlays.ScanArea);
+map.addLayer(overlays.Raids);
+map.addLayer(overlays.Gyms);
 
 var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
+
 loadMapLayer();
 map.whenReady(function () {
     $('.my-location').on('click', function () {
@@ -459,6 +553,7 @@ map.whenReady(function () {
     overlays.Pokestops.once('add', function(e) {
         getPokestops();
     })
+    getRaids();
     getScanAreaCoords();
     getWorkers();
     overlays.Workers.hidden = true;
@@ -466,6 +561,7 @@ map.whenReady(function () {
     getPokemon();
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 110000)
+    setInterval(getRaids, 30000);
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
