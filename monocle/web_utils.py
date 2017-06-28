@@ -124,15 +124,17 @@ def get_gym_markers(names=POKEMON):
     return [{
             'id': 'fort-' + str(fort['fort_id']),
             'sighting_id': fort['id'],
-            'prestige': fort['prestige'],
             'pokemon_id': fort['guard_pokemon_id'],
             'pokemon_name': names[fort['guard_pokemon_id']],
+            'is_in_battle': fort['is_in_battle'],
+            'slots_available': fort['slots_available'],
+            'time_occupied': fort['time_occupied'],
             'team': fort['team'],
             'lat': fort['lat'],
             'lon': fort['lon']
     } for fort in forts]
 
-def get_raid_markers(names=POKEMON):
+def get_raid_markers(names=POKEMON, moves=MOVES):
     with session_scope() as session:
         raids = get_raids(session)
     return [{
@@ -146,8 +148,8 @@ def get_raid_markers(names=POKEMON):
             'raid_pokemon_id': raid['pokemon_id'],
             'raid_pokemon_name': names[raid['pokemon_id']],
             'raid_pokemon_cp': raid['cp'],
-            'raid_pokemon_move_1': raid['move_1'],
-            'raid_pokemon_move_2': raid['move_2'],
+            'raid_pokemon_move_1': moves[raid['move_1']],
+            'raid_pokemon_move_2': moves[raid['move_2']],
             'lat': raid['lat'],
             'lon': raid['lon']
     } for raid in raids]

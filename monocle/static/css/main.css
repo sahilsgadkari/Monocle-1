@@ -58,11 +58,16 @@
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 
+.fort-popup {
+    text-align: center;
+}
+
 .raid-icon {
-    border-radius: 12px;
-    padding: 2px;
-    background: #fff;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+
+}
+
+.raid-popup {
+    text-align: center;
 }
 
 .leaflet-control-layers-toggle {

@@ -90,9 +90,9 @@ var FortIcon = L.Icon.extend({
 
 var RaidIcon = L.Icon.extend({
     options: {
-        iconSize: [20, 20],
-        popupAnchor: [0, -10],
-        iconAnchor: [10, 25],
+        iconSize: [35, 35],
+        popupAnchor: [0, -30],
+        iconAnchor: [18, 40],
         className: 'raid-icon'
     }
 });
@@ -115,11 +115,11 @@ var PokestopIcon = L.Icon.extend({
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    Trash: L.layerGroup([]),
+//    Trash: L.layerGroup([]),
     Gyms: L.layerGroup([]),
-    Pokestops: L.layerGroup([]),
-    Workers: L.layerGroup([]),
-    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
+//    Pokestops: L.layerGroup([]),
+//    Workers: L.layerGroup([]),
+//    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     Raids: L.layerGroup([]),
     ScanArea: L.layerGroup([])
 };
@@ -138,10 +138,10 @@ function monitor (group, initial) {
     group.on('remove', setHidden);
 }
 
-monitor(overlays.Pokemon, false)
-monitor(overlays.Trash, true)
+monitor(overlays.Pokemon, true)
 monitor(overlays.Gyms, true)
-monitor(overlays.Workers, false)
+monitor(overlays.Raids, true)
+monitor(overlays.ScanArea, true)
 
 function getPopupContent (item) {
     var diff = (item.expires_at - new Date().getTime() / 1000);
@@ -172,13 +172,39 @@ function getPopupContent (item) {
 }
 
 function getRaidPopupContent (item) {
+    var diff = (item.raid_battle - new Date().getTime() / 1000);
+    var minutes = parseInt(diff / 60);
+    var seconds = parseInt(diff - (minutes * 60));
+    if (diff < 0) {
+        var raid_starts_at = 'In Progress';
+        if (item.raid_pokemon_id === 0) {
+            var raid_boss_name = 'TBD';
+            var raid_boss_cp = 'TBD';
+            var raid_boss_move_1 = 'TBD';
+            var raid_boss_move_2 = 'TBD';
+        }else{
+            var raid_boss_name = item.raid_pokemon_name + ' (#' + item.raid_pokemon_id + ')';
+            var raid_boss_cp = item.raid_pokemon_cp;
+            var raid_boss_move_1 = item.raid_pokemon_move_1;
+            var raid_boss_move_2 = item.raid_pokemon_move_2;
+        }
+    }else{
+        var raid_starts_at = minutes + 'm ' + seconds + 's';
+        var raid_boss_name = 'TBD';
+        var raid_boss_cp = 'TBD';
+        var raid_boss_move_1 = 'TBD';
+        var raid_boss_move_2 = 'TBD';
+    }
+
     var diff = (item.raid_end - new Date().getTime() / 1000);
     var minutes = parseInt(diff / 60);
     var seconds = parseInt(diff - (minutes * 60));
     var raid_ends_at = minutes + 'm ' + seconds + 's';
-    var raid_starts_at = calculateRemainingTime(item.raid_battle);
   
-    var content = '';
+    var content = '<div class="raid-popup">';
+    if (item.raid_pokemon_id !== 0) {
+        content += '<img src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
+    }
     if (item.raid_level === 4) {
         content += '<b>Level 4 Raid</b>'
     } else if (item.raid_level === 3 ) {
@@ -186,15 +212,16 @@ function getRaidPopupContent (item) {
     } else if (item.raid_level === 2 ) {
         content += '<b>Level 2 Raid</b>'
     } else if (item.raid_level === 1 ) {
-        content += '<b>Level 1 Raid!</b>'
+        content += '<b>Level 1 Raid</b>'
     }
-    content += '<br><b>Boss:</b> ' + item.raid_pokemon_name + ' (#' + item.raid_pokemon_id + ')' +
-               '<br><b>CP:</b> ' + item.raid_pokemon_cp +
-               '<br><b>Quick Move:</b> ' + item.raid_pokemon_move_1 +
-               '<br><b>Charge Move:</b> ' + item.raid_pokemon_move_2 +
+    content += '<br><b>Boss:</b> ' + raid_boss_name +
+               '<br><b>CP:</b> ' + raid_boss_cp +
+               '<br><b>Quick Move:</b> ' + raid_boss_move_1 +
+               '<br><b>Charge Move:</b> ' + raid_boss_move_2 +
                '<br><b>Raid Starts:</b> ' + raid_starts_at +
                '<br><b>Raid Ends:</b> ' + raid_ends_at;
     content += '<br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    content += '</div>'
     return content;
 }
 
@@ -267,28 +294,34 @@ function PokemonMarker (raw) {
 function FortMarker (raw) {
     var icon = new FortIcon({iconUrl: '/static/monocle-icons/forts/' + raw.team + '.png'});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1, zIndexOffset: 1000});
-
+    var hours = parseInt(raw.time_occupied / 3600);
+    var minutes = parseInt((raw.time_occupied / 60) - (hours * 60));
+    var seconds = parseInt(raw.time_occupied - (minutes * 60) - (hours * 3600));
+    var fort_occupied_time = hours + 'h ' + minutes + 'm ' + seconds + 's';
+  
     marker.raw = raw;
     markers[raw.id] = marker;
     marker.on('popupopen',function popupopen (event) {
-        var content = ''
+        var content = '<div class="fort-popup">'
         if (raw.team === 0) {
-            content = '<b>An empty Gym!</b>'
+            content += '<br><b>An empty Gym!</b>'
         }
         else {
             if (raw.team === 1 ) {
-                content = '<b>Team Mystic</b>'
+                content += '<br><b>Team Mystic</b>'
             }
             else if (raw.team === 2 ) {
-                content = '<b>Team Valor</b>'
+                content += '<br><b>Team Valor</b>'
             }
             else if (raw.team === 3 ) {
-                content = '<b>Team Instinct</b>'
+                content += '<br><b>Team Instinct</b>'
             }
-            content += '<br>Prestige: ' + raw.prestige +
-                       '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')';
+            content += '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')' +
+                       '<br>Slots Open: <b>' + raw.slots_available + '/6</b>' +
+                       '<br>Occupied time: ' + fort_occupied_time;
         }
         content += '<br><a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        content += '</div>'
         event.popup.setContent(content);
     });
     marker.bindPopup();
@@ -302,14 +335,28 @@ function RaidMarker (raw) {
     raid_marker.raw = raw;
     markers[raw.id] = raid_marker;
     raid_marker.on('popupopen',function popupopen (event) {
+console.log("RAID ID: " + raw.raid_id);
         event.popup.options.autoPan = true; // Pan into view once
         event.popup.setContent(getRaidPopupContent(event.target.raw));
         event.target.popupInterval = setInterval(function () {
             event.popup.setContent(getRaidPopupContent(event.target.raw));
             event.popup.options.autoPan = false; // Don't fight user panning
+/*REMOVED FOR DEBUG
+            var diff = (raid_marker.raw.raid_end - new Date().getTime() / 1000);
+            if (diff < 0) { // Raid ended, remove marker
+                raid_marker.removeFrom(overlays.Raids);
+                markers[raid_marker.raw.id] = 'undefined';
+                clearInterval(event.target.popupInterval);
+            }
+            var diff = (raid_marker.raw.raid_battle - new Date().getTime() / 1000);
+            if (diff < 0) { // Raid started
+                markers[raid.marker.raw.id] = 'raid_started';
+            }
+*/
         }, 1000);
     });
-  
+
+
     raid_marker.bindPopup();
     return raid_marker;
 }
@@ -367,13 +414,39 @@ function addRaidsToMap (data, map) {
             existing.removeFrom(overlays.Raids);
             markers[item.id] = undefined;
         }
+/*
+        if ((existing === 'raid_started') && (item.raid_pokemon_id === 0)) {
+            getRaids();
+            return;
+        }
+*/
+        
+console.log("raid_id: " + item.raid_id);
+console.log("raid_pokemon_id: " + item.raid_pokemon_id);
         marker = RaidMarker(item);
         marker.addTo(overlays.Raids);
     });
+/*
     updateTime();
     if (_updateTimeInterval === null){
         _updateTimeInterval = setInterval(updateTime, 1000);
     }
+*/
+}
+
+function getSingleRaidData (data, raid_id) {
+    var single_raid_data = {};
+    data.forEach(function(item) {
+        if (item.raid_id === raid_id) {
+            single_raid_data.raid_id = item.raid_id;
+            single_raid_data.raid_pokemon_id = item.raid_pokemon_id;
+            single_raid_data.raid_pokemon_name = item.raid_pokemon_name;
+            single_raid_data.raid_pokemon_cp = item.raid_pokemon_cp;
+            single_raid_data.raid_pokemon_move_1 = item.raid_pokemon_move_1;
+            single_raid_data.raid_pokemon_move_2 = item.raid_pokemon_move_2;
+        }
+    });
+    return single_raid_data;
 }
 
 function addSpawnsToMap (data, map) {
@@ -464,6 +537,18 @@ function getRaids () {
     });
 }
 
+var single_raid_data = {};
+
+function getSingleRaid (raid_id) {
+    new Promise(function (resolve, reject) {
+        $.get('/raid_data', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        single_raid_data = getSingleRaidData(data, raid_id);
+    });
+}
+
 function getSpawnPoints() {
     new Promise(function (resolve, reject) {
         $.get('/spawnpoints', function (response) {
@@ -523,9 +608,9 @@ else{
 }
 
 map.addLayer(overlays.Pokemon);
-map.addLayer(overlays.ScanArea);
-map.addLayer(overlays.Raids);
 map.addLayer(overlays.Gyms);
+map.addLayer(overlays.Raids);
+map.addLayer(overlays.ScanArea);
 
 var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 
@@ -544,21 +629,10 @@ map.whenReady(function () {
         $('.hide-marker').show(); //Show hide My Location marker
     });
 
-    overlays.Gyms.once('add', function(e) {
-        getGyms();
-    })
-    overlays.Spawns.once('add', function(e) {
-        getSpawnPoints();
-    })
-    overlays.Pokestops.once('add', function(e) {
-        getPokestops();
-    })
+    getPokemon();
+    getGyms();
     getRaids();
     getScanAreaCoords();
-    getWorkers();
-    overlays.Workers.hidden = true;
-    setInterval(getWorkers, 14000);
-    getPokemon();
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 110000)
     setInterval(getRaids, 30000);
