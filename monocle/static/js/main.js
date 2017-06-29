@@ -204,7 +204,7 @@ function getRaidPopupContent (item) {
   
     var content = '<div class="raid-popup">';
     if (item.raid_pokemon_id !== 0) {
-        content += '<img src="/static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
+        content += '<img src="/se_sd/static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
     }
     if (item.raid_level === 4) {
         content += '<b>Level 4 Raid</b>'
@@ -234,22 +234,22 @@ function getFortPopupContent (item) {
     var content = '<div class="fort-popup"><div class="popup-container">'
   
     if (item.pokemon_id !== 0) {
-        content += '<img class="guard-icon" src="/static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
+        content += '<img class="guard-icon" src="/se_sd/static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
     }
     if (item.team === 0) {
         content += '<br><b>An empty Gym!</b>'
     }
     else {
         if (item.team === 1 ) {
-            content += '<img class="team-logo" src="/static/img/mystic.png"></div><br>';
+            content += '<img class="team-logo" src="/se_sd/static/img/mystic.png"></div><br>';
             content += '<br><b>Team Mystic</b>'
         }
         else if (item.team === 2 ) {
-            content += '<img class="team-logo" src="/static/img/valor.png"></div><br>';
+            content += '<img class="team-logo" src="/se_sd/static/img/valor.png"></div><br>';
             content += '<br><b>Team Valor</b>'
         }
         else if (item.team === 3 ) {
-            content += '<img class="team-logo" src="/static/img/instinct.png"></div><br>';
+            content += '<img class="team-logo" src="/se_sd/static/img/instinct.png"></div><br>';
             content += '<br><b>Team Instinct</b>'
         }
         content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
@@ -331,8 +331,8 @@ function PokemonMarker (raw) {
 
 function FortMarker (raw) {
     var icon = new FortIcon({
-        iconUrl: '/static/img/num_' + raw.slots_available + '.png',
-        shadowUrl: '/static/monocle-icons/forts/' + raw.team + '.png',
+        iconUrl: '/se_sd/static/img/num_' + raw.slots_available + '.png',
+        shadowUrl: '/se_sd/static/monocle-icons/forts/' + raw.team + '.png',
         
         iconSize: [20,20],
         iconAnchor: [-4, -4],
@@ -354,12 +354,12 @@ function FortMarker (raw) {
 }
 
 function RaidMarker (raw) {
-    var raid_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+    var raid_icon = new RaidIcon({iconUrl: '/se_sd/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
 
     if (raw.raid_pokemon_id !== 0) {
         var raid_boss_icon = new RaidIcon({
-            iconUrl: '/static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
-            shadowUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
+            iconUrl: '/se_sd/static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
+            shadowUrl: '/se_sd/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
             
             iconSize: [30,30],
             iconAnchor: [25,30],
@@ -369,7 +369,7 @@ function RaidMarker (raw) {
             className: 'raid-icon'
       });
     } else {
-        var raid_boss_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+        var raid_boss_icon = new RaidIcon({iconUrl: '/se_sd/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
     }
   
     var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
