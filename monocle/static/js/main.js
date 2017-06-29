@@ -115,11 +115,8 @@ var PokestopIcon = L.Icon.extend({
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    Trash: L.layerGroup([]),
+    HiddenPokemon: L.layerGroup([]),
     Gyms: L.layerGroup([]),
-    Pokestops: L.layerGroup([]),
-    Workers: L.layerGroup([]),
-    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     Raids: L.layerGroup([]),
     ScanArea: L.layerGroup([])
 };
@@ -164,7 +161,7 @@ function getPopupContent (item) {
     if (userPref == 'trash'){
         content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Pokemon" class="popup_filter_link">Display</a>';
     }else{
-        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Trash" class="popup_filter_link">Hide</a>';
+        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="HiddenPokemon" class="popup_filter_link">Hide</a>';
     }
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
@@ -251,7 +248,7 @@ function PokemonMarker (raw) {
     }
 
     if (raw.trash) {
-        marker.overlay = 'Trash';
+        marker.overlay = 'HiddenPokemon';
     } else {
         marker.overlay = 'Pokemon';
     }
@@ -259,7 +256,7 @@ function PokemonMarker (raw) {
     if (userPreference === 'pokemon'){
         marker.overlay = 'Pokemon';
     }else if (userPreference === 'trash'){
-        marker.overlay = 'Trash';
+        marker.overlay = 'HiddenPokemon';
     }else if (userPreference === 'hidden'){
         marker.overlay = 'Hidden';
     }
@@ -491,7 +488,7 @@ function addWorkersToMap (data, map) {
 }
 
 function getPokemon () {
-    if (overlays.Pokemon.hidden && overlays.Trash.hidden) {
+    if (overlays.Pokemon.hidden && overlays.HiddenPokemon.hidden) {
         return;
     }
     new Promise(function (resolve, reject) {
@@ -727,8 +724,8 @@ function moveToLayer(id, layer){
                 m.overlay = "Pokemon";
                 m.addTo(overlays.Pokemon);
             }else if (layer === 'trash') {
-                m.overlay = "Trash";
-                m.addTo(overlays.Trash);
+                m.overlay = "HiddenPokemon";
+                m.addTo(overlays.HiddenPokemon);
             }
         }
     }
