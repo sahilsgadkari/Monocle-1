@@ -87,6 +87,16 @@ var FortIcon = L.Icon.extend({
         className: 'fort-icon'
     }
 });
+
+var RaidIcon = L.Icon.extend({
+    options: {
+        iconSize: [35, 35],
+        popupAnchor: [0, -30],
+        iconAnchor: [18, 40],
+        className: 'raid-icon'
+    }
+});
+
 var WorkerIcon = L.Icon.extend({
     options: {
         iconSize: [20, 20],
@@ -110,6 +120,7 @@ var overlays = {
     Pokestops: L.layerGroup([]),
     Workers: L.layerGroup([]),
     Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
+    Raids: L.layerGroup([]),
     ScanArea: L.layerGroup([])
 };
 
@@ -128,9 +139,9 @@ function monitor (group, initial) {
 }
 
 monitor(overlays.Pokemon, false)
-monitor(overlays.Trash, true)
-monitor(overlays.Gyms, true)
-monitor(overlays.Workers, false)
+monitor(overlays.Gyms, false)
+monitor(overlays.Raids, false)
+monitor(overlays.ScanArea, true)
 
 function getPopupContent (item) {
     var diff = (item.expires_at - new Date().getTime() / 1000);
@@ -157,6 +168,64 @@ function getPopupContent (item) {
     }
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    return content;
+}
+
+function getRaidPopupContent (item) {
+    var diff = (item.raid_battle - new Date().getTime() / 1000);
+    var minutes = parseInt(diff / 60);
+    var seconds = parseInt(diff - (minutes * 60));
+    if (diff < 0) {
+        var raid_starts_at = 'In Progress';
+        if (item.raid_pokemon_id === 0) {
+            var raid_boss_name = 'TBD';
+            var raid_boss_cp = 'TBD';
+            var raid_boss_move_1 = 'TBD';
+            var raid_boss_move_2 = 'TBD';
+        }else{
+            var raid_boss_name = item.raid_pokemon_name + ' (#' + item.raid_pokemon_id + ')';
+            var raid_boss_cp = item.raid_pokemon_cp;
+            var raid_boss_move_1 = item.raid_pokemon_move_1;
+            var raid_boss_move_2 = item.raid_pokemon_move_2;
+        }
+    }else{
+        var raid_starts_at = minutes + 'm ' + seconds + 's';
+        var raid_boss_name = 'TBD';
+        var raid_boss_cp = 'TBD';
+        var raid_boss_move_1 = 'TBD';
+        var raid_boss_move_2 = 'TBD';
+    }
+
+    var diff = (item.raid_end - new Date().getTime() / 1000);
+    if (diff < 0) {
+        var raid_ends_at = 'Ended';
+    } else {
+        var minutes = parseInt(diff / 60);
+        var seconds = parseInt(diff - (minutes * 60));
+        var raid_ends_at = minutes + 'm ' + seconds + 's';
+    }
+  
+    var content = '<div class="raid-popup">';
+    if (item.raid_pokemon_id !== 0) {
+        content += '<img src="/static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
+    }
+    if (item.raid_level === 4) {
+        content += '<b>Level 4 Raid</b>'
+    } else if (item.raid_level === 3 ) {
+        content += '<b>Level 3 Raid</b>'
+    } else if (item.raid_level === 2 ) {
+        content += '<b>Level 2 Raid</b>'
+    } else if (item.raid_level === 1 ) {
+        content += '<b>Level 1 Raid</b>'
+    }
+    content += '<br><b>Boss:</b> ' + raid_boss_name +
+               '<br><b>CP:</b> ' + raid_boss_cp +
+               '<br><b>Quick Move:</b> ' + raid_boss_move_1 +
+               '<br><b>Charge Move:</b> ' + raid_boss_move_2 +
+               '<br><b>Raid Starts:</b> ' + raid_starts_at +
+               '<br><b>Raid Ends:</b> ' + raid_ends_at;
+    content += '<br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    content += '</div>'
     return content;
 }
 
@@ -228,32 +297,94 @@ function PokemonMarker (raw) {
 
 function FortMarker (raw) {
     var icon = new FortIcon({iconUrl: '/static/monocle-icons/forts/' + raw.team + '.png'});
-    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
+    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1, zIndexOffset: 1000});
+    var hours = parseInt(raw.time_occupied / 3600);
+    var minutes = parseInt((raw.time_occupied / 60) - (hours * 60));
+    var seconds = parseInt(raw.time_occupied - (minutes * 60) - (hours * 3600));
+    var fort_occupied_time = hours + 'h ' + minutes + 'm ' + seconds + 's';
+  
     marker.raw = raw;
     markers[raw.id] = marker;
     marker.on('popupopen',function popupopen (event) {
-        var content = ''
+        var content = '<div class="fort-popup"><div class="popup-container">'
+        if (raw.pokemon_id !== 0) {
+            content += '<img class="guard-icon" src="/static/monocle-icons/larger-icons/' + raw.pokemon_id + '.png">';
+        }
         if (raw.team === 0) {
-            content = '<b>An empty Gym!</b>'
+            content += '<br><b>An empty Gym!</b>'
         }
         else {
             if (raw.team === 1 ) {
-                content = '<b>Team Mystic</b>'
+                content += '<img class="team-logo" src="/static/img/mystic.png"></div><br>';
+                content += '<br><b>Team Mystic</b>'
             }
             else if (raw.team === 2 ) {
-                content = '<b>Team Valor</b>'
+                content += '<img class="team-logo" src="/static/img/valor.png"></div><br>';
+                content += '<br><b>Team Valor</b>'
             }
             else if (raw.team === 3 ) {
-                content = '<b>Team Instinct</b>'
+                content += '<img class="team-logo" src="/static/img/instinct.png"></div><br>';
+                content += '<br><b>Team Instinct</b>'
             }
-            content += '<br>Prestige: ' + raw.prestige +
-                       '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')';
+            content += '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')' +
+                       '<br>Slots Open: <b>' + raw.slots_available + '/6</b>' +
+                       '<br>Occupied time: ' + fort_occupied_time;
         }
-        content += '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        content += '<br><a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        content += '</div>'
         event.popup.setContent(content);
     });
     marker.bindPopup();
     return marker;
+}
+
+function RaidMarker (raw) {
+    var raid_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+
+    if (raw.raid_pokemon_id !== 0) {
+        var raid_boss_icon = new RaidIcon({
+            iconUrl: '/static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
+            shadowUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
+            
+            iconSize: [30,30],
+            iconAnchor: [25,30],
+            shadowAnchor: [18,40],
+            shadowSize: [35,35],
+            
+            className: 'raid-icon'
+      });
+    } else {
+        var raid_boss_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+    }
+  
+    var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
+  
+    raid_marker.raw = raw;
+    markers[raw.id] = raid_marker;
+    raid_marker.on('popupopen',function popupopen (event) {
+console.log("RAID ID: " + raw.raid_id);
+        event.popup.options.autoPan = true; // Pan into view once
+        event.popup.setContent(getRaidPopupContent(event.target.raw));
+        event.target.popupInterval = setInterval(function () {
+            event.popup.setContent(getRaidPopupContent(event.target.raw));
+            event.popup.options.autoPan = false; // Don't fight user panning
+        }, 1000);
+    });
+    raid_marker.on('popupclose', function (event) {
+        clearInterval(event.target.popupInterval);
+    });
+
+    raid_marker.opacityInterval = setInterval(function () {
+        var diff = (raid_marker.raw.raid_end - new Date().getTime() / 1000);
+        if (diff < 0) { // Raid ended, remove marker
+            raid_marker.removeFrom(overlays.Raids);
+            markers[raid_marker.raw.id] = undefined;
+            clearInterval(raid_marker.opacityInterval);
+        }
+    }, 2500);
+  
+    raid_marker.bindPopup();
+    return raid_marker;
 }
 
 function WorkerMarker (raw) {
@@ -298,6 +429,19 @@ function addGymsToMap (data, map) {
     });
 }
 
+function addRaidsToMap (data, map) {
+    data.forEach(function (item) {
+        // No change since last time? Then don't do anything
+        var existing = markers[item.id];
+        if (typeof existing !== 'undefined') {
+            existing.removeFrom(overlays.Raids);
+            markers[item.id] = undefined;
+        }
+        marker = RaidMarker(item);
+        marker.addTo(overlays.Raids);
+    });
+}
+
 function addSpawnsToMap (data, map) {
     data.forEach(function (item) {
         var circle = L.circle([item.lat, item.lon], 5, {weight: 2});
@@ -323,7 +467,7 @@ function addPokestopsToMap (data, map) {
         var marker = L.marker([item.lat, item.lon], {icon: icon});
         marker.raw = item;
         marker.bindPopup('<b>Pokestop: ' + item.external_id + '</b>' +
-                         '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>');
+                         '<br><a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>');
         marker.addTo(overlays.Pokestops);
     });
 }
@@ -370,6 +514,19 @@ function getGyms () {
         });
     }).then(function (data) {
         addGymsToMap(data, map);
+    });
+}
+
+function getRaids () {
+    if (overlays.Raids.hidden) {
+        return;
+    }
+    new Promise(function (resolve, reject) {
+        $.get('/raid_data', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addRaidsToMap(data, map);
     });
 }
 
@@ -432,7 +589,11 @@ else{
 }
 
 map.addLayer(overlays.Pokemon);
+//map.addLayer(overlays.Gyms); // Hide by default
+//map.addLayer(overlays.Raids); // Hide by default
 map.addLayer(overlays.ScanArea);
+
+var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 
 loadMapLayer();
 map.whenReady(function () {
@@ -449,22 +610,13 @@ map.whenReady(function () {
         $('.hide-marker').show(); //Show hide My Location marker
     });
 
-    overlays.Gyms.once('add', function(e) {
-        getGyms();
-    })
-    overlays.Spawns.once('add', function(e) {
-        getSpawnPoints();
-    })
-    overlays.Pokestops.once('add', function(e) {
-        getPokestops();
-    })
-    getScanAreaCoords();
-    getWorkers();
-    overlays.Workers.hidden = true;
-    setInterval(getWorkers, 14000);
     getPokemon();
+    getGyms();
+    getRaids();
+    getScanAreaCoords();
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 110000)
+    setInterval(getRaids, 30000);
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
@@ -488,7 +640,6 @@ $('.hide-marker').on('click', function(){
     // Button action to hide My Location marker
     map.removeLayer(_LocationMarker);
     $(this).hide();
-    console.log("Clicked");
 });
 
 $('.my-settings').on('click', function () {
@@ -586,8 +737,9 @@ function moveToLayer(id, layer){
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml = '<br><div data-group="display_all_none">' +
-                      '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
+                  '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
                   '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
+                  
     for (var i = 1; i <= _pokemon_count; i++){
         var partHtml = '<div class="text-center">' +
                 '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +

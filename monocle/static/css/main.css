@@ -51,11 +51,37 @@
     bottom: 230px;
 }
 
+.popup-container {
+    position: relative;
+    text-align: center;
+}
+
+.team-logo {
+    z-index: 1;
+}
+
+.guard-icon {
+    z-index: 2;
+}
+
 .fort-icon {
     border-radius: 12px;
     padding: 2px;
     background: #fff;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.fort-popup {
+    text-align: center;
+}
+
+.raid-icon {
+    z-index: 2;
+}
+
+.raid-popup {
+    text-align: center;
 }
 
 .leaflet-control-layers-toggle {
@@ -123,6 +149,10 @@
         overflow: auto;
     }
     
+    .settings-panel>.panel-body>.info-body{
+        text-align: left;
+    }
+
     .nav>li>a {
         position: relative;
         display: block;
