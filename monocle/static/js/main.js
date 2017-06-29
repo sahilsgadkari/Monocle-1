@@ -115,11 +115,11 @@ var PokestopIcon = L.Icon.extend({
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-//    Trash: L.layerGroup([]),
+    Trash: L.layerGroup([]),
     Gyms: L.layerGroup([]),
-//    Pokestops: L.layerGroup([]),
-//    Workers: L.layerGroup([]),
-//    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
+    Pokestops: L.layerGroup([]),
+    Workers: L.layerGroup([]),
+    Spawns: L.markerClusterGroup({ disableClusteringAtZoom: 14 }),
     Raids: L.layerGroup([]),
     ScanArea: L.layerGroup([])
 };
@@ -138,9 +138,9 @@ function monitor (group, initial) {
     group.on('remove', setHidden);
 }
 
-monitor(overlays.Pokemon, true)
-monitor(overlays.Gyms, true)
-monitor(overlays.Raids, true)
+monitor(overlays.Pokemon, false)
+monitor(overlays.Gyms, false)
+monitor(overlays.Raids, false)
 monitor(overlays.ScanArea, true)
 
 function getPopupContent (item) {
@@ -197,13 +197,17 @@ function getRaidPopupContent (item) {
     }
 
     var diff = (item.raid_end - new Date().getTime() / 1000);
-    var minutes = parseInt(diff / 60);
-    var seconds = parseInt(diff - (minutes * 60));
-    var raid_ends_at = minutes + 'm ' + seconds + 's';
+    if (diff < 0) {
+        var raid_ends_at = 'Ended';
+    } else {
+        var minutes = parseInt(diff / 60);
+        var seconds = parseInt(diff - (minutes * 60));
+        var raid_ends_at = minutes + 'm ' + seconds + 's';
+    }
   
     var content = '<div class="raid-popup">';
     if (item.raid_pokemon_id !== 0) {
-        content += '<img src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
+        content += '<img src="/static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
     }
     if (item.raid_level === 4) {
         content += '<b>Level 4 Raid</b>'
@@ -302,18 +306,24 @@ function FortMarker (raw) {
     marker.raw = raw;
     markers[raw.id] = marker;
     marker.on('popupopen',function popupopen (event) {
-        var content = '<div class="fort-popup">'
+        var content = '<div class="fort-popup"><div class="popup-container">'
+        if (raw.pokemon_id !== 0) {
+            content += '<img class="guard-icon" src="/static/monocle-icons/larger-icons/' + raw.pokemon_id + '.png">';
+        }
         if (raw.team === 0) {
             content += '<br><b>An empty Gym!</b>'
         }
         else {
             if (raw.team === 1 ) {
+                content += '<img class="team-logo" src="/static/img/mystic.png"></div><br>';
                 content += '<br><b>Team Mystic</b>'
             }
             else if (raw.team === 2 ) {
+                content += '<img class="team-logo" src="/static/img/valor.png"></div><br>';
                 content += '<br><b>Team Valor</b>'
             }
             else if (raw.team === 3 ) {
+                content += '<img class="team-logo" src="/static/img/instinct.png"></div><br>';
                 content += '<br><b>Team Instinct</b>'
             }
             content += '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')' +
@@ -330,7 +340,24 @@ function FortMarker (raw) {
 
 function RaidMarker (raw) {
     var raid_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
-    var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_icon, opacity: 1, zIndexOffset: 2000});
+
+    if (raw.raid_pokemon_id !== 0) {
+        var raid_boss_icon = new RaidIcon({
+            iconUrl: '/static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
+            shadowUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
+            
+            iconSize: [30,30],
+            iconAnchor: [25,30],
+            shadowAnchor: [18,40],
+            shadowSize: [35,35],
+            
+            className: 'raid-icon'
+      });
+    } else {
+        var raid_boss_icon = new RaidIcon({iconUrl: '/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+    }
+  
+    var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
   
     raid_marker.raw = raw;
     markers[raw.id] = raid_marker;
@@ -341,22 +368,21 @@ console.log("RAID ID: " + raw.raid_id);
         event.target.popupInterval = setInterval(function () {
             event.popup.setContent(getRaidPopupContent(event.target.raw));
             event.popup.options.autoPan = false; // Don't fight user panning
-/*REMOVED FOR DEBUG
-            var diff = (raid_marker.raw.raid_end - new Date().getTime() / 1000);
-            if (diff < 0) { // Raid ended, remove marker
-                raid_marker.removeFrom(overlays.Raids);
-                markers[raid_marker.raw.id] = 'undefined';
-                clearInterval(event.target.popupInterval);
-            }
-            var diff = (raid_marker.raw.raid_battle - new Date().getTime() / 1000);
-            if (diff < 0) { // Raid started
-                markers[raid.marker.raw.id] = 'raid_started';
-            }
-*/
         }, 1000);
     });
+    raid_marker.on('popupclose', function (event) {
+        clearInterval(event.target.popupInterval);
+    });
 
-
+    raid_marker.opacityInterval = setInterval(function () {
+        var diff = (raid_marker.raw.raid_end - new Date().getTime() / 1000);
+        if (diff < 0) { // Raid ended, remove marker
+            raid_marker.removeFrom(overlays.Raids);
+            markers[raid_marker.raw.id] = undefined;
+            clearInterval(raid_marker.opacityInterval);
+        }
+    }, 2500);
+  
     raid_marker.bindPopup();
     return raid_marker;
 }
@@ -408,45 +434,12 @@ function addRaidsToMap (data, map) {
         // No change since last time? Then don't do anything
         var existing = markers[item.id];
         if (typeof existing !== 'undefined') {
-            if (existing.raw.id === item.id) {
-                return;
-            }
             existing.removeFrom(overlays.Raids);
             markers[item.id] = undefined;
         }
-/*
-        if ((existing === 'raid_started') && (item.raid_pokemon_id === 0)) {
-            getRaids();
-            return;
-        }
-*/
-        
-console.log("raid_id: " + item.raid_id);
-console.log("raid_pokemon_id: " + item.raid_pokemon_id);
         marker = RaidMarker(item);
         marker.addTo(overlays.Raids);
     });
-/*
-    updateTime();
-    if (_updateTimeInterval === null){
-        _updateTimeInterval = setInterval(updateTime, 1000);
-    }
-*/
-}
-
-function getSingleRaidData (data, raid_id) {
-    var single_raid_data = {};
-    data.forEach(function(item) {
-        if (item.raid_id === raid_id) {
-            single_raid_data.raid_id = item.raid_id;
-            single_raid_data.raid_pokemon_id = item.raid_pokemon_id;
-            single_raid_data.raid_pokemon_name = item.raid_pokemon_name;
-            single_raid_data.raid_pokemon_cp = item.raid_pokemon_cp;
-            single_raid_data.raid_pokemon_move_1 = item.raid_pokemon_move_1;
-            single_raid_data.raid_pokemon_move_2 = item.raid_pokemon_move_2;
-        }
-    });
-    return single_raid_data;
 }
 
 function addSpawnsToMap (data, map) {
@@ -537,18 +530,6 @@ function getRaids () {
     });
 }
 
-var single_raid_data = {};
-
-function getSingleRaid (raid_id) {
-    new Promise(function (resolve, reject) {
-        $.get('/raid_data', function (response) {
-            resolve(response);
-        });
-    }).then(function (data) {
-        single_raid_data = getSingleRaidData(data, raid_id);
-    });
-}
-
 function getSpawnPoints() {
     new Promise(function (resolve, reject) {
         $.get('/spawnpoints', function (response) {
@@ -608,8 +589,8 @@ else{
 }
 
 map.addLayer(overlays.Pokemon);
-map.addLayer(overlays.Gyms);
-map.addLayer(overlays.Raids);
+//map.addLayer(overlays.Gyms); // Hide by default
+//map.addLayer(overlays.Raids); // Hide by default
 map.addLayer(overlays.ScanArea);
 
 var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
@@ -659,7 +640,6 @@ $('.hide-marker').on('click', function(){
     // Button action to hide My Location marker
     map.removeLayer(_LocationMarker);
     $(this).hide();
-    console.log("Clicked");
 });
 
 $('.my-settings').on('click', function () {

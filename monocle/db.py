@@ -715,6 +715,7 @@ def _get_raids(session):
             f.lon
         FROM fort_raids fr
         JOIN forts f ON f.id=fr.fort_id
+        WHERE fr.raid_end_ms > UNIX_TIMESTAMP()
     ''').fetchall()
 
 get_raids = _get_raids_sqlite if DB_TYPE == 'sqlite' else _get_raids

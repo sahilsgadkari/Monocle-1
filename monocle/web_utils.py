@@ -138,7 +138,7 @@ def get_raid_markers(names=POKEMON, moves=MOVES):
     with session_scope() as session:
         raids = get_raids(session)
     return [{
-            'id': 'fort-' + str(raid['fort_id']),
+            'id': 'raid-' + str(raid['fort_id']),
             'raid_id': raid['id'],
             'raid_battle': raid['raid_battle_ms'],
             'raid_spawn': raid['raid_spawn_ms'],
