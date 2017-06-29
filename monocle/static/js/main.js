@@ -82,7 +82,7 @@ var PokemonIcon = L.Icon.extend({
 
 var FortIcon = L.Icon.extend({
     options: {
-        iconSize: [20, 20],
+        iconSize: [35, 35],
         popupAnchor: [0, -10],
         className: 'fort-icon'
     }
@@ -92,7 +92,7 @@ var RaidIcon = L.Icon.extend({
     options: {
         iconSize: [35, 35],
         popupAnchor: [0, -30],
-        iconAnchor: [18, 40],
+        iconAnchor: [17, 40],
         className: 'raid-icon'
     }
 });
@@ -226,6 +226,43 @@ function getRaidPopupContent (item) {
     return content;
 }
 
+function getFortPopupContent (item) {
+    var hours = parseInt(item.time_occupied / 3600);
+    var minutes = parseInt((item.time_occupied / 60) - (hours * 60));
+    var seconds = parseInt(item.time_occupied - (minutes * 60) - (hours * 3600));
+    var fort_occupied_time = hours + 'h ' + minutes + 'm ' + seconds + 's';
+    var content = '<div class="fort-popup"><div class="popup-container">'
+  
+    if (item.pokemon_id !== 0) {
+        content += '<img class="guard-icon" src="/static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
+    }
+    if (item.team === 0) {
+        content += '<br><b>An empty Gym!</b>'
+    }
+    else {
+        if (item.team === 1 ) {
+            content += '<img class="team-logo" src="/static/img/mystic.png"></div><br>';
+            content += '<br><b>Team Mystic</b>'
+        }
+        else if (item.team === 2 ) {
+            content += '<img class="team-logo" src="/static/img/valor.png"></div><br>';
+            content += '<br><b>Team Valor</b>'
+        }
+        else if (item.team === 3 ) {
+            content += '<img class="team-logo" src="/static/img/instinct.png"></div><br>';
+            content += '<br><b>Team Instinct</b>'
+        }
+        content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
+                   '<br>Slots Open: <b>' + item.slots_available + '/6</b>' +
+                   '<br>Occupied time: ' + fort_occupied_time +
+                   '<br><b>*When last scanned</b>';
+    }
+    content += '<br><a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+    content += '</div>'
+
+    return content;
+}
+
 function getOpacity (diff) {
     if (diff > 300 || getPreference('FIXED_OPACITY') === "1") {
         return 1;
@@ -293,46 +330,27 @@ function PokemonMarker (raw) {
 }
 
 function FortMarker (raw) {
-    var icon = new FortIcon({iconUrl: '/static/monocle-icons/forts/' + raw.team + '.png'});
-    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1, zIndexOffset: 1000});
-    var hours = parseInt(raw.time_occupied / 3600);
-    var minutes = parseInt((raw.time_occupied / 60) - (hours * 60));
-    var seconds = parseInt(raw.time_occupied - (minutes * 60) - (hours * 3600));
-    var fort_occupied_time = hours + 'h ' + minutes + 'm ' + seconds + 's';
-  
-    marker.raw = raw;
-    markers[raw.id] = marker;
-    marker.on('popupopen',function popupopen (event) {
-        var content = '<div class="fort-popup"><div class="popup-container">'
-        if (raw.pokemon_id !== 0) {
-            content += '<img class="guard-icon" src="/static/monocle-icons/larger-icons/' + raw.pokemon_id + '.png">';
-        }
-        if (raw.team === 0) {
-            content += '<br><b>An empty Gym!</b>'
-        }
-        else {
-            if (raw.team === 1 ) {
-                content += '<img class="team-logo" src="/static/img/mystic.png"></div><br>';
-                content += '<br><b>Team Mystic</b>'
-            }
-            else if (raw.team === 2 ) {
-                content += '<img class="team-logo" src="/static/img/valor.png"></div><br>';
-                content += '<br><b>Team Valor</b>'
-            }
-            else if (raw.team === 3 ) {
-                content += '<img class="team-logo" src="/static/img/instinct.png"></div><br>';
-                content += '<br><b>Team Instinct</b>'
-            }
-            content += '<br>Guarding Pokemon: ' + raw.pokemon_name + ' (#' + raw.pokemon_id + ')' +
-                       '<br>Slots Open: <b>' + raw.slots_available + '/6</b>' +
-                       '<br>Occupied time: ' + fort_occupied_time;
-        }
-        content += '<br><a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
-        content += '</div>'
-        event.popup.setContent(content);
+    var icon = new FortIcon({
+        iconUrl: '/static/img/num_' + raw.slots_available + '.png',
+        shadowUrl: '/static/monocle-icons/forts/' + raw.team + '.png',
+        
+        iconSize: [20,20],
+        iconAnchor: [-4, -4],
+        shadowSize: [36,36],
+        shadowAnchor: [18, 18]
     });
-    marker.bindPopup();
-    return marker;
+  
+    var fort_marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1, zIndexOffset: 1000});
+  
+    fort_marker.raw = raw;
+    markers[raw.id] = fort_marker;
+    fort_marker.on('popupopen',function popupopen (event) {
+        event.popup.options.autoPan = true; // Pan into view once
+        event.popup.setContent(getFortPopupContent(event.target.raw));
+        event.popup.options.autoPan = false; // Don't fight user panning
+    });
+    fort_marker.bindPopup();
+    return fort_marker;
 }
 
 function RaidMarker (raw) {
