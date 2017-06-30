@@ -204,7 +204,7 @@ function getRaidPopupContent (item) {
   
     var content = '<div class="raid-popup">';
     if (item.raid_pokemon_id !== 0) {
-        content += '<img src="/raids_beta/static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
+        content += '<img src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
     }
     if (item.raid_level === 4) {
         content += '<b>Level 4 Raid</b>'
@@ -234,7 +234,7 @@ function getFortPopupContent (item) {
     var content = '<div class="fort-popup"><div class="popup-container">'
   
     if (item.pokemon_id !== 0) {
-        content += '<img class="guard-icon" src="/raids_beta/static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
+        content += '<img class="guard-icon" src="static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
     }
     if (item.team === 0) {
         content += '<br><b>An empty Gym!</b>'
@@ -345,8 +345,8 @@ function FortMarker (raw) {
     }
   
     var icon = new FortIcon({
-        iconUrl: '/raids_beta/static/img/num_' + open_slots + '.png',
-        shadowUrl: '/raids_beta/static/monocle-icons/forts/' + raw.team + '.png',
+        iconUrl: 'static/img/num_' + open_slots + '.png',
+        shadowUrl: 'static/monocle-icons/forts/' + raw.team + '.png',
         
         iconSize: [20,20],
         iconAnchor: [-4, -4],
@@ -368,12 +368,12 @@ function FortMarker (raw) {
 }
 
 function RaidMarker (raw) {
-    var raid_icon = new RaidIcon({iconUrl: '/raids_beta/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+    var raid_icon = new RaidIcon({iconUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
 
     if (raw.raid_pokemon_id !== 0) {
         var raid_boss_icon = new RaidIcon({
-            iconUrl: '/raids_beta/static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
-            shadowUrl: '/raids_beta/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
+            iconUrl: 'static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
+            shadowUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
             
             iconSize: [30,30],
             iconAnchor: [25,30],
@@ -383,7 +383,7 @@ function RaidMarker (raw) {
             className: 'raid-icon'
       });
     } else {
-        var raid_boss_icon = new RaidIcon({iconUrl: '/raids_beta/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+        var raid_boss_icon = new RaidIcon({iconUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
     }
   
     var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
@@ -391,7 +391,6 @@ function RaidMarker (raw) {
     raid_marker.raw = raw;
     markers[raw.id] = raid_marker;
     raid_marker.on('popupopen',function popupopen (event) {
-console.log("RAID ID: " + raw.raid_id);
         event.popup.options.autoPan = true; // Pan into view once
         event.popup.setContent(getRaidPopupContent(event.target.raw));
         event.target.popupInterval = setInterval(function () {
