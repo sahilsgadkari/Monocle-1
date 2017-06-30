@@ -383,8 +383,6 @@ function FortMarker (raw) {
 }
 
 function RaidMarker (raw) {
-    var raid_icon = new RaidIcon({iconUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
-
     if (raw.raid_pokemon_id !== 0) {
         var raid_boss_icon = new RaidIcon({
             iconUrl: 'static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
@@ -398,7 +396,7 @@ function RaidMarker (raw) {
             className: 'raid-icon'
       });
     } else {
-        var raid_boss_icon = new RaidIcon({iconUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+        var raid_boss_icon = new RaidIcon({iconUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png?100'});
     }
   
     var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
