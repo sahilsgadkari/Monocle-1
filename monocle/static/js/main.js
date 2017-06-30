@@ -90,9 +90,9 @@ var FortIcon = L.Icon.extend({
 
 var RaidIcon = L.Icon.extend({
     options: {
-        iconSize: [35, 35],
+        iconSize: [40, 67],
         popupAnchor: [0, -30],
-        iconAnchor: [17, 40],
+        iconAnchor: [20, 75],
         className: 'raid-icon'
     }
 });
@@ -115,7 +115,7 @@ var PokestopIcon = L.Icon.extend({
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    HiddenPokemon: L.layerGroup([]),
+    FilteredPokemon: L.layerGroup([]),
     Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     ScanArea: L.layerGroup([])
@@ -161,7 +161,7 @@ function getPopupContent (item) {
     if (userPref == 'trash'){
         content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Pokemon" class="popup_filter_link">Display</a>';
     }else{
-        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="HiddenPokemon" class="popup_filter_link">Hide</a>';
+        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="FilteredPokemon" class="popup_filter_link">Hide</a>';
     }
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
@@ -169,6 +169,21 @@ function getPopupContent (item) {
 }
 
 function getRaidPopupContent (item) {
+    var raw_start_time = new Date(item.raid_battle * 1000);
+    if ((raw_start_time.getHours() - 12) < 0) {
+        var start_period = "am";
+    } else {
+        var start_period = "pm";
+    }
+    var start_time = (raw_start_time.getHours() - 12) + ":" + raw_start_time.getMinutes() + start_period;
+    var raw_end_time = new Date(item.raid_end * 1000);
+    if ((raw_end_time.getHours() - 12) < 0) {
+        var end_period = "am";
+    } else {
+        var end_period = "pm";
+    }
+    var end_time = (raw_end_time.getHours() - 12) + ":" + raw_end_time.getMinutes() + end_period;
+  
     var diff = (item.raid_battle - new Date().getTime() / 1000);
     var minutes = parseInt(diff / 60);
     var seconds = parseInt(diff - (minutes * 60));
@@ -219,8 +234,8 @@ function getRaidPopupContent (item) {
                '<br><b>CP:</b> ' + raid_boss_cp +
                '<br><b>Quick Move:</b> ' + raid_boss_move_1 +
                '<br><b>Charge Move:</b> ' + raid_boss_move_2 +
-               '<br><b>Raid Starts:</b> ' + raid_starts_at +
-               '<br><b>Raid Ends:</b> ' + raid_ends_at;
+               '<br><b>Raid Starts:</b> ' + start_time +
+               '<br><b>Raid Ends:</b> ' + end_time;
     content += '<br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
     content += '</div>'
     return content;
@@ -293,7 +308,7 @@ function PokemonMarker (raw) {
     }
 
     if (raw.trash) {
-        marker.overlay = 'HiddenPokemon';
+        marker.overlay = 'FilteredPokemon';
     } else {
         marker.overlay = 'Pokemon';
     }
@@ -301,7 +316,7 @@ function PokemonMarker (raw) {
     if (userPreference === 'pokemon'){
         marker.overlay = 'Pokemon';
     }else if (userPreference === 'trash'){
-        marker.overlay = 'HiddenPokemon';
+        marker.overlay = 'FilteredPokemon';
     }else if (userPreference === 'hidden'){
         marker.overlay = 'Hidden';
     }
@@ -373,12 +388,12 @@ function RaidMarker (raw) {
     if (raw.raid_pokemon_id !== 0) {
         var raid_boss_icon = new RaidIcon({
             iconUrl: 'static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
-            shadowUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
+            shadowUrl: 'static/monocle-icons/raids/raid_start_level_' + raw.raid_level + '.png',
             
-            iconSize: [30,30],
-            iconAnchor: [25,30],
-            shadowAnchor: [18,40],
-            shadowSize: [35,35],
+            iconSize: [36,36],
+            iconAnchor: [18,65],
+            shadowAnchor: [20,75],
+            shadowSize: [40,67],
             
             className: 'raid-icon'
       });
@@ -519,7 +534,7 @@ function addWorkersToMap (data, map) {
 }
 
 function getPokemon () {
-    if (overlays.Pokemon.hidden && overlays.HiddenPokemon.hidden) {
+    if (overlays.Pokemon.hidden && overlays.FilteredPokemon.hidden) {
         return;
     }
     new Promise(function (resolve, reject) {
@@ -757,8 +772,8 @@ function moveToLayer(id, layer){
                 m.overlay = "Pokemon";
                 m.addTo(overlays.Pokemon);
             }else if (layer === 'trash') {
-                m.overlay = "HiddenPokemon";
-                m.addTo(overlays.HiddenPokemon);
+                m.overlay = "FilteredPokemon";
+                m.addTo(overlays.FilteredPokemon);
             }
         }
     }
