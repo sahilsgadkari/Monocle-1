@@ -204,7 +204,7 @@ function getRaidPopupContent (item) {
   
     var content = '<div class="raid-popup">';
     if (item.raid_pokemon_id !== 0) {
-        content += '<img src="/se_sd/static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
+        content += '<img src="/raids_beta/static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
     }
     if (item.raid_level === 4) {
         content += '<b>Level 4 Raid</b>'
@@ -234,7 +234,7 @@ function getFortPopupContent (item) {
     var content = '<div class="fort-popup"><div class="popup-container">'
   
     if (item.pokemon_id !== 0) {
-        content += '<img class="guard-icon" src="/se_sd/static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
+        content += '<img class="guard-icon" src="/raids_beta/static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
     }
     if (item.team === 0) {
         content += '<br><b>An empty Gym!</b>'
@@ -368,12 +368,12 @@ function FortMarker (raw) {
 }
 
 function RaidMarker (raw) {
-    var raid_icon = new RaidIcon({iconUrl: '/se_sd/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+    var raid_icon = new RaidIcon({iconUrl: '/raids_beta/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
 
     if (raw.raid_pokemon_id !== 0) {
         var raid_boss_icon = new RaidIcon({
-            iconUrl: '/se_sd/static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
-            shadowUrl: '/se_sd/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
+            iconUrl: '/raids_beta/static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
+            shadowUrl: '/raids_beta/static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png',
             
             iconSize: [30,30],
             iconAnchor: [25,30],
@@ -383,7 +383,7 @@ function RaidMarker (raw) {
             className: 'raid-icon'
       });
     } else {
-        var raid_boss_icon = new RaidIcon({iconUrl: '/se_sd/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
+        var raid_boss_icon = new RaidIcon({iconUrl: '/raids_beta/monocle-icons/raids/raid_level_' + raw.raid_level + '.png'});
     }
   
     var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
@@ -524,7 +524,7 @@ function getPokemon () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/data?last_id='+_last_pokemon_id, function (response) {
+        $.get('/raids_beta/data?last_id='+_last_pokemon_id, function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -538,7 +538,7 @@ function getGyms () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/gym_data', function (response) {
+        $.get('/raids_beta/gym_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -552,7 +552,7 @@ function getRaids () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/raid_data', function (response) {
+        $.get('/raids_beta/raid_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -563,7 +563,7 @@ function getRaids () {
 
 function getSpawnPoints() {
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/spawnpoints', function (response) {
+        $.get('/raids_beta/spawnpoints', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -573,7 +573,7 @@ function getSpawnPoints() {
 
 function getPokestops() {
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/pokestops', function (response) {
+        $.get('/raids_beta/pokestops', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -583,7 +583,7 @@ function getPokestops() {
 
 function getScanAreaCoords() {
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/scan_coords', function (response) {
+        $.get('/raids_beta/scan_coords', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -596,7 +596,7 @@ function getWorkers() {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/workers_data', function (response) {
+        $.get('/raids_beta/workers_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
