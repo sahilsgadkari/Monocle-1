@@ -345,8 +345,8 @@ function FortMarker (raw) {
     }
   
     var icon = new FortIcon({
-        iconUrl: '/static/img/num_' + open_slots + '.png',
-        shadowUrl: '/static/monocle-icons/forts/' + raw.team + '.png',
+        iconUrl: '/raids_beta/static/img/num_' + open_slots + '.png',
+        shadowUrl: '/raids_beta/static/monocle-icons/forts/' + raw.team + '.png',
         
         iconSize: [20,20],
         iconAnchor: [-4, -4],
