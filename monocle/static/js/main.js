@@ -241,15 +241,15 @@ function getFortPopupContent (item) {
     }
     else {
         if (item.team === 1 ) {
-            content += '<img class="team-logo" src="/static/img/mystic.png"></div><br>';
+            content += '<img class="team-logo" src="static/img/mystic.png"></div><br>';
             content += '<br><b>Team Mystic</b>'
         }
         else if (item.team === 2 ) {
-            content += '<img class="team-logo" src="/static/img/valor.png"></div><br>';
+            content += '<img class="team-logo" src="static/img/valor.png"></div><br>';
             content += '<br><b>Team Valor</b>'
         }
         else if (item.team === 3 ) {
-            content += '<img class="team-logo" src="/static/img/instinct.png"></div><br>';
+            content += '<img class="team-logo" src="static/img/instinct.png"></div><br>';
             content += '<br><b>Team Instinct</b>'
         }
       
