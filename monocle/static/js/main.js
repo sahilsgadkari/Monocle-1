@@ -116,8 +116,8 @@ var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     HiddenPokemon: L.layerGroup([]),
-    Gyms: L.layerGroup([]),
-    Raids: L.layerGroup([]),
+    Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+    Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     ScanArea: L.layerGroup([])
 };
 
@@ -241,21 +241,29 @@ function getFortPopupContent (item) {
     }
     else {
         if (item.team === 1 ) {
-            content += '<img class="team-logo" src="/se_sd/static/img/mystic.png"></div><br>';
+            content += '<img class="team-logo" src="/static/img/mystic.png"></div><br>';
             content += '<br><b>Team Mystic</b>'
         }
         else if (item.team === 2 ) {
-            content += '<img class="team-logo" src="/se_sd/static/img/valor.png"></div><br>';
+            content += '<img class="team-logo" src="/static/img/valor.png"></div><br>';
             content += '<br><b>Team Valor</b>'
         }
         else if (item.team === 3 ) {
-            content += '<img class="team-logo" src="/se_sd/static/img/instinct.png"></div><br>';
+            content += '<img class="team-logo" src="/static/img/instinct.png"></div><br>';
             content += '<br><b>Team Instinct</b>'
         }
-        content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
-                   '<br>Slots Open: <b>' + item.slots_available + '/6</b>' +
-                   '<br>Occupied time: ' + fort_occupied_time +
-                   '<br><b>*When last scanned</b>';
+      
+        if (item.slots_available !== null) {
+            content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
+                       '<br>Slots Open: <b>' + item.slots_available + '/6</b>' +
+                       '<br>Occupied time: ' + fort_occupied_time +
+                       '<br><b>*When last scanned</b>';
+        } else {
+            content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
+                       '<br>Slots Open: <b>Unknown</b>' +
+                       '<br>Occupied time: <b>Unknown</b>' +
+                       '<br><b>*Data not available</b>';
+        }
     }
     content += '<br><a href=https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
     content += '</div>'
@@ -330,9 +338,15 @@ function PokemonMarker (raw) {
 }
 
 function FortMarker (raw) {
+    if (raw.slots_available !== null) {
+        var open_slots = raw.slots_available;
+    } else {
+        var open_slots = 9999;
+    }
+  
     var icon = new FortIcon({
-        iconUrl: '/se_sd/static/img/num_' + raw.slots_available + '.png',
-        shadowUrl: '/se_sd/static/monocle-icons/forts/' + raw.team + '.png',
+        iconUrl: '/static/img/num_' + open_slots + '.png',
+        shadowUrl: '/static/monocle-icons/forts/' + raw.team + '.png',
         
         iconSize: [20,20],
         iconAnchor: [-4, -4],
@@ -529,6 +543,7 @@ function getGyms () {
         });
     }).then(function (data) {
         addGymsToMap(data, map);
+        overlays.Gyms.refreshClusters();
     });
 }
 
@@ -542,6 +557,7 @@ function getRaids () {
         });
     }).then(function (data) {
         addRaidsToMap(data, map);
+        overlays.Raids.refreshClusters();
     });
 }
 
