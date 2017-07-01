@@ -584,7 +584,7 @@ function getRaids () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/se_sd/raid_data', function (response) {
+        $.get('/sw_sd/raid_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
