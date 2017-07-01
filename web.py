@@ -108,6 +108,7 @@ def render_map():
         show_balance=balance(),
         social_links=social_links(),
         announcements=announcements(),
+        pogosd_region=conf.POGOSD_REGION,
         show_iv_menu_item=show_iv_menu_item(),
         init_js_vars=js_vars,
         extra_css_js=Markup(css_js)

@@ -170,6 +170,11 @@ function getPopupContent (item) {
 
 function getRaidPopupContent (item) {
     var raw_start_time = new Date(item.raid_battle * 1000);
+    if (raw_start_time.getHours() < 13 ) {
+        var start_hours = raw_start_time.getHours();
+    } else {
+        var start_hours = raw_start_time.getHours() - 12;
+    }
     if (raw_start_time.getMinutes() < 10) {
         var start_minutes = "0" + raw_start_time.getMinutes();
     } else {
@@ -180,8 +185,13 @@ function getRaidPopupContent (item) {
     } else {
         var start_period = "pm";
     }
-    var start_time = (raw_start_time.getHours() - 12) + ":" + start_minutes + start_period;
+    var start_time = start_hours + ":" + start_minutes + start_period;
     var raw_end_time = new Date(item.raid_end * 1000);
+    if (raw_end_time.getHours() < 13 ) {
+        var end_hours = raw_end_time.getHours();
+    } else {
+        var end_hours = raw_end_time.getHours() - 12;
+    }
     if (raw_end_time.getMinutes() < 10) {
         var end_minutes = "0" + raw_end_time.getMinutes();
     } else {
@@ -192,7 +202,7 @@ function getRaidPopupContent (item) {
     } else {
         var end_period = "pm";
     }
-    var end_time = (raw_end_time.getHours() - 12) + ":" + end_minutes + end_period;
+    var end_time = end_hours + ":" + end_minutes + end_period;
   
     var diff = (item.raid_battle - new Date().getTime() / 1000);
     var minutes = parseInt(diff / 60);
@@ -547,7 +557,7 @@ function getPokemon () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/data?last_id='+_last_pokemon_id, function (response) {
+        $.get(_PoGoSDRegion+'/data?last_id='+_last_pokemon_id, function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -561,7 +571,7 @@ function getGyms () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/gym_data', function (response) {
+        $.get(_PoGoSDRegion+'/gym_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -575,7 +585,7 @@ function getRaids () {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/raid_data', function (response) {
+        $.get(_PoGoSDRegion+'/raid_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -586,7 +596,7 @@ function getRaids () {
 
 function getSpawnPoints() {
     new Promise(function (resolve, reject) {
-        $.get('/spawnpoints', function (response) {
+        $.get(_PoGoSDRegion+'/spawnpoints', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -596,7 +606,7 @@ function getSpawnPoints() {
 
 function getPokestops() {
     new Promise(function (resolve, reject) {
-        $.get('/pokestops', function (response) {
+        $.get(_PoGoSDRegion+'/pokestops', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -606,7 +616,7 @@ function getPokestops() {
 
 function getScanAreaCoords() {
     new Promise(function (resolve, reject) {
-        $.get('/scan_coords', function (response) {
+        $.get(_PoGoSDRegion+'/scan_coords', function (response) {
             resolve(response);
         });
     }).then(function (data) {
@@ -619,7 +629,7 @@ function getWorkers() {
         return;
     }
     new Promise(function (resolve, reject) {
-        $.get('/workers_data', function (response) {
+        $.get(_PoGoSDRegion+'/workers_data', function (response) {
             resolve(response);
         });
     }).then(function (data) {
