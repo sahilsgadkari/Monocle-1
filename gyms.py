@@ -14,7 +14,7 @@ from monocle.web_utils import get_args
 from monocle.bounds import area
 
 
-app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'))
+app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'), static_folder=resource_filename('monocle', 'static'))
 
 CACHE = {
     'data': None,
