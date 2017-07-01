@@ -170,7 +170,7 @@ function getPopupContent (item) {
 
 function getRaidPopupContent (item) {
     var raw_start_time = new Date(item.raid_battle * 1000);
-    if (raw_start_time.getHours() < 12 ) {
+    if (raw_start_time.getHours() < 13 ) {
         var start_hours = raw_start_time.getHours();
     } else {
         var start_hours = raw_start_time.getHours() - 12;
@@ -187,7 +187,7 @@ function getRaidPopupContent (item) {
     }
     var start_time = start_hours + ":" + start_minutes + start_period;
     var raw_end_time = new Date(item.raid_end * 1000);
-    if (raw_end_time.getHours() < 12 ) {
+    if (raw_end_time.getHours() < 13 ) {
         var end_hours = raw_end_time.getHours();
     } else {
         var end_hours = raw_end_time.getHours() - 12;
