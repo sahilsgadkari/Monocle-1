@@ -180,7 +180,7 @@ function getRaidPopupContent (item) {
     } else {
         var start_period = "pm";
     }
-    var start_time = (raw_start_time.getHours() - 12) + ":" + start_minutes + start_period;
+    var start_time = (12 - raw_start_time.getHours()) + ":" + start_minutes + start_period;
     var raw_end_time = new Date(item.raid_end * 1000);
     if (raw_end_time.getMinutes() < 10) {
         var end_minutes = "0" + raw_end_time.getMinutes();
@@ -192,7 +192,7 @@ function getRaidPopupContent (item) {
     } else {
         var end_period = "pm";
     }
-    var end_time = (raw_end_time.getHours() - 12) + ":" + end_minutes + end_period;
+    var end_time = (12 - raw_end_time.getHours()) + ":" + end_minutes + end_period;
   
     var diff = (item.raid_battle - new Date().getTime() / 1000);
     var minutes = parseInt(diff / 60);
