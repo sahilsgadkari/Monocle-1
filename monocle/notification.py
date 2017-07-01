@@ -777,7 +777,6 @@ class Notifier:
                 "time_until_hidden_ms": tth * 1000
             }
         }
-
         try:
             data['message']['individual_attack'] = pokemon['individual_attack']
             data['message']['individual_defense'] = pokemon['individual_defense']
