@@ -227,6 +227,108 @@
     visibility: hidden;
 }
 
+.pre_raid_remaining_text {
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 25px;
+    top: 0px;
+    left: -9px;
+    position: absolute;
+    background-color: black;
+    text-align: center;
+    background-color: rgba(255, 128, 0, 0.7);
+    font-size: 10px;
+    padding: 0;
+    color: white;
+    width: 50px;
+    visibility: hidden;
+}
+
+.during_raid_remaining_text {
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 25px;
+    top: 0px;
+    left: -9px;
+    position: absolute;
+    background-color: black;
+    text-align: center;
+    background-color: rgba(51, 204, 51, 0.7);
+    font-size: 10px;
+    padding: 0;
+    color: white;
+    width: 50px;
+    visibility: hidden;
+}
+
+.boss_during_raid {
+    width: 35px;
+    height: 35px;
+}
+
+.during_raid {
+    width: 40px;
+    height: 67px;
+}
+
+.boss_raid_container {
+    position: absolute;
+    top: 20px;
+    left: -3px;
+    z-index: 10;
+}
+
+.raid_platform_container {
+    position: absolute;
+    top: 10px;
+    left: -5px;
+}
+
+.fort_container {
+    position: absolute;
+    top: 18px;
+    left: -5px;
+    z-index: -1;
+}
+
+.fort_slots_container {
+    position: absolute;
+    top: 75px;
+    left: 25px;
+    z-index: 5;
+}
+
+.pre_raid_container {
+    position: absolute;
+    top: 10px;
+    left: -5px;
+}
+
+.pre_raid_icon {
+    width: 40px;
+    height: 67px;
+}
+
+.fort_icon {
+    width: 40px;
+    height: 67px;
+}
+
+.fort_slots_icon {
+    width: 20px;
+    height: 20px;
+}
+
+.fortmarker {
+    position: absolute;
+    left: -16px;
+    top: -20px;
+    width: 32px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
 .pokemarker {
     position: absolute;
     left: -16px;

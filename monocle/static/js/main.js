@@ -82,18 +82,56 @@ var PokemonIcon = L.Icon.extend({
 
 var FortIcon = L.Icon.extend({
     options: {
-        iconSize: [35, 35],
         popupAnchor: [0, -10],
-        className: 'fort-icon'
+    },
+    createIcon: function() {
+        var div = document.createElement('div');
+            div.innerHTML =
+                '<div class="fortmarker">' +
+                    '<div class="fort_container">' +
+                        '<img class="fort_icon" src="static/monocle-icons/forts/' + this.options.fort_team + '.png" />' +
+                    '</div>' +
+                    '<div class="fort_slots_container">' +
+                        '<img class="fort_slots_icon" src="static/img/num_' + this.options.open_slots + '.png" />' +
+                    '</div>' +
+                '</div>';
+        return div;
     }
 });
 
 var RaidIcon = L.Icon.extend({
     options: {
-        iconSize: [40, 67],
-        popupAnchor: [0, -30],
-        iconAnchor: [20, 75],
-        className: 'raid-icon'
+        popupAnchor: [0, -15]
+    },
+    createIcon: function() {
+        var div = document.createElement('div');
+        var current_time = new Date().getTime() / 1000;
+        if (this.options.raid_starts_at > current_time) {
+            var timer_format = 'pre_raid_remaining_text';
+        } else {
+            var timer_format = 'during_raid_remaining_text';
+        }
+        if (this.options.raid_pokemon_id !== 0) {
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="boss_raid_container">' +
+                        '<img class="boss_during_raid" src="static/monocle-icons/larger-icons/' + this.options.raid_pokemon_id + '.png" />' +
+                    '</div>' +
+                    '<div class="raid_platform_container">' +
+                        '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_start_level_' + this.options.raid_level + '.png" />' +
+                    '</div>' +
+                    '<div class="' + timer_format + '" data-expire="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + '</div>' +
+                '</div>';
+        } else {
+            div.innerHTML =
+                '<div class="pokemarker">' +
+                    '<div class="pre_raid_container">' +
+                        '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_level_' + this.options.raid_level + '.png" />' +
+                    '</div>' +
+                    '<div class="' + timer_format + '" data-expire="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + '</div>' +
+                '</div>';
+        }
+        return div;
     }
 });
 
@@ -115,7 +153,7 @@ var PokestopIcon = L.Icon.extend({
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    FilteredPokemon: L.layerGroup([]),
+    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     ScanArea: L.layerGroup([])
@@ -378,18 +416,8 @@ function FortMarker (raw) {
     } else {
         var open_slots = 9999;
     }
-  
-    var icon = new FortIcon({
-        iconUrl: 'static/img/num_' + open_slots + '.png',
-        shadowUrl: 'static/monocle-icons/forts/' + raw.team + '.png',
-        
-        iconSize: [20,20],
-        iconAnchor: [-4, -4],
-        shadowSize: [36,36],
-        shadowAnchor: [18, 18]
-    });
-  
-    var fort_marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1, zIndexOffset: 1000});
+    var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots});
+    var fort_marker = L.marker([raw.lat, raw.lon], {icon: fort_icon, opacity: 1, zIndexOffset: 1000});
   
     fort_marker.raw = raw;
     markers[raw.id] = fort_marker;
@@ -403,22 +431,7 @@ function FortMarker (raw) {
 }
 
 function RaidMarker (raw) {
-    if (raw.raid_pokemon_id !== 0) {
-        var raid_boss_icon = new RaidIcon({
-            iconUrl: 'static/monocle-icons/larger-icons/' + raw.raid_pokemon_id + '.png',
-            shadowUrl: 'static/monocle-icons/raids/raid_start_level_' + raw.raid_level + '.png',
-            
-            iconSize: [36,36],
-            iconAnchor: [18,65],
-            shadowAnchor: [20,75],
-            shadowSize: [40,67],
-            
-            className: 'raid-icon'
-      });
-    } else {
-        var raid_boss_icon = new RaidIcon({iconUrl: 'static/monocle-icons/raids/raid_level_' + raw.raid_level + '.png?100'});
-    }
-  
+    var raid_boss_icon = new RaidIcon({raid_pokemon_id: raw.raid_pokemon_id, raid_level: raw.raid_level, raid_ends_at: raw.raid_end, raid_starts_at: raw.raid_battle});
     var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
   
     raid_marker.raw = raw;
@@ -576,7 +589,7 @@ function getGyms () {
         });
     }).then(function (data) {
         addGymsToMap(data, map);
-        overlays.Gyms.refreshClusters();
+        //overlays.Gyms.refreshClusters();
     });
 }
 
@@ -590,7 +603,7 @@ function getRaids () {
         });
     }).then(function (data) {
         addRaidsToMap(data, map);
-        overlays.Raids.refreshClusters();
+        //overlays.Raids.refreshClusters();
     });
 }
 
@@ -800,9 +813,18 @@ function moveToLayer(id, layer){
 
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
-    var newHtml = '<br><div data-group="display_all_none">' +
+    var newHtml = '<h5>Raid Filters</h5><br>' +
+                  '<div class="btn-group" data-toggle="buttons" data-group="raid_filters">' +
+                      '<label class="btn btn-default"><input type="checkbox" class="btn btn-default" data-value="level_1">Level 1</label>' +
+                      '<label class="btn btn-default"><input type="checkbox" class="btn btn-default" data-value="level_2">Level 2</label>' +
+                      '<label class="btn btn-default"><input type="checkbox" class="btn btn-default" data-value="level_3">Level 3</label>' +
+                      '<label class="btn btn-default"><input type="checkbox" class="btn btn-default" data-value="level_4">Level 4</label>' +
+                  '</div>' +
+                  '<hr />'+
+                  '<h5>Pokemon Filters</h5><br>' +
+                  '<div data-group="display_all_none">' +
                       '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
-                    '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
+                  '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
     for (var i = 1; i <= _pokemon_count; i++){
         var partHtml = '<div class="text-center">' +
                 '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
@@ -883,6 +905,24 @@ function updateTime() {
         });
     }else{
         $(".remaining_text").each(function() {
+            $(this).css('visibility', 'hidden');
+        });
+    }
+  
+    if (getPreference("SHOW_RAID_TIMER") === "1"){
+        $(".pre_raid_remaining_text").each(function() {
+            $(this).css('visibility', 'visible');
+            this.innerHTML = calculateRemainingTime($(this).data('expire'));
+        });
+        $(".during_raid_remaining_text").each(function() {
+            $(this).css('visibility', 'visible');
+            this.innerHTML = calculateRemainingTime($(this).data('expire'));
+        });
+    }else{
+        $(".pre_raid_remaining_text").each(function() {
+            $(this).css('visibility', 'hidden');
+        });
+        $(".during_raid_remaining_text").each(function() {
             $(this).css('visibility', 'hidden');
         });
     }
