@@ -89,7 +89,7 @@ var FortIcon = L.Icon.extend({
             div.innerHTML =
                 '<div class="fortmarker">' +
                     '<div class="fort_container">' +
-                        '<img class="fort_icon" src="static/monocle-icons/forts/' + this.options.fort_team + '.png" />' +
+                        '<img class="fort_icon" src="static/monocle-icons/forts/' + this.options.fort_team + '.png?201" />' +
                     '</div>' +
                     '<div class="fort_slots_container">' +
                         '<img class="fort_slots_icon" src="static/img/num_' + this.options.open_slots + '.png" />' +
@@ -118,7 +118,7 @@ var RaidIcon = L.Icon.extend({
                         '<img class="boss_during_raid" src="static/monocle-icons/larger-icons/' + this.options.raid_pokemon_id + '.png" />' +
                     '</div>' +
                     '<div class="raid_platform_container">' +
-                        '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_start_level_' + this.options.raid_level + '.png" />' +
+                        '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_start_level_' + this.options.raid_level + '.png?201" />' +
                     '</div>' +
                     '<div class="' + timer_format + '" data-expire="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + '</div>' +
                 '</div>';
@@ -126,7 +126,7 @@ var RaidIcon = L.Icon.extend({
             div.innerHTML =
                 '<div class="pokemarker">' +
                     '<div class="pre_raid_container">' +
-                        '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_level_' + this.options.raid_level + '.png" />' +
+                        '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_level_' + this.options.raid_level + '.png?201" />' +
                     '</div>' +
                     '<div class="' + timer_format + '" data-expire="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + '</div>' +
                 '</div>';
