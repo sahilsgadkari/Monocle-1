@@ -89,9 +89,11 @@ def render_map():
     js_vars = Markup(
         "_defaultSettings['FIXED_OPACITY'] = '{:d}'; "
         "_defaultSettings['SHOW_TIMER'] = '{:d}'; "
+        "_defaultSettings['SHOW_RAID_TIMER'] = '{:d}'; "
         "_defaultSettings['SHOW_IV'] = '{:d}'; "
         "_defaultSettings['MAP_CHOICE'] = '{:d}'; "
-        "_defaultSettings['TRASH_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_IV, 1, ', '.join(str(p_id) for p_id in conf.TRASH_IDS)))
+        "_defaultSettings['TRASH_IDS'] = [{}]; "
+        "_defaultSettings['RAID_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_RAID_TIMER, conf.SHOW_IV, 1, ', '.join(str(p_id) for p_id in conf.TRASH_IDS), ', '.join(str(r_id) for r_id in conf.RAID_IDS)))
 
     template = app.jinja_env.get_template('custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html')
     return template.render(
