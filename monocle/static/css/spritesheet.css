@@ -1,5 +1,5 @@
 .sprite span {
-    background-image: url(../img/spritesheet_v2.png);
+    background-image: url(../img/spritesheet_v2.png?100);
     background-repeat: no-repeat;
     display: block;
 }
