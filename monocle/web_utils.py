@@ -124,11 +124,13 @@ def get_gym_markers(names=POKEMON):
     return [{
             'id': 'fort-' + str(fort['fort_id']),
             'sighting_id': fort['id'],
+            'gym_name': fort['name'],
             'pokemon_id': fort['guard_pokemon_id'],
             'pokemon_name': names[fort['guard_pokemon_id']],
             'is_in_battle': fort['is_in_battle'],
             'slots_available': fort['slots_available'],
             'time_occupied': fort['time_occupied'],
+            'last_modified': fort['last_modified'],
             'team': fort['team'],
             'lat': fort['lat'],
             'lon': fort['lon']
@@ -140,6 +142,7 @@ def get_raid_markers(names=POKEMON, moves=MOVES):
     return [{
             'id': 'raid-' + str(raid['fort_id']),
             'raid_id': raid['id'],
+            'gym_name': raid['name'],
             'raid_battle': raid['raid_battle_ms'],
             'raid_spawn': raid['raid_spawn_ms'],
             'raid_end': raid['raid_end_ms'],

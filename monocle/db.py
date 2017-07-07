@@ -317,6 +317,7 @@ class Fort(Base):
     __tablename__ = 'forts'
 
     id = Column(Integer, primary_key=True)
+    name = Column(String(255))
     external_id = Column(String(35), unique=True)
     lat = Column(FLOAT_TYPE)
     lon = Column(FLOAT_TYPE)
@@ -534,6 +535,7 @@ def add_fort_sighting(session, raw_fort):
     if not fort:
         fort = Fort(
             external_id=raw_fort['external_id'],
+            name=raw_fort['name'],
             lat=raw_fort['lat'],
             lon=raw_fort['lon'],
         )
@@ -655,6 +657,7 @@ def _get_forts_sqlite(session):
         SELECT
             fs.fort_id,
             fs.id,
+            f.name,
             fs.team,
             fs.guard_pokemon_id,
             fs.last_modified,
@@ -678,6 +681,7 @@ def _get_forts(session):
         SELECT
             fs.fort_id,
             fs.id,
+            f.name,
             fs.team,
             fs.guard_pokemon_id,
             fs.last_modified,
@@ -702,6 +706,7 @@ def _get_raids(session):
         SELECT
             fr.fort_id,
             fr.id,
+            f.name,
             fr.raid_battle_ms,
             fr.raid_spawn_ms,
             fr.raid_end_ms,

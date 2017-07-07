@@ -212,40 +212,8 @@ function getPopupContent (item) {
 }
 
 function getRaidPopupContent (item) {
-    var raw_start_time = new Date(item.raid_battle * 1000);
-    if (raw_start_time.getHours() < 13 ) {
-        var start_hours = raw_start_time.getHours();
-    } else {
-        var start_hours = raw_start_time.getHours() - 12;
-    }
-    if (raw_start_time.getMinutes() < 10) {
-        var start_minutes = "0" + raw_start_time.getMinutes();
-    } else {
-        var start_minutes = raw_start_time.getMinutes();
-    }
-    if ((raw_start_time.getHours() - 12) < 0) {
-        var start_period = "am";
-    } else {
-        var start_period = "pm";
-    }
-    var start_time = start_hours + ":" + start_minutes + start_period;
-    var raw_end_time = new Date(item.raid_end * 1000);
-    if (raw_end_time.getHours() < 13 ) {
-        var end_hours = raw_end_time.getHours();
-    } else {
-        var end_hours = raw_end_time.getHours() - 12;
-    }
-    if (raw_end_time.getMinutes() < 10) {
-        var end_minutes = "0" + raw_end_time.getMinutes();
-    } else {
-        var end_minutes = raw_end_time.getMinutes();
-    }
-    if ((raw_end_time.getHours() - 12) < 0) {
-        var end_period = "am";
-    } else {
-        var end_period = "pm";
-    }
-    var end_time = end_hours + ":" + end_minutes + end_period;
+    var start_time = convertToTwelveHourTime(item.raid_battle);
+    var end_time = convertToTwelveHourTime(item.raid_end);
   
     var diff = (item.raid_battle - new Date().getTime() / 1000);
     var minutes = parseInt(diff / 60);
@@ -270,7 +238,7 @@ function getRaidPopupContent (item) {
         var raid_boss_move_1 = 'TBD';
         var raid_boss_move_2 = 'TBD';
     }
-
+console.log("Raid: " + item.id);
     var diff = (item.raid_end - new Date().getTime() / 1000);
     if (diff < 0) {
         var raid_ends_at = 'Ended';
@@ -292,6 +260,9 @@ function getRaidPopupContent (item) {
         content += '<b>Level 2 Raid</b>'
     } else if (item.raid_level === 1 ) {
         content += '<b>Level 1 Raid</b>'
+    }
+    if (item.gym_name != null) {
+        content += '<br><b>' + item.gym_name + ' Gym</b>';
     }
     content += '<br><b>Boss:</b> ' + raid_boss_name +
                '<br><b>CP:</b> ' + raid_boss_cp +
@@ -315,22 +286,38 @@ function getFortPopupContent (item) {
         content += '<img class="guard-icon" src="static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
     }
     if (item.team === 0) {
-        content += '<br><b>An empty Gym!</b>'
+        content += '<b>An empty Gym!</b>';
+        content += '<br>Last changed: ' + this.convertToTwelveHourTime(item.last_modified);
     }
     else {
         if (item.team === 1 ) {
             content += '<img class="team-logo" src="static/img/mystic.png"></div><br>';
-            content += '<b>Gym is currently occupied by:</b>';
+            if (item.gym_name != null) {
+                content += '<b>' + item.gym_name + ' Gym</b><br>';
+                content += '<b>is currently occupied by:</b>';
+            } else {
+                content += '<b>Gym is currently occupied by:</b>';
+            }
             content += '<br><b>Team Mystic</b>'
         }
         else if (item.team === 2 ) {
             content += '<img class="team-logo" src="static/img/valor.png"></div><br>';
-            content += '<b>Gym is currently occupied by:</b>';
+            if (item.gym_name != null) {
+                content += '<b>' + item.gym_name + ' Gym</b><br>';
+                content += '<b>is currently occupied by:</b>';
+            } else {
+                content += '<b>Gym is currently occupied by:</b>';
+            }
             content += '<br><b>Team Valor</b>'
         }
         else if (item.team === 3 ) {
             content += '<img class="team-logo" src="static/img/instinct.png"></div><br>';
-            content += '<b>Gym is currently occupied by:</b>';
+            if (item.gym_name != null) {
+                content += '<b>' + item.gym_name + ' Gym</b><br>';
+                content += '<b>is currently occupied by:</b>';
+            } else {
+                content += '<b>Gym is currently occupied by:</b>';
+            }
             content += '<br><b>Team Instinct</b>'
         }
       
@@ -338,7 +325,7 @@ function getFortPopupContent (item) {
             content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
                        '<br>Slots Open: <b>' + item.slots_available + '/6</b>' +
                        '<br>Occupied time: ' + fort_occupied_time +
-                       '<br><b>*When last scanned</b>';
+                       '<br>Last changed: ' + this.convertToTwelveHourTime(item.last_modified);
         } else {
             content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
                        '<br>Slots Open: <b>Unknown</b>' +
@@ -721,7 +708,7 @@ map.whenReady(function () {
     getScanAreaCoords();
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 110000)
-    setInterval(getRaids, 30000);
+    setInterval(getRaids, 60000);
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
@@ -992,6 +979,27 @@ function updateTime() {
             $(this).css('visibility', 'hidden');
         });
     }
+}
+
+function convertToTwelveHourTime(raw_time) {
+    var processed_time = new Date(raw_time * 1000);
+    if (processed_time.getHours() < 13 ) {
+        var hours = processed_time.getHours();
+    } else {
+        var hours = processed_time.getHours() - 12;
+    }
+    if (processed_time.getMinutes() < 10) {
+        var minutes = "0" + processed_time.getMinutes();
+    } else {
+        var minutes = processed_time.getMinutes();
+    }
+    if ((processed_time.getHours() - 12) < 0) {
+        var period = "am";
+    } else {
+        var period = "pm";
+    }
+    var twelveHourTime = hours + ":" + minutes + period;
+    return twelveHourTime;
 }
 
 function loadMapLayer() {

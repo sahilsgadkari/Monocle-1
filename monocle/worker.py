@@ -832,7 +832,35 @@ class Worker:
                         db_proc.add(pokestop)
                 else:
                     if fort not in FORT_CACHE:
-                        db_proc.add(self.normalize_gym(fort))
+                        request = self.api.create_request()
+                        request.gym_get_info(
+                                                gym_id=fort.id,
+                                                player_lat_degrees = self.location[0],
+                                                player_lng_degrees = self.location[1],
+                                                gym_lat_degrees=fort.latitude,
+                                                gym_lng_degrees=fort.longitude
+                                            )
+                        responses = await self.call(request, action=1.2)
+                        try:
+                            if responses['GYM_GET_INFO'].result != 1:
+                                self.log.warning("Failed to get gym_info {}", fort.id)
+                                db_proc.add(self.normalize_gym(fort))
+                            else:
+                                gym_get_info = responses['GYM_GET_INFO']
+                                rawFort = {}
+                                rawFort['external_id'] = fort.id
+                                rawFort['name'] = gym_get_info.name
+                                rawFort['lat'] = fort.latitude
+                                rawFort['lon'] = fort.longitude
+                                rawFort['team'] = fort.owned_by_team
+                                rawFort['guard_pokemon_id'] = fort.guard_pokemon_id
+                                rawFort['last_modified'] = fort.last_modified_timestamp_ms // 1000
+                                rawFort['is_in_battle'] = fort.is_in_battle
+                                rawFort['slots_available'] = fort.gym_display.slots_available
+                                rawFort['time_occupied'] = fort.gym_display.occupied_millis // 1000
+                                db_proc.add(self.normalize_gym(rawFort))
+                        except KeyError:
+                            self.log.warning("Failed to get gym_info {}", fort.id)
                     if fort.HasField('raid_info'):
                         fort_raid = {}
                         fort_raid['external_id'] = fort.id
@@ -850,10 +878,11 @@ class Worker:
                             fort_raid['cp'] = fort.raid_info.raid_pokemon.cp
                             fort_raid['move_1'] = fort.raid_info.raid_pokemon.move_1
                             fort_raid['move_2'] = fort.raid_info.raid_pokemon.move_2
- 				    	
                         if fort_raid not in RAID_CACHE:
                             db_proc.add(self.normalize_raid(fort_raid))
-
+                        
+                    
+                    
             if more_points:
                 try:
                     for p in map_cell.spawn_points:
@@ -1285,15 +1314,16 @@ class Worker:
     def normalize_gym(raw):
         return {
             'type': 'fort',
-            'external_id': raw.id,
-            'lat': raw.latitude,
-            'lon': raw.longitude,
-            'team': raw.owned_by_team,
-            'guard_pokemon_id': raw.guard_pokemon_id,
-            'last_modified': raw.last_modified_timestamp_ms // 1000,
-            'is_in_battle': raw.is_in_battle,
-            'slots_available': raw.gym_display.slots_available,
-            'time_occupied': raw.gym_display.occupied_millis // 1000
+            'external_id': raw['external_id'],
+            'name': raw['name'],
+            'lat': raw['lat'],
+            'lon': raw['lon'],
+            'team': raw['team'],
+            'guard_pokemon_id': raw['guard_pokemon_id'],
+            'last_modified': raw['last_modified'],
+            'is_in_battle': raw['is_in_battle'],
+            'slots_available': raw['slots_available'],
+            'time_occupied': raw['time_occupied']
         }
 
     @staticmethod
