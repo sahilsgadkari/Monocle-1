@@ -801,6 +801,82 @@ class Notifier:
         async def wh_send(self, session, payload):
             return await self.hook_post(HOOK_POINT, session, payload)
 
+    async def webhook_gym(self, fort, time_of_day):
+        """ Send a gym notification via webhook
+        """
+        try:
+            fort_id = fort['external_id']
+        except KeyError:
+            pass
+
+        data = {
+            'type': "gym",
+            'message': {
+                "fort_id": fort['external_id'],
+                "gym_name": fort['name'],
+                "gym_lat": fort['lat'],
+                "gym_lon": fort['lon'],
+                "team": fort['team'],
+                "guard_pokemon_id": fort['guard_pokemon_id'],
+                "slots_available": fort['slots_available']
+            }
+        }
+        #try:
+        #    data['message']['name'] = fort['name']
+        #except KeyError:
+        #    pass
+
+        session = SessionManager.get()
+        return await self.wh_gym_send(session, data)
+
+    if WEBHOOK > 1:
+        async def wh_gym_send(self, session, payload):
+            results = await gather(*tuple(self.hook_post(w, session, payload) for w in HOOK_POINTS), loop=LOOP)
+            return True in results
+    else:
+        async def wh_gym_send(self, session, payload):
+            return await self.hook_post(HOOK_POINT, session, payload)
+
+
+    async def webhook_raids(self, fort_raid, time_of_day):
+        """ Send a raid notification via webhook
+        """
+        try:
+            fort_id = fort['external_id']
+        except KeyError:
+            pass
+
+        data = {
+            'type': "raid",
+            'message': {
+                "fort_id": fort_raid['external_id'],
+                "raid_begin": fort_raid['raid_battle_ms'],
+                "raid_spawn": fort_raid['raid_spawn_ms'],
+                "raid_end": fort_raid['raid_end_ms'],
+                "raid_level": fort_raid['raid_level'],
+                "boss_pokemon_id": fort_raid['pokemon_id'],
+                "boss_cp": fort_raid['cp'],
+                "boss_move_1": fort_raid['move_1'],
+                "boss_move_2": fort_raid['move_2']
+            }
+        }
+        #try:
+        #    data['message']['name'] = fort['name']
+        #except KeyError:
+        #    pass
+
+        session = SessionManager.get()
+        return await self.wh_raid_send(session, data)
+
+    if WEBHOOK > 1:
+        async def wh_raid_send(self, session, payload):
+            results = await gather(*tuple(self.hook_post(w, session, payload) for w in HOOK_POINTS), loop=LOOP)
+            return True in results
+    else:
+        async def wh_raid_send(self, session, payload):
+            return await self.hook_post(HOOK_POINT, session, payload)
+
+
     async def hook_post(self, w, session, payload, headers={'content-type': 'application/json'}):
         try:
             async with session.post(w, json=payload, timeout=4, headers=headers) as resp:

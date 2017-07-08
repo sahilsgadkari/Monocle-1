@@ -832,6 +832,7 @@ class Worker:
                         db_proc.add(pokestop)
                 else:
                     if fort not in FORT_CACHE:
+                        raidHook = {}
                         request = self.api.create_request()
                         request.gym_get_info(
                                                 gym_id=fort.id,
@@ -848,10 +849,10 @@ class Worker:
                             else:
                                 gym_get_info = responses['GYM_GET_INFO']
                                 rawFort = {}
-                                rawFort['external_id'] = fort.id
-                                rawFort['name'] = gym_get_info.name
-                                rawFort['lat'] = fort.latitude
-                                rawFort['lon'] = fort.longitude
+                                raidHook['external_id'] = rawFort['external_id'] = fort.id
+                                raidHook['name'] = rawFort['name'] = gym_get_info.name
+                                raidHook['lat'] = rawFort['lat'] = fort.latitude
+                                raidHook['lon'] = rawFort['lon'] = fort.longitude
                                 rawFort['team'] = fort.owned_by_team
                                 rawFort['guard_pokemon_id'] = fort.guard_pokemon_id
                                 rawFort['last_modified'] = fort.last_modified_timestamp_ms // 1000
@@ -859,28 +860,29 @@ class Worker:
                                 rawFort['slots_available'] = fort.gym_display.slots_available
                                 rawFort['time_occupied'] = fort.gym_display.occupied_millis // 1000
                                 db_proc.add(self.normalize_gym(rawFort))
+                                LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
                         except KeyError:
                             self.log.warning("Failed to get gym_info {}", fort.id)
                     if fort.HasField('raid_info'):
                         fort_raid = {}
                         fort_raid['external_id'] = fort.id
-                        fort_raid['raid_battle_ms'] = fort.raid_info.raid_battle_ms
-                        fort_raid['raid_spawn_ms'] = fort.raid_info.raid_spawn_ms
-                        fort_raid['raid_end_ms'] = fort.raid_info.raid_end_ms
-                        fort_raid['raid_level'] = fort.raid_info.raid_level
-                        fort_raid['complete'] = fort.raid_info.complete
-                        fort_raid['pokemon_id'] = 0
-                        fort_raid['cp'] = 0
-                        fort_raid['move_1'] = 0
-                        fort_raid['move_2'] = 0
+                        raidHook['raid_battle_ms'] = fort_raid['raid_battle_ms'] = fort.raid_info.raid_battle_ms
+                        raidHook['raid_spawn_ms'] = fort_raid['raid_spawn_ms'] = fort.raid_info.raid_spawn_ms
+                        raidHook['raid_end_ms'] = fort_raid['raid_end_ms'] = fort.raid_info.raid_end_ms
+                        raidHook['raid_level'] = fort_raid['raid_level'] = fort.raid_info.raid_level
+                        raidHook['complete'] = fort.raid_info.complete
+                        raidHook['pokemon_id'] = fort_raid['pokemon_id'] = 0
+                        raidHook['cp'] = fort_raid['cp'] = 0
+                        raidHook['move_1'] = fort_raid['move_1'] = 0
+                        raidHook['move_2'] = fort_raid['move_2'] = 0
                         if fort.raid_info.HasField('raid_pokemon'):
-                            fort_raid['pokemon_id'] = fort.raid_info.raid_pokemon.pokemon_id
-                            fort_raid['cp'] = fort.raid_info.raid_pokemon.cp
-                            fort_raid['move_1'] = fort.raid_info.raid_pokemon.move_1
-                            fort_raid['move_2'] = fort.raid_info.raid_pokemon.move_2
+                            raidHook['pokemon_id'] = fort_raid['pokemon_id'] = fort.raid_info.raid_pokemon.pokemon_id
+                            raidHook['cp'] = fort_raid['cp'] = fort.raid_info.raid_pokemon.cp
+                            raidHook['move_1'] = fort_raid['move_1'] = fort.raid_info.raid_pokemon.move_1
+                            raidHook['move_2'] = fort_raid['move_2'] = fort.raid_info.raid_pokemon.move_2
                         if fort_raid not in RAID_CACHE:
                             db_proc.add(self.normalize_raid(fort_raid))
-                        
+                            LOOP.create_task(self.notifier.webhook_raids(raidHook, map_objects.time_of_day))
                     
                     
             if more_points:
