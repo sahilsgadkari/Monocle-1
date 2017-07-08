@@ -720,8 +720,8 @@ map.whenReady(function () {
     getRaids();
     getScanAreaCoords();
     setInterval(getPokemon, 30000);
-    setInterval(getGyms, 110000)
-    setInterval(getRaids, 110000);
+    setInterval(getGyms, 240000)
+    setInterval(getRaids, 120000);
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
