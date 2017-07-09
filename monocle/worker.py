@@ -831,8 +831,8 @@ class Worker:
                         pokestop = self.normalize_pokestop(fort)
                         db_proc.add(pokestop)
                 else:
+                    raidHook = {}
                     if fort not in FORT_CACHE:
-                        raidHook = {}
                         request = self.api.create_request()
                         request.gym_get_info(
                                                 gym_id=fort.id,
@@ -846,6 +846,9 @@ class Worker:
                             if responses['GYM_GET_INFO'].result != 1:
                                 self.log.warning("Failed to get gym_info {}", fort.id)
                                 db_proc.add(self.normalize_gym(fort))
+                                raidHook['external_id'] = fort.id
+                                raidHook['lat'] = fort.latitude
+                                raidHook['lon'] = fort.longitude
                             else:
                                 gym_get_info = responses['GYM_GET_INFO']
                                 rawFort = {}
@@ -863,14 +866,18 @@ class Worker:
                                 LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
                         except KeyError:
                             self.log.warning("Failed to get gym_info {}", fort.id)
+                    else:
+                        raidHook['external_id'] = fort.id
+                        raidHook['lat'] = fort.latitude
+                        raidHook['lon'] = fort.longitude
                     if fort.HasField('raid_info'):
                         fort_raid = {}
-                        fort_raid['external_id'] = fort.id
+                        raidHook['external_id'] = fort_raid['external_id'] = fort.id
                         raidHook['raid_battle_ms'] = fort_raid['raid_battle_ms'] = fort.raid_info.raid_battle_ms
                         raidHook['raid_spawn_ms'] = fort_raid['raid_spawn_ms'] = fort.raid_info.raid_spawn_ms
                         raidHook['raid_end_ms'] = fort_raid['raid_end_ms'] = fort.raid_info.raid_end_ms
                         raidHook['raid_level'] = fort_raid['raid_level'] = fort.raid_info.raid_level
-                        raidHook['complete'] = fort.raid_info.complete
+                        raidHook['complete'] = fort_raid['complete'] = fort.raid_info.complete
                         raidHook['pokemon_id'] = fort_raid['pokemon_id'] = 0
                         raidHook['cp'] = fort_raid['cp'] = 0
                         raidHook['move_1'] = fort_raid['move_1'] = 0

@@ -842,7 +842,7 @@ class Notifier:
         """ Send a raid notification via webhook
         """
         try:
-            fort_id = fort['external_id']
+            fort_id = fort_raid['external_id']
         except KeyError:
             pass
 
@@ -850,6 +850,9 @@ class Notifier:
             'type': "raid",
             'message': {
                 "fort_id": fort_raid['external_id'],
+                "raid_lat": fort_raid['lat'],
+                "raid_lon": fort_raid['lon'],
+                "raid_gym_name": fort_raid['name'],
                 "raid_begin": fort_raid['raid_battle_ms'],
                 "raid_spawn": fort_raid['raid_spawn_ms'],
                 "raid_end": fort_raid['raid_end_ms'],
