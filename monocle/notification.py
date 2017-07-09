@@ -849,6 +849,7 @@ class Notifier:
             'type': "raid",
             'message': {
                 "fort_id": fort_raid['external_id'],
+                "raid_seed": fort_raid['raid_seed'],
                 "raid_lat": fort_raid['lat'],
                 "raid_lon": fort_raid['lon'],
                 "raid_gym_name": fort_raid['name'],
