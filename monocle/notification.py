@@ -828,7 +828,7 @@ class Notifier:
         session = SessionManager.get()
         return await self.wh_gym_send(session, data)
 
-    if WEBHOOK > 1:
+    if conf.GYM_WEBHOOK:
         async def wh_gym_send(self, session, payload):
             results = await gather(*tuple(self.hook_post(w, session, payload) for w in HOOK_POINTS), loop=LOOP)
             return True in results

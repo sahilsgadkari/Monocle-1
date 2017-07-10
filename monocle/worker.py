@@ -863,7 +863,8 @@ class Worker:
                                 rawFort['slots_available'] = fort.gym_display.slots_available
                                 rawFort['time_occupied'] = fort.gym_display.occupied_millis // 1000
                                 db_proc.add(self.normalize_gym(rawFort))
-                                LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
+                                if conf.GYM_WEBHOOK:
+                                    LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
                         except KeyError:
                             self.log.warning("Failed to get gym_info {}", fort.id)
                     else:
