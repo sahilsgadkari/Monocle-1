@@ -238,7 +238,6 @@ function getRaidPopupContent (item) {
         var raid_boss_move_1 = 'TBD';
         var raid_boss_move_2 = 'TBD';
     }
-console.log("Raid: " + item.id);
     var diff = (item.raid_end - new Date().getTime() / 1000);
     if (diff < 0) {
         var raid_ends_at = 'Ended';
