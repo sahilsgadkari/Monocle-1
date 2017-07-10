@@ -706,7 +706,7 @@ map.whenReady(function () {
     getRaids();
     getScanAreaCoords();
     setInterval(getPokemon, 30000);
-    setInterval(getGyms, 110000)
+    setInterval(getGyms, 90000)
     setInterval(getRaids, 60000);
 });
 
