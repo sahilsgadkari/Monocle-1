@@ -798,14 +798,17 @@ class Worker:
                             self.log.warning('{} during encounter', e.__class__.__name__)
 
                 if notify_conf and self.notifier.eligible(normalized):
-                    if encounter_conf and 'move_1' not in normalized:
-                        try:
-                            await self.encounter(normalized, pokemon.spawn_point_id)
-                        except CancelledError:
-                            db_proc.add(normalized)
-                            raise
-                        except Exception as e:
-                            self.log.warning('{} during encounter', e.__class__.__name__)
+                    if (encounter_conf == 'all'
+                                or (encounter_conf == 'some'
+                                and normalized['pokemon_id'] in conf.ENCOUNTER_IDS)):
+                        if encounter_conf and 'move_1' not in normalized:
+                            try:
+                                await self.encounter(normalized, pokemon.spawn_point_id)
+                            except CancelledError:
+                                db_proc.add(normalized)
+                                raise
+                            except Exception as e:
+                                self.log.warning('{} during encounter', e.__class__.__name__)
                     LOOP.create_task(self.notifier.notify(normalized, map_objects.time_of_day))
                 db_proc.add(normalized)
 
