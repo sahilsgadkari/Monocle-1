@@ -834,85 +834,59 @@ class Worker:
                         pokestop = self.normalize_pokestop(fort)
                         db_proc.add(pokestop)
                 else:
-                    raidHook = {}
+                    rawFort = {}
+                    rawRaid = {}
+                    rawRaid['external_id'] = rawFort['external_id'] = fort.id
+                    rawRaid['lat'] = rawFort['lat'] = fort.latitude
+                    rawRaid['lon'] = rawFort['lon'] = fort.longitude
+                    rawRaid['name'] = rawFort['name'] = ''
+                    rawFort['team'] = fort.owned_by_team
+                    rawFort['guard_pokemon_id'] = fort.guard_pokemon_id
+                    rawFort['last_modified'] = fort.last_modified_timestamp_ms // 1000
+                    rawFort['is_in_battle'] = fort.is_in_battle
+                    rawFort['slots_available'] = fort.gym_display.slots_available
+                    rawFort['time_occupied'] = fort.gym_display.occupied_millis // 1000
                     if fort not in FORT_CACHE:
-                        request = self.api.create_request()
-                        request.gym_get_info(
-                                                gym_id=fort.id,
-                                                player_lat_degrees = self.location[0],
-                                                player_lng_degrees = self.location[1],
-                                                gym_lat_degrees=fort.latitude,
-                                                gym_lng_degrees=fort.longitude
-                                            )
-                        responses = await self.call(request, action=1.2)
-                        try:
-                            if responses['GYM_GET_INFO'].result != 1:
+                        if conf.PULL_GYM_NAME:
+                            request = self.api.create_request()
+                            request.gym_get_info(
+                                                    gym_id=fort.id,
+                                                    player_lat_degrees = self.location[0],
+                                                    player_lng_degrees = self.location[1],
+                                                    gym_lat_degrees=fort.latitude,
+                                                    gym_lng_degrees=fort.longitude
+                                                )
+                            responses = await self.call(request, action=1.2)
+                            try:
+                                if responses['GYM_GET_INFO'].result != 1:
+                                    self.log.warning("Failed to get gym_info {}", fort.id)
+                                else:
+                                    gym_get_info = responses['GYM_GET_INFO']
+                                    rawRaid['name'] = rawFort['name'] = gym_get_info.name
+                            except KeyError:
                                 self.log.warning("Failed to get gym_info {}", fort.id)
-                                db_proc.add(self.normalize_gym(fort))
-                                raidHook['external_id'] = fort.id
-                                raidHook['lat'] = fort.latitude
-                                raidHook['lon'] = fort.longitude
-                            else:
-                                gym_get_info = responses['GYM_GET_INFO']
-                                rawFort = {}
-                                raidHook['external_id'] = rawFort['external_id'] = fort.id
-                                raidHook['name'] = rawFort['name'] = gym_get_info.name
-                                raidHook['lat'] = rawFort['lat'] = fort.latitude
-                                raidHook['lon'] = rawFort['lon'] = fort.longitude
-                                rawFort['team'] = fort.owned_by_team
-                                rawFort['guard_pokemon_id'] = fort.guard_pokemon_id
-                                rawFort['last_modified'] = fort.last_modified_timestamp_ms // 1000
-                                rawFort['is_in_battle'] = fort.is_in_battle
-                                rawFort['slots_available'] = fort.gym_display.slots_available
-                                rawFort['time_occupied'] = fort.gym_display.occupied_millis // 1000
-                                db_proc.add(self.normalize_gym(rawFort))
-                                if conf.GYM_WEBHOOK:
-                                    LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
-                        except KeyError:
-                            self.log.warning("Failed to get gym_info {}", fort.id)
-                    else:
-                        raidHook['external_id'] = fort.id
-                        raidHook['lat'] = fort.latitude
-                        raidHook['lon'] = fort.longitude
-                        request = self.api.create_request()
-                        request.gym_get_info(
-                                                gym_id=fort.id,
-                                                player_lat_degrees = self.location[0],
-                                                player_lng_degrees = self.location[1],
-                                                gym_lat_degrees=fort.latitude,
-                                                gym_lng_degrees=fort.longitude
-                                            )
-                        responses = await self.call(request, action=1.2)
-                        try:
-                            if responses['GYM_GET_INFO'].result != 1:
-                                self.log.warning("Failed to get gym_info {}", fort.id)
-                            else:
-                                gym_get_info = responses['GYM_GET_INFO']
-                                raidHook['name'] = gym_get_info.name
-                        except KeyError:
-                            self.log.warning("Failed to get gym_info {}", fort.id)
+                        db_proc.add(self.normalize_gym(rawFort))
+                        if conf.GYM_WEBHOOK:
+                            LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
                     if fort.HasField('raid_info'):
-                        fort_raid = {}
-                        raidHook['external_id'] = fort_raid['external_id'] = fort.id
-                        raidHook['raid_seed'] = fort_raid['raid_seed'] = fort.raid_info.raid_seed
-                        raidHook['raid_battle_ms'] = fort_raid['raid_battle_ms'] = fort.raid_info.raid_battle_ms
-                        raidHook['raid_spawn_ms'] = fort_raid['raid_spawn_ms'] = fort.raid_info.raid_spawn_ms
-                        raidHook['raid_end_ms'] = fort_raid['raid_end_ms'] = fort.raid_info.raid_end_ms
-                        raidHook['raid_level'] = fort_raid['raid_level'] = fort.raid_info.raid_level
-                        raidHook['complete'] = fort_raid['complete'] = fort.raid_info.complete
-                        raidHook['pokemon_id'] = fort_raid['pokemon_id'] = 0
-                        raidHook['cp'] = fort_raid['cp'] = 0
-                        raidHook['move_1'] = fort_raid['move_1'] = 0
-                        raidHook['move_2'] = fort_raid['move_2'] = 0
+                        rawRaid['raid_seed'] = fort.raid_info.raid_seed
+                        rawRaid['raid_battle_ms'] = fort.raid_info.raid_battle_ms
+                        rawRaid['raid_spawn_ms'] = fort.raid_info.raid_spawn_ms
+                        rawRaid['raid_end_ms'] = fort.raid_info.raid_end_ms
+                        rawRaid['raid_level'] = fort.raid_info.raid_level
+                        rawRaid['complete'] = fort.raid_info.complete
+                        rawRaid['pokemon_id'] = 0
+                        rawRaid['cp'] = 0
+                        rawRaid['move_1'] = 0
+                        rawRaid['move_2'] = 0
                         if fort.raid_info.HasField('raid_pokemon'):
-                            raidHook['pokemon_id'] = fort_raid['pokemon_id'] = fort.raid_info.raid_pokemon.pokemon_id
-                            raidHook['cp'] = fort_raid['cp'] = fort.raid_info.raid_pokemon.cp
-                            raidHook['move_1'] = fort_raid['move_1'] = fort.raid_info.raid_pokemon.move_1
-                            raidHook['move_2'] = fort_raid['move_2'] = fort.raid_info.raid_pokemon.move_2
-                        if fort_raid not in RAID_CACHE:
-                            db_proc.add(self.normalize_raid(fort_raid))
-                            LOOP.create_task(self.notifier.webhook_raids(raidHook, map_objects.time_of_day))
-                    
+                            rawRaid['pokemon_id'] = fort.raid_info.raid_pokemon.pokemon_id
+                            rawRaid['cp'] = fort.raid_info.raid_pokemon.cp
+                            rawRaid['move_1'] = fort.raid_info.raid_pokemon.move_1
+                            rawRaid['move_2'] = fort.raid_info.raid_pokemon.move_2
+                        if rawRaid not in RAID_CACHE:
+                            db_proc.add(self.normalize_raid(rawRaid))
+                            LOOP.create_task(self.notifier.webhook_raids(rawRaid, map_objects.time_of_day))
                     
             if more_points:
                 try:
