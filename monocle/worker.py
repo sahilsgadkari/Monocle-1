@@ -887,7 +887,7 @@ class Worker:
                         if rawRaid not in RAID_CACHE:
                             db_proc.add(self.normalize_raid(rawRaid))
                             LOOP.create_task(self.notifier.webhook_raids(rawRaid, map_objects.time_of_day))
-                    
+
             if more_points:
                 try:
                     for p in map_cell.spawn_points:
