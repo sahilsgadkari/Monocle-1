@@ -859,10 +859,6 @@ class Notifier:
                 "boss_move_2": fort_raid['move_2']
             }
         }
-        #try:
-        #    data['message']['name'] = fort['name']
-        #except KeyError:
-        #    pass
 
         session = SessionManager.get()
         return await self.wh_raid_send(session, data)
