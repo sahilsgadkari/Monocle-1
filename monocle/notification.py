@@ -800,39 +800,35 @@ class Notifier:
         async def wh_send(self, session, payload):
             return await self.hook_post(HOOK_POINT, session, payload)
 
-    async def webhook_gym(self, fort, time_of_day):
-        """ Send a gym notification via webhook
-        """
-        try:
-            fort_id = fort['external_id']
-        except KeyError:
-            pass
-
-        data = {
-            'type': "gym",
-            'message': {
-                "fort_id": fort['external_id'],
-                "gym_name": fort['name'],
-                "gym_lat": fort['lat'],
-                "gym_lon": fort['lon'],
-                "team": fort['team'],
-                "guard_pokemon_id": fort['guard_pokemon_id'],
-                "slots_available": fort['slots_available']
-            }
-        }
-        #try:
-        #    data['message']['name'] = fort['name']
-        #except KeyError:
-        #    pass
-
-        session = SessionManager.get()
-        return await self.wh_gym_send(session, data)
-
     if conf.GYM_WEBHOOK:
+        async def webhook_gym(self, fort, time_of_day):
+            """ Send a gym notification via webhook
+            """
+            try:
+                fort_id = fort['external_id']
+            except KeyError:
+                pass
+
+            data = {
+                'type': "gym",
+                'message': {
+                    "fort_id": fort['external_id'],
+                    "gym_name": fort['name'],
+                    "gym_lat": fort['lat'],
+                    "gym_lon": fort['lon'],
+                    "team": fort['team'],
+                    "guard_pokemon_id": fort['guard_pokemon_id'],
+                    "slots_available": fort['slots_available']
+                }
+            }
+
+            session = SessionManager.get()
+            return await self.wh_gym_send(session, data)
+
         async def wh_gym_send(self, session, payload):
             results = await gather(*tuple(self.hook_post(w, session, payload) for w in HOOK_POINTS), loop=LOOP)
             return True in results
-    else:
+
         async def wh_gym_send(self, session, payload):
             return await self.hook_post(HOOK_POINT, session, payload)
 
