@@ -105,12 +105,7 @@ var RaidIcon = L.Icon.extend({
     },
     createIcon: function() {
         var div = document.createElement('div');
-        var current_time = new Date().getTime() / 1000;
-        if (this.options.raid_starts_at > current_time) {
-            var timer_format = 'pre_raid_remaining_text';
-        } else {
-            var timer_format = 'during_raid_remaining_text';
-        }
+
         if (this.options.raid_pokemon_id !== 0) {
             div.innerHTML =
                 '<div class="pokemarker">' +
@@ -120,7 +115,7 @@ var RaidIcon = L.Icon.extend({
                     '<div class="raid_platform_container">' +
                         '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_start_level_' + this.options.raid_level + '.png?201" />' +
                     '</div>' +
-                    '<div class="' + timer_format + '" data-expire="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + '</div>' +
+                    '<div class="raid_remaining_text" data-expire1="' + this.options.raid_starts_at + '" data-expire2="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + this.options.raid_starts_at + '</div>' +
                 '</div>';
         } else {
             div.innerHTML =
@@ -128,7 +123,7 @@ var RaidIcon = L.Icon.extend({
                     '<div class="pre_raid_container">' +
                         '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_level_' + this.options.raid_level + '.png?201" />' +
                     '</div>' +
-                    '<div class="' + timer_format + '" data-expire="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + '</div>' +
+                    '<div class="raid_remaining_text" data-expire1="' + this.options.raid_starts_at + '" data-expire2="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + this.options.raid_starts_at + '</div>' +
                 '</div>';
         }
         return div;
@@ -153,10 +148,10 @@ var PokestopIcon = L.Icon.extend({
 var markers = {};
 var overlays = {
     Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    ScanArea: L.layerGroup([])
+    ScanArea: L.layerGroup([]),
+    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
 };
 
 var hidden_overlays = {
@@ -949,6 +944,21 @@ function calculateRemainingTime(expire_at_timestamp) {
     return minutes + ':' + (seconds > 9 ? "" + seconds: "0" + seconds);
 }
 
+function calculateRemainingRaidTime(expire_at_timestamp1,expire_at_timestamp2) {
+    var diff1 = (expire_at_timestamp1 - new Date().getTime() / 1000);
+  
+    if (diff1 < 0) {
+        var diff2 = (expire_at_timestamp2 - new Date().getTime() / 1000);
+        var minutes = parseInt(diff2 / 60);
+        var seconds = parseInt(diff2 - (minutes * 60));
+    return minutes + ':' + (seconds > 9 ? "" + seconds: "0" + seconds);
+    } else {
+        var minutes = parseInt(diff1 / 60);
+        var seconds = parseInt(diff1 - (minutes * 60));
+    }
+    return minutes + ':' + (seconds > 9 ? "" + seconds: "0" + seconds);
+}
+
 function updateTime() {
     if (getPreference("SHOW_TIMER") === "1"){
         $(".remaining_text").each(function() {
@@ -962,13 +972,16 @@ function updateTime() {
     }
   
     if (getPreference("SHOW_RAID_TIMER") === "1"){
-        $(".pre_raid_remaining_text").each(function() {
+        $(".raid_remaining_text").each(function() {
             $(this).css('visibility', 'visible');
-            this.innerHTML = calculateRemainingTime($(this).data('expire'));
-        });
-        $(".during_raid_remaining_text").each(function() {
-            $(this).css('visibility', 'visible');
-            this.innerHTML = calculateRemainingTime($(this).data('expire'));
+            this.innerHTML = calculateRemainingRaidTime($(this).data('expire1'),$(this).data('expire2'));
+            
+            var current_time = new Date().getTime() / 1000;
+            if ($(this).data('expire1') > current_time) {
+                $(this).css('background-color', 'rgba(255, 128, 0, 0.7)'); // Orange
+            } else {
+                $(this).css('background-color', 'rgba(51, 204, 51, 0.7)');  // Green
+            }
         });
     }else{
         $(".pre_raid_remaining_text").each(function() {
