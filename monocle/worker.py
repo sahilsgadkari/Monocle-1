@@ -11,7 +11,7 @@ from aiopogo.auth_ptc import AuthPtc
 from cyrandom import choice, randint, uniform
 from pogeo import get_distance
 
-from .db import FORT_CACHE, RAID_CACHE, MYSTERY_CACHE, SIGHTING_CACHE
+from .db import FORT_CACHE, RAID_CACHE, MYSTERY_CACHE, SIGHTING_CACHE, FORT_NAMES_CACHE
 from .utils import round_coords, load_pickle, get_device_info, get_start_coords, Units, randomize_point
 from .shared import get_logger, LOOP, SessionManager, run_threaded, ACCOUNTS
 from . import altitudes, avatar, bounds, db_proc, spawns, sanitized as conf
@@ -847,6 +847,10 @@ class Worker:
                     rawFort['slots_available'] = fort.gym_display.slots_available
                     rawFort['time_occupied'] = fort.gym_display.occupied_millis // 1000
                     if fort not in FORT_CACHE:
+                        for item in FORT_NAMES_CACHE.items():
+                            self.log.warning("name0 is: {}", item[0])
+                            self.log.warning("name1 is: {}", item[1])
+                            #self.log.warning("two is: {}", two)
                         if conf.PULL_GYM_NAME:
                             request = self.api.create_request()
                             request.gym_get_info(
@@ -865,6 +869,11 @@ class Worker:
                                     rawRaid['name'] = rawFort['name'] = gym_get_info.name
                             except KeyError:
                                 self.log.warning("Failed to get gym_info {}", fort.id)
+                        if fort not in FORT_NAMES_CACHE:
+                            fortNames = {}
+                            fortNames['external_id'] = fort.id
+                            fortNames['name'] = gym_get_info.name
+                            db_proc.add(self.normalize_gym_name(fortNames))
                         db_proc.add(self.normalize_gym(rawFort))
                         if conf.GYM_WEBHOOK:
                             LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
@@ -1329,6 +1338,14 @@ class Worker:
             'is_in_battle': raw['is_in_battle'],
             'slots_available': raw['slots_available'],
             'time_occupied': raw['time_occupied']
+        }
+
+    @staticmethod
+    def normalize_gym_name(raw):
+        return {
+            'type': 'fort_name',
+            'external_id': raw['external_id'],
+            'name': raw['name']
         }
 
     @staticmethod

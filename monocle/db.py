@@ -168,12 +168,15 @@ class FortCache:
 
     def add(self, sighting):
         self.gyms[sighting['external_id']] = sighting['last_modified']
-
+    
     def __contains__(self, sighting):
         try:
             return self.gyms[sighting.id] == sighting.last_modified_timestamp_ms // 1000
         except KeyError:
             return False
+
+    def items(self):
+        return self.gyms.items()
 
     def pickle(self):
         state = self.__dict__.copy()
@@ -190,6 +193,45 @@ class FortCache:
                 self.__dict__.update(state)
         except (FileNotFoundError, TypeError, KeyError):
             pass
+
+class FortNameCache:
+    """Simple cache for storing fort names"""
+    def __init__(self):
+        self.gyms = {}
+        self.class_version = 2
+        self.unpickle()
+
+    def __len__(self):
+        return len(self.gyms)
+
+    def add(self, sighting):
+        self.gyms[sighting['external_id']] = str(sighting['name'])
+
+    def __contains__(self, sighting):
+        try:
+            return self.gyms[sighting.id] == sighting.last_modified_timestamp_ms // 1000
+        except KeyError:
+            return False
+
+    def items(self):
+        return self.gyms.items()
+
+    def pickle(self):
+        state = self.__dict__.copy()
+        state['db_hash'] = spawns.db_hash
+        state['bounds_hash'] = hash(bounds)
+        dump_pickle('fort_names', state)
+
+    def unpickle(self):
+        try:
+            state = load_pickle('fort_names', raise_exception=True)
+            if all((state['class_version'] == self.class_version,
+                    state['db_hash'] == spawns.db_hash,
+                    state['bounds_hash'] == hash(bounds))):
+                self.__dict__.update(state)
+        except (FileNotFoundError, TypeError, KeyError):
+            pass
+
 
 class RaidCache:
     """Simple cache for storing raid sightings"""
@@ -230,6 +272,7 @@ SIGHTING_CACHE = SightingCache()
 MYSTERY_CACHE = MysteryCache()
 FORT_CACHE = FortCache()
 RAID_CACHE = RaidCache()
+FORT_NAMES_CACHE = FortNameCache()
 
 Base = declarative_base()
 
@@ -559,6 +602,9 @@ def add_fort_sighting(session, raw_fort):
     )
     session.add(obj)
     FORT_CACHE.add(raw_fort)
+
+def add_fort_name(raw_fort):
+    FORT_NAMES_CACHE.add(raw_fort)
 
 def add_raid_sighting(session, raw_raid):
     # Check if fort exists

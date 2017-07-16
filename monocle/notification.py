@@ -10,7 +10,7 @@ from aiohttp import ClientError, ClientResponseError, ServerTimeoutError
 from aiopogo import json_dumps, json_loads
 
 from .utils import load_pickle, dump_pickle
-from .db import session_scope, get_pokemon_ranking, estimate_remaining_time
+from .db import session_scope, get_pokemon_ranking, estimate_remaining_time, FORT_CACHE
 from .names import MOVES, POKEMON
 from .shared import get_logger, SessionManager, LOOP, run_threaded
 from . import sanitized as conf
@@ -840,6 +840,10 @@ class Notifier:
             fort_id = fort_raid['external_id']
         except KeyError:
             pass
+        
+        for key, team in FORT_CACHE.items():
+            self.log.warning("key is: {}", key)
+            self.log.warning("team is: {}", team)
 
         data = {
             'type': "raid",
