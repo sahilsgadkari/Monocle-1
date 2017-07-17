@@ -847,33 +847,34 @@ class Worker:
                     rawFort['slots_available'] = fort.gym_display.slots_available
                     rawFort['time_occupied'] = fort.gym_display.occupied_millis // 1000
                     if fort not in FORT_CACHE:
-                        for item in FORT_NAMES_CACHE.items():
-                            self.log.warning("name0 is: {}", item[0])
-                            self.log.warning("name1 is: {}", item[1])
-                            #self.log.warning("two is: {}", two)
+                        #self.log.warning("Fort {} evaluated", fort.id)
                         if conf.PULL_GYM_NAME:
-                            request = self.api.create_request()
-                            request.gym_get_info(
-                                                    gym_id=fort.id,
-                                                    player_lat_degrees = self.location[0],
-                                                    player_lng_degrees = self.location[1],
-                                                    gym_lat_degrees=fort.latitude,
-                                                    gym_lng_degrees=fort.longitude
-                                                )
-                            responses = await self.call(request, action=1.2)
-                            try:
-                                if responses['GYM_GET_INFO'].result != 1:
+                            name = FORT_NAMES_CACHE.get_name(fort.id)
+                            self.log.warning("name returned: {}", name)
+                            #if fort.id not in FORT_NAMES_CACHE:
+                            if name == '':
+                                fortNames = {}
+                                fortNames['external_id'] = fort.id
+                                request = self.api.create_request()
+                                request.gym_get_info(
+                                                        gym_id=fort.id,
+                                                        player_lat_degrees = self.location[0],
+                                                        player_lng_degrees = self.location[1],
+                                                        gym_lat_degrees=fort.latitude,
+                                                        gym_lng_degrees=fort.longitude
+                                                    )
+                                responses = await self.call(request, action=1.2)
+                                try:
+                                    if responses['GYM_GET_INFO'].result != 1:
+                                        self.log.warning("Failed to get gym_info {}", fort.id)
+                                    else:
+                                        gym_get_info = responses['GYM_GET_INFO']
+                                        rawRaid['name'] = rawFort['name'] = gym_get_info.name
+                                except KeyError:
                                     self.log.warning("Failed to get gym_info {}", fort.id)
-                                else:
-                                    gym_get_info = responses['GYM_GET_INFO']
-                                    rawRaid['name'] = rawFort['name'] = gym_get_info.name
-                            except KeyError:
-                                self.log.warning("Failed to get gym_info {}", fort.id)
-                        if fort not in FORT_NAMES_CACHE:
-                            fortNames = {}
-                            fortNames['external_id'] = fort.id
-                            fortNames['name'] = gym_get_info.name
-                            db_proc.add(self.normalize_gym_name(fortNames))
+                                fortNames['name'] = gym_get_info.name
+                                db_proc.add(self.normalize_gym_name(fortNames))
+                                self.log.warning("Fort {}. API Called: {}", fort.id, fortNames['name'])
                         db_proc.add(self.normalize_gym(rawFort))
                         if conf.GYM_WEBHOOK:
                             LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))

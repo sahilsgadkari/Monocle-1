@@ -207,14 +207,16 @@ class FortNameCache:
     def add(self, sighting):
         self.gyms[sighting['external_id']] = str(sighting['name'])
 
-    def __contains__(self, sighting):
-        try:
-            return self.gyms[sighting.id] == sighting.last_modified_timestamp_ms // 1000
-        except KeyError:
-            return False
-
     def items(self):
         return self.gyms.items()
+    
+    def get_name(self, fort_id):
+        log.warning("fort_id {}", fort_id)
+        gym_name = ''
+        for key, name in self.items():
+            if key == fort_id:
+                gym_name = name
+        return gym_name
 
     def pickle(self):
         state = self.__dict__.copy()
