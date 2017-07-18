@@ -836,7 +836,7 @@ class Worker:
                         db_proc.add(pokestop)
                 else:
                     if fort not in FORT_CACHE:
-                        gyms = self.normalize_gym2(fort)
+                        gyms = self.normalize_gym(fort)
                         if conf.PULL_GYM_NAME:
                             # Check if gym name is in FORT_NAMES_CACHE
                             name = FORT_NAMES_CACHE.get_name(fort.id)
@@ -1313,22 +1313,6 @@ class Worker:
 
     @staticmethod
     def normalize_gym(raw):
-        return {
-            'type': 'fort',
-            'external_id': raw['external_id'],
-            'name': raw['name'],
-            'lat': raw['lat'],
-            'lon': raw['lon'],
-            'team': raw['team'],
-            'guard_pokemon_id': raw['guard_pokemon_id'],
-            'last_modified': raw['last_modified'],
-            'is_in_battle': raw['is_in_battle'],
-            'slots_available': raw['slots_available'],
-            'time_occupied': raw['time_occupied']
-        }
-
-    @staticmethod
-    def normalize_gym2(raw):
         return {
             'type': 'fort',
             'external_id': raw.id,
