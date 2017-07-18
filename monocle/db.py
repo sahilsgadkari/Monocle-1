@@ -211,7 +211,7 @@ class FortNameCache:
         return self.gyms.items()
     
     def get_name(self, fort_id):
-        log.warning("fort_id {}", fort_id)
+        #log.warning("fort_id {}", fort_id)
         gym_name = ''
         for key, name in self.items():
             if key == fort_id:
