@@ -835,11 +835,6 @@ class Worker:
                         pokestop = self.normalize_pokestop(fort)
                         db_proc.add(pokestop)
                 else:
-                    rawRaid = {}
-                    rawRaid['external_id'] = fort.id
-                    rawRaid['lat'] = fort.latitude
-                    rawRaid['lon'] = fort.longitude
-                    rawRaid['name'] = ''
                     if fort not in FORT_CACHE:
                         gyms = self.normalize_gym2(fort)
                         if conf.PULL_GYM_NAME:
@@ -855,9 +850,6 @@ class Worker:
                             LOOP.create_task(self.notifier.webhook_gym(gyms, map_objects.time_of_day))
                     if fort.HasField('raid_info'):
                         raid = self.normalize_raid(fort)
-                        raid_name = FORT_NAMES_CACHE.get_name(fort.id)
-                        if raid_name != '':
-                            raid['name'] = raid_name
                         if fort.raid_info.HasField('raid_pokemon'):
                             raid['pokemon_id'] = fort.raid_info.raid_pokemon.pokemon_id
                             raid['cp'] = fort.raid_info.raid_pokemon.cp
@@ -1364,7 +1356,6 @@ class Worker:
         return {
             'type': 'raid',
             'external_id': raw.id,
-            'name': '',
             'lat': raw.latitude,
             'lon': raw.longitude,
             'raid_seed': raw.raid_info.raid_seed,

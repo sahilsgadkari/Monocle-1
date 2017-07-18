@@ -842,9 +842,8 @@ class Notifier:
             pass
         
         gym_name = ''
-        for key, name in FORT_NAMES_CACHE.items():
-            if key == fort_id:
-                gym_name = name
+        gym_name = FORT_NAMES_CACHE.get_name(fort_id)
+        
         data = {
             'type': "raid",
             'message': {
