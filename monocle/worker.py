@@ -870,9 +870,9 @@ class Worker:
                             LOOP.create_task(self.notifier.webhook_gym(rawFort, map_objects.time_of_day))
                     if fort.HasField('raid_info'):
                         rawRaid['raid_seed'] = fort.raid_info.raid_seed
-                        rawRaid['raid_battle_ms'] = fort.raid_info.raid_battle_ms
-                        rawRaid['raid_spawn_ms'] = fort.raid_info.raid_spawn_ms
-                        rawRaid['raid_end_ms'] = fort.raid_info.raid_end_ms
+                        rawRaid['raid_battle_ms'] = fort.raid_info.raid_battle_ms // 1000
+                        rawRaid['raid_spawn_ms'] = fort.raid_info.raid_spawn_ms // 1000
+                        rawRaid['raid_end_ms'] = fort.raid_info.raid_end_ms // 1000
                         rawRaid['raid_level'] = fort.raid_info.raid_level
                         rawRaid['complete'] = fort.raid_info.complete
                         rawRaid['pokemon_id'] = 0
@@ -1337,9 +1337,9 @@ class Worker:
             'type': 'raid',
             'external_id': raw['external_id'],
             'raid_seed': raw['raid_seed'],
-            'raid_battle_ms': raw['raid_battle_ms'] // 1000,
-            'raid_spawn_ms': raw['raid_spawn_ms'] // 1000,
-            'raid_end_ms': raw['raid_end_ms'] // 1000,
+            'raid_battle_ms': raw['raid_battle_ms'],
+            'raid_spawn_ms': raw['raid_spawn_ms'],
+            'raid_end_ms': raw['raid_end_ms'],
             'raid_level': raw['raid_level'],
             'complete': raw['complete'],
             'pokemon_id': raw['pokemon_id'],
