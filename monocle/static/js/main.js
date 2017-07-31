@@ -246,7 +246,9 @@ function getRaidPopupContent (item) {
     if (item.raid_pokemon_id !== 0) {
         content += '<img src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
     }
-    if (item.raid_level === 4) {
+    if (item.raid_level === 5) {
+        content += '<b>Level 5 Raid</b>'
+    } else if (item.raid_level === 4) {
         content += '<b>Level 4 Raid</b>'
     } else if (item.raid_level === 3 ) {
         content += '<b>Level 3 Raid</b>'
@@ -847,7 +849,7 @@ function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml =
             '<h5>Raid Filters</h5><br>';
-    for (var i = 1; i <= 4; i++){
+    for (var i = 1; i <= 5; i++){
         var partHtml =
             '<div class="text-center">' +
                 '<div class="raid_filter_label"><b>Level ' + i + '  </b></div>' +
@@ -887,7 +889,7 @@ function setSettingsDefaults(){
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
     };
-    for (var i = 1; i <= 4; i++) {
+    for (var i = 1; i <= 5; i++) {
         _defaultSettings['raid_filter-'+i] = (_defaultSettings['RAID_IDS'].indexOf(i) > -1) ? "hide_raid" : "display_raid";
     };
 
