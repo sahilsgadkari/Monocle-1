@@ -266,7 +266,12 @@ function getRaidPopupContent (item) {
                '<br><b>Charge Move:</b> ' + raid_boss_move_2 +
                '<br><b>Raid Starts:</b> ' + start_time +
                '<br><b>Raid Ends:</b> ' + end_time;
-    content += '<br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    if (item.raid_level === 5) {
+         content += '<br><b>Weak Against:</b><br><img src="static/monocle-icons/raids/counter-' + item.raid_pokemon_id + '.png">';
+    }
+    content += '<br><br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get Directions</a>';
+    content += '&nbsp; | &nbsp;';
+    content += '<a href="https://pokemongo.gamepress.gg/pokemon/' + item.raid_pokemon_id + '#raid-boss-counters" target="_blank" title="Raid Boss Counters">Raid Boss Counters</a>';
     content += '</div>'
     return content;
 }
@@ -423,7 +428,7 @@ function FortMarker (raw) {
 
 function RaidMarker (raw) {
     var raid_boss_icon = new RaidIcon({raid_pokemon_id: raw.raid_pokemon_id, raid_level: raw.raid_level, raid_ends_at: raw.raid_end, raid_starts_at: raw.raid_battle});
-    var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 2000});
+    var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 5000});
 
     if (raw.hide_raid) {
         raid_marker.overlay = 'FilteredRaids';
