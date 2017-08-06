@@ -78,6 +78,18 @@ def show_iv_menu_item():
         show_iv_menu_item += '<h6>*IV not accurate at this time</h6>'
     return Markup(show_iv_menu_item)
 
+def show_form_menu_item():
+    show_form_menu_item = ''
+
+    if conf.SHOW_FORM_MENU_ITEM:
+        show_form_menu_item = '<h5>Show Unown letter above Unown marker</h5>'
+        show_form_menu_item += '<div class="btn-group" role="group" data-group="SHOW_FORM">'
+        show_form_menu_item += '<button type="button" class="btn btn-default" data-value="1" onClick="window.location.reload()">Yes</button>'
+        show_form_menu_item += '<button type="button" class="btn btn-default" data-value="0" onClick="window.location.reload()">No</button>'
+        show_form_menu_item += '</div>'
+        show_form_menu_item += '<hr />'
+    return Markup(show_form_menu_item)
+
 def render_map():
     css_js = ''
 
@@ -91,9 +103,10 @@ def render_map():
         "_defaultSettings['SHOW_TIMER'] = '{:d}'; "
         "_defaultSettings['SHOW_RAID_TIMER'] = '{:d}'; "
         "_defaultSettings['SHOW_IV'] = '{:d}'; "
+        "_defaultSettings['SHOW_FORM'] = '{:d}'; "
         "_defaultSettings['MAP_CHOICE'] = '{:d}'; "
         "_defaultSettings['TRASH_IDS'] = [{}]; "
-        "_defaultSettings['RAID_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_RAID_TIMER, conf.SHOW_IV, 1, ', '.join(str(p_id) for p_id in conf.TRASH_IDS), ', '.join(str(r_id) for r_id in conf.RAID_IDS)))
+        "_defaultSettings['RAID_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_RAID_TIMER, conf.SHOW_IV, conf.SHOW_FORM, 1, ', '.join(str(p_id) for p_id in conf.TRASH_IDS), ', '.join(str(r_id) for r_id in conf.RAID_IDS)))
 
     template = app.jinja_env.get_template('custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html')
     return template.render(
@@ -112,6 +125,7 @@ def render_map():
         announcements=announcements(),
         pogosd_region=conf.POGOSD_REGION,
         show_iv_menu_item=show_iv_menu_item(),
+        show_form_menu_item=show_form_menu_item(),
         init_js_vars=js_vars,
         extra_css_js=Markup(css_js)
     )

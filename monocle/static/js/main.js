@@ -31,6 +31,10 @@ var PokemonIcon = L.Icon.extend({
     },
     createIcon: function() {
         var div = document.createElement('div');
+        var form_text = '';
+        if ( this.options.form ) {
+            form_text = '<div class="form_text">' + this.options.form + '</div>';
+        }
         if ( this.options.iv > 0 && this.options.iv < 80 ) {
             div.innerHTML =
                 '<div class="pokemarker">' +
@@ -39,6 +43,7 @@ var PokemonIcon = L.Icon.extend({
                     '</div>' +
                     '<div class="iv_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    form_text +
                     '</div>';
         }else if ( this.options.iv >= 80 && this.options.iv < 90 ) {
             div.innerHTML =
@@ -48,6 +53,7 @@ var PokemonIcon = L.Icon.extend({
                     '</div>' +
                     '<div class="iv_gt_80_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    form_text +
                     '</div>';
         }else if ( this.options.iv >= 90 && this.options.iv < 100) {
             div.innerHTML =
@@ -57,6 +63,7 @@ var PokemonIcon = L.Icon.extend({
                     '</div>' +
                     '<div class="iv_gt_90_text">' + this.options.iv.toFixed(0) + '%</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    form_text +
                     '</div>';
         }else if ( this.options.iv == 100 ) {
             div.innerHTML =
@@ -66,6 +73,7 @@ var PokemonIcon = L.Icon.extend({
                 '</div>' +
                 '<div class="iv_eq_100_img"><img class="iv_eq_100_img" src="static/img/100.png"></div>' +
                 '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                form_text +
                 '</div>';
         }else{
             div.innerHTML =
@@ -74,6 +82,7 @@ var PokemonIcon = L.Icon.extend({
                         '<span class="sprite-' + this.options.iconID + '" />' +
                     '</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
+                    form_text +
                     '</div>';
         }
         return div;
@@ -183,7 +192,14 @@ function getPopupContent (item) {
     var minutes = parseInt(diff / 60);
     var seconds = parseInt(diff - (minutes * 60));
     var expires_at = minutes + 'm ' + seconds + 's';
-    var content = '<b>' + item.name + '</b> - <a href="https://pokemongo.gamepress.gg/pokemon/' + item.pokemon_id + '">#' + item.pokemon_id + '</a>';
+    var form = getForm(item.form);
+    if (item.form > 0) {
+       var pokemon_name = item.name + ' - ' + form;
+    } else {
+       var pokemon_name = item.name;
+    }
+  
+    var content = '<b>' + pokemon_name + '</b> - <a href="https://pokemongo.gamepress.gg/pokemon/' + item.pokemon_id + '">#' + item.pokemon_id + '</a>';
     if(item.atk != undefined){
         var totaliv = 100 * (item.atk + item.def + item.sta) / 45;
         content += ' - <b>' + totaliv.toFixed(2) + '%</b><br>';
@@ -347,13 +363,21 @@ function getOpacity (diff) {
     return 0.5 + diff / 600;
 }
 
+function getForm (f) {
+    if ((f !== null) && f !== 0) {
+        return String.fromCharCode(f + 64);
+    }
+    return "";
+}
+
 function PokemonMarker (raw) {
     if (getPreference("SHOW_IV") === "1"){
         var totaliv = 100 * (raw.atk + raw.def + raw.sta) / 45;
     }else{
         var totaliv = 0;
     }
-    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, expires_at: raw.expires_at});
+    var unown_letter = getForm(raw.form);
+    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
     var intId = parseInt(raw.id.split('-')[1]);
@@ -995,6 +1019,16 @@ function updateTime() {
             $(this).css('visibility', 'hidden');
         });
         $(".during_raid_remaining_text").each(function() {
+            $(this).css('visibility', 'hidden');
+        });
+    }
+  
+    if (getPreference("SHOW_FORM") === "1"){
+        $(".form_text").each(function() {
+            $(this).css('visibility', 'visible');
+        });
+    }else{
+        $(".form_text").each(function() {
             $(this).css('visibility', 'hidden');
         });
     }
