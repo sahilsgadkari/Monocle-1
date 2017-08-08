@@ -282,7 +282,7 @@ function getRaidPopupContent (item) {
                '<br><b>Charge Move:</b> ' + raid_boss_move_2 +
                '<br><b>Raid Starts:</b> ' + start_time +
                '<br><b>Raid Ends:</b> ' + end_time;
-    if (item.raid_level >= 4) {
+    if (item.raid_level >= 3) {
          content += '<br><b>Weak Against:</b><br><img src="static/monocle-icons/raids/counter-' + item.raid_pokemon_id + '.png">';
     }
     content += '<br><br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get Directions</a>';
