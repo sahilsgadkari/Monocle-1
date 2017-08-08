@@ -106,7 +106,7 @@ def render_map():
         "_defaultSettings['SHOW_FORM'] = '{:d}'; "
         "_defaultSettings['MAP_CHOICE'] = '{:d}'; "
         "_defaultSettings['TRASH_IDS'] = [{}]; "
-        "_defaultSettings['RAID_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_RAID_TIMER, conf.SHOW_IV, conf.SHOW_FORM, 1, ', '.join(str(p_id) for p_id in conf.TRASH_IDS), ', '.join(str(r_id) for r_id in conf.RAID_IDS)))
+        "_defaultSettings['RAID_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_RAID_TIMER, conf.SHOW_IV, conf.SHOW_FORM, 0, ', '.join(str(p_id) for p_id in conf.TRASH_IDS), ', '.join(str(r_id) for r_id in conf.RAID_IDS)))
 
     template = app.jinja_env.get_template('custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html')
     return template.render(
