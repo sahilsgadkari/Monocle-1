@@ -244,7 +244,7 @@ _defaults = {
     'RESCAN_UNKNOWN': 90,
     'SCAN_DELAY': 10,
     'SEARCH_SLEEP': 2.5,
-    'SHOW_FORM': bool,
+    'SHOW_FORM': True,
     'SHOW_FORM_MENU_ITEM': False,
     'SHOW_RAID_TIMER': False,
     'SHOW_TIMER': False,
