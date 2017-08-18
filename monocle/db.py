@@ -470,7 +470,7 @@ def add_sighting(session, pokemon):
         move_1=pokemon.get('move_1'),
         move_2=pokemon.get('move_2'),
         cp=pokemon.get('cp'),
-        form=pokemon['form']
+        form=pokemon.get('form', 0)
     )
     session.add(obj)
     SIGHTING_CACHE.add(pokemon)
