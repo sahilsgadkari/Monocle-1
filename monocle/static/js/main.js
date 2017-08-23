@@ -160,7 +160,9 @@ var overlays = {
     Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     ScanArea: L.layerGroup([]),
-    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
+    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+    Spawns: L.layerGroup([]),
+    Workers: L.layerGroup([])
 };
 
 var hidden_overlays = {
@@ -731,9 +733,13 @@ map.whenReady(function () {
     getGyms();
     getRaids();
     getScanAreaCoords();
+    getWorkers();
+    getSpawnPoints();
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 90000)
     setInterval(getRaids, 60000);
+    setInterval(getWorkers, 1000);
+    setInterval(getSpawnPoints, 30000);
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
