@@ -306,6 +306,7 @@ function getFortPopupContent (item) {
     }
     if (item.team === 0) {
         content += '<b>An empty Gym!</b>';
+        content += '<b>' + item.gym_name + ' Gym</b><br>';
         content += '<br>Last changed: ' + this.convertToTwelveHourTime(item.last_modified);
     }
     else {
