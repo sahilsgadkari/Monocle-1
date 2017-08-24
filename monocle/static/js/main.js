@@ -708,10 +708,14 @@ else{
   var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 16);
 }
 
-map.addLayer(overlays.Pokemon);
-//map.addLayer(overlays.Gyms); // Hide by default
-//map.addLayer(overlays.Raids); // Hide by default
-map.addLayer(overlays.ScanArea);
+if (_DisplayPokemonLayer === 'True') {
+    map.addLayer(overlays.Pokemon); }
+if (_DisplayGymsLayer === 'True') {
+    map.addLayer(overlays.Gyms); }
+if (_DisplayRaidsLayer === 'True') {
+    map.addLayer(overlays.Raids); }
+if (_DisplayScanAreaLayer === 'True') {
+    map.addLayer(overlays.ScanArea); }
 
 var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 

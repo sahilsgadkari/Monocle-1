@@ -9,7 +9,7 @@
     <link rel="stylesheet" href='static/css/spritesheet.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.default.css'>
-    <link rel="stylesheet" href='static/css/ticker.css'>
+    <link rel="stylesheet" href='static/css/ticker.css?226'>
     <link rel="apple-touch-icon" sizes="180x180" href="static/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="static/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="static/favicon/favicon-16x16.png">
@@ -29,6 +29,10 @@
         var _LightMapProviderAttribution = '{{ light_map_provider_attribution|safe }}';
         var _LightMapOpacity = '{{ light_map_opacity }}';
         var _PoGoSDRegion = '{{ pogosd_region }}';
+        var _DisplayPokemonLayer = '{{ display_pokemon }}';
+        var _DisplayGymsLayer = '{{ display_gyms }}';
+        var _DisplayRaidsLayer = '{{ display_raids }}';
+        var _DisplayScanAreaLayer = '{{ display_scan_area }}';
         _defaultSettings = {};
         _updateTimeInterval = null;
     </script>
@@ -117,7 +121,7 @@
     <script src='static/js/leaflet.js'></script>
     <script src='static/js/leaflet.markercluster.js'></script>
     <script src='static/js/bootstrap.min.js'></script>
-    <script src='static/js/main.js?227'></script>
+    <script src='static/js/main.js?228'></script>
     <script src='static/js/ticker.js'></script>
 
     {{ extra_css_js }}
