@@ -32,7 +32,7 @@ def ticker():
     ticker_items = ''
     
     if conf.TICKER_ITEMS:
-        ticker_items = '<div id="message_ticker"><div class="ticker">' + conf.TICKER_ITEMS + '</div></div>'
+        ticker_items = '<div id="message_ticker_' + conf.TICKER_COLOR + '"><div class="ticker">' + conf.TICKER_ITEMS + '</div></div>'
     return Markup(ticker_items)
 
 def motd():
