@@ -348,7 +348,11 @@ class Mystery(Base):
 
 
 class Spawnpoint(Base):
-    __tablename__ = 'spawnpoints'
+    if conf.GYM_POINTS:
+        __tablename__ = 'gympoints'
+
+    else:
+        __tablename__ = 'spawnpoints'
 
     id = Column(Integer, primary_key=True)
     spawn_id = Column(ID_TYPE, unique=True, index=True)

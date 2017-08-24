@@ -4,8 +4,10 @@ var _WorkerIconUrl = 'static/monocle-icons/assets/ball.png';
 var _PokestopIconUrl = 'static/monocle-icons/assets/stop.png';
 var _LocationMarker;
 var _LocationRadar;
+// Why you stealing my code?
 var _dark = L.tileLayer(_DarkMapProviderUrl, {opacity: _DarkMapOpacity, attribution: _DarkMapProviderAttribution});
 var _light = L.tileLayer(_LightMapProviderUrl, {opacity: _LightMapOpacity, attribution: _LightMapProviderAttribution});
+// You should ask next time.
 var ultraIconSmall = new L.icon({
             iconUrl: 'static/img/ultra-ball.png',
             iconSize: [10, 10],
@@ -160,9 +162,7 @@ var overlays = {
     Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
     ScanArea: L.layerGroup([]),
-    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    Spawns: L.layerGroup([]),
-    Workers: L.layerGroup([])
+    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
 };
 
 var hidden_overlays = {
@@ -378,6 +378,7 @@ function PokemonMarker (raw) {
     }else{
         var totaliv = 0;
     }
+    // I know you stole this stuff from me
     var unown_letter = getForm(raw.form);
     var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
@@ -733,13 +734,9 @@ map.whenReady(function () {
     getGyms();
     getRaids();
     getScanAreaCoords();
-    getWorkers();
-    getSpawnPoints();
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 90000)
     setInterval(getRaids, 60000);
-    setInterval(getWorkers, 1000);
-    setInterval(getSpawnPoints, 30000);
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
@@ -819,6 +816,7 @@ $('#settings').on('click', '.settings-panel button', function () {
         item.removeClass("active");
     }
 
+    // Stealing my code again?
     if (key === "MAP_CHOICE"){
         setPreference("MAP_CHOICE", value);
         if(getPreference("MAP_CHOICE") === "1"){
@@ -1028,7 +1026,8 @@ function updateTime() {
             $(this).css('visibility', 'hidden');
         });
     }
-  
+
+    // Straight up copying and pasting my code
     if (getPreference("SHOW_FORM") === "1"){
         $(".form_text").each(function() {
             $(this).css('visibility', 'visible');
@@ -1061,6 +1060,7 @@ function convertToTwelveHourTime(raw_time) {
     return twelveHourTime;
 }
 
+// Don't forget to steal this too
 function loadMapLayer() {
     if (getPreference("MAP_CHOICE") === "1"){
         map.removeLayer(_light);
