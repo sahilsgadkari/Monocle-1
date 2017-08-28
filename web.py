@@ -128,6 +128,7 @@ def render_map():
         display_gyms=conf.SHOW_GYMS_BY_DEFAULT,
         display_raids=conf.SHOW_RAIDS_BY_DEFAULT,
         display_scan_area=conf.SHOW_SCAN_AREA_BY_DEFAULT,
+        display_spawnpoints=conf.SHOW_SPAWNPOINTS_BY_DEFAULT,
         show_iv_menu_item=show_iv_menu_item(),
         show_form_menu_item=show_form_menu_item(),
         init_js_vars=js_vars,

@@ -157,13 +157,25 @@ var PokestopIcon = L.Icon.extend({
 });
 
 var markers = {};
-var overlays = {
-    Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-    ScanArea: L.layerGroup([]),
-    FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
-};
+if (_DisplaySpawnpointsLayer === 'True') {
+    var overlays = {
+        Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        ScanArea: L.layerGroup([]),
+        FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Spawns: L.layerGroup([]),
+        Workers: L.layerGroup([])
+    };
+} else {
+    var overlays = {
+        Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        ScanArea: L.layerGroup([]),
+        FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
+    };
+}
 
 var hidden_overlays = {
     FilteredRaids: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
@@ -188,6 +200,10 @@ monitor(overlays.Gyms, false)
 monitor(overlays.Raids, false)
 monitor(overlays.ScanArea, true)
 monitor(hidden_overlays.FilteredRaids, false)
+if (_DisplaySpawnpointsLayer === 'True') {
+    monitor(overlays.Spawns, false)
+    monitor(overlays.Workers, false)
+}
 
 function getPopupContent (item) {
     var diff = (item.expires_at - new Date().getTime() / 1000);
@@ -717,6 +733,9 @@ if (_DisplayRaidsLayer === 'True') {
     map.addLayer(overlays.Raids); }
 if (_DisplayScanAreaLayer === 'True') {
     map.addLayer(overlays.ScanArea); }
+if (_DisplaySpawnpointsLayer === 'True') {
+    map.addLayer(overlays.Spawns);
+    map.addLayer(overlays.Workers); }
 
 var control = L.control.layers(null, overlays).addTo(map); //Layer Controls menu
 
@@ -739,9 +758,17 @@ map.whenReady(function () {
     getGyms();
     getRaids();
     getScanAreaCoords();
+    if (_DisplaySpawnpointsLayer === 'True') {
+        getSpawnPoints();
+        getWorkers();
+    }
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 90000)
     setInterval(getRaids, 60000);
+    if (_DisplaySpawnpointsLayer === 'True') {
+        setInterval(getSpawnPoints, 30000);
+        setInterval(getWorkers, 30000);;
+    }
 });
 
 $("#settings>ul.nav>li>a").on('click', function(e){
