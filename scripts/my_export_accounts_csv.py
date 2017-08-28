@@ -78,7 +78,7 @@ if underlevel:
     with underlevel_file.open('a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         if write_header:
-            writer.writerow(('username', 'password', 'provider'))
+            writer.writerow(('username', 'password', 'provider', 'model', 'iOS', 'id'))
         for account in underlevel:
             row = [account['username'], account['password'], account['provider'], account['model'], account['iOS'], account['id']]
             writer.writerow(row)
