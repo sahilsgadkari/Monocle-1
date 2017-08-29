@@ -67,7 +67,7 @@ if invalid:
     with invalid_file.open('a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         if write_header:
-            writer.writerow(('username', 'password', 'provider', 'level', 'created', 'last used'))
+            writer.writerow(('username', 'password', 'provider', 'model', 'iOS', 'id'))
         for account in invalid:
             row = [account['username'], account['password'], account['provider']]
             writer.writerow(row)
