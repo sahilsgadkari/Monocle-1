@@ -58,6 +58,28 @@ def social_links():
 
     return Markup(social_links)
 
+def donate_tab():
+    donate_tab = ''
+    
+    if conf.PAYPAL_URL:
+        donate_tab = '<div class="panel panel-default setting-panel" data-panel="donate">'
+        donate_tab += '<div class="panel-heading">Donations Welcome</div>'
+        donate_tab += '<div class="panel-body"><br>Maps are free to use. Donations are more than welcome to help fund the scans that power these maps.<br><br>'
+        donate_tab += '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">'
+        donate_tab += '<input type="hidden" name="cmd" value="_s-xclick">'
+        donate_tab += '<input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">'
+        donate_tab += '<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">'
+        donate_tab += '<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">'
+        donate_tab += '</form>'
+        donate_tab += '<br>Monthly operational costs and current balance will be provided when funds run low.<br><br>'
+        if conf.BALANCE and conf.FUNDING_GOAL:
+            donate_tab += '<div>Monthly Operational Cost: $' + conf.FUNDING_GOAL + '</div>'
+            donate_tab += '<div>Current Balance: $' + conf.BALANCE + ' (updated daily)</div>'
+        donate_tab += '</div>'
+        donate_tab += '</div>'
+    
+    return Markup(donate_tab)
+
 def announcements():
     announcements = ''
 
@@ -121,6 +143,7 @@ def render_map():
         ticker_items=ticker(),
         motd=motd(),
         show_balance=balance(),
+        show_donate_tab=donate_tab(),
         social_links=social_links(),
         announcements=announcements(),
         pogosd_region=conf.POGOSD_REGION,
