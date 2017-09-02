@@ -42,6 +42,38 @@ def motd():
         motd = '<div class="motd">' + conf.MOTD + '</div>'
     return Markup(motd)
 
+def splash():
+    splash = ''
+    splash_message = ''
+    
+    if conf.SHOW_SPLASH and not conf.SPLASH_MESSAGE:
+        splash = '<div id="splash_popup" class="splash_container">'
+        splash += '<div class="splash_text">'
+        splash += 'Funding levels to maintain scans and maps are running low.<br>Please consider donating.<br><br>Thank you for your support.'
+        splash += '</div>'
+        splash += '<div class="splash_btn_container">'
+        splash += '<div class="splash_donate_btn">'
+        splash += '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">'
+        splash += '<input type="hidden" name="cmd" value="_s-xclick">'
+        splash += '<input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">'
+        splash += '<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">'
+        splash += '<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">'
+        splash += '</form>'
+        splash += '</div>'
+        splash += '<button id="splash_popup_close_btn" type="button" class="splash_clear_btn">Next Time</button>'
+        splash += '</div>'
+        splash += '</div>'
+    else:
+        splash = '<div id="splash_popup" class="splash_container">'
+        splash += '<div class="splash_text">'
+        splash += conf.SPLASH_MESSAGE
+        splash += '</div>'
+        splash += '<div class="splash_btn_container">'
+        splash += '<button id="splash_popup_close_btn" type="button" class="splash_clear_btn">OK</button>'
+        splash += '</div>'
+        splash += '</div>'
+    return Markup(splash)
+
 def social_links():
     social_links = ''
 
@@ -123,12 +155,13 @@ def render_map():
     js_vars = Markup(
         "_defaultSettings['FIXED_OPACITY'] = '{:d}'; "
         "_defaultSettings['SHOW_TIMER'] = '{:d}'; "
+        "_defaultSettings['SHOW_SPLASH'] = '{:d}'; "
         "_defaultSettings['SHOW_RAID_TIMER'] = '{:d}'; "
         "_defaultSettings['SHOW_IV'] = '{:d}'; "
         "_defaultSettings['SHOW_FORM'] = '{:d}'; "
         "_defaultSettings['MAP_CHOICE'] = '{:d}'; "
         "_defaultSettings['TRASH_IDS'] = [{}]; "
-        "_defaultSettings['RAID_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_RAID_TIMER, conf.SHOW_IV, conf.SHOW_FORM, 0, ', '.join(str(p_id) for p_id in conf.TRASH_IDS), ', '.join(str(r_id) for r_id in conf.RAID_IDS)))
+        "_defaultSettings['RAID_IDS'] = [{}]; ".format(conf.FIXED_OPACITY, conf.SHOW_TIMER, conf.SHOW_SPLASH, conf.SHOW_RAID_TIMER, conf.SHOW_IV, conf.SHOW_FORM, 0, ', '.join(str(p_id) for p_id in conf.TRASH_IDS), ', '.join(str(r_id) for r_id in conf.RAID_IDS)))
 
     template = app.jinja_env.get_template('custom.html' if conf.LOAD_CUSTOM_HTML_FILE else 'newmap.html')
     return template.render(
@@ -142,6 +175,8 @@ def render_map():
         light_map_provider_attribution=conf.LIGHT_MAP_PROVIDER_ATTRIBUTION,
         ticker_items=ticker(),
         motd=motd(),
+        splash=splash(),
+        force_splash=conf.FORCE_SPLASH,
         show_balance=balance(),
         show_donate_tab=donate_tab(),
         social_links=social_links(),

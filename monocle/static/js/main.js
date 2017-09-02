@@ -771,6 +771,11 @@ map.whenReady(function () {
     }
 });
 
+console.log("SHOW_SPLASH is now:", getPreference("SHOW_SPLASH"));
+if ((getPreference("SHOW_SPLASH") === '0') && (_ForceSplashMessage != 'True')) {
+    $('.splash_container').css('visibility', 'hidden');
+}
+
 $("#settings>ul.nav>li>a").on('click', function(e){
     // Click handler for each tab button.
     $(this).parent().parent().children("li").removeClass('active');
@@ -787,6 +792,15 @@ $("#settings_close_btn").on('click', function(){
         opacity: 0
     }, 250, function(){ $(this).hide(); });
 });
+
+$("#splash_popup_close_btn").on('click', function(){
+    $("#splash_popup").animate({
+        opacity: 0
+    }, 250, function(){ $(this).hide(); });
+    setPreference("SHOW_SPLASH", 0);
+    console.log("Clicked closed SHOW_SPLASH is:", getPreference("SHOW_SPLASH"));
+});
+
 
 $('.hide-marker').on('click', function(){
     // Button action to hide My Location marker

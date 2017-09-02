@@ -34,6 +34,7 @@
         var _DisplayRaidsLayer = '{{ display_raids }}';
         var _DisplayScanAreaLayer = '{{ display_scan_area }}';
         var _DisplaySpawnpointsLayer = '{{ display_spawnpoints }}';
+        var _ForceSplashMessage = '{{ force_splash }}';
         _defaultSettings = {};
         _updateTimeInterval = null;
     </script>
@@ -45,6 +46,7 @@
     <a class="map_btn hide-marker"></a>
     {{ ticker_items }}
     {{ motd }}
+    {{ splash }}
     <div id="settings" class="container text-center">
         <button type="button" class="close scroll-up glyphicon glyphicon glyphicon-circle-arrow-up"></button>
         <div class="page-header">
