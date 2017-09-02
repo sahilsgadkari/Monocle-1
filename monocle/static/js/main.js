@@ -771,7 +771,6 @@ map.whenReady(function () {
     }
 });
 
-console.log("SHOW_SPLASH is now:", getPreference("SHOW_SPLASH"));
 if ((getPreference("SHOW_SPLASH") === '0') && (_ForceSplashMessage != 'True')) {
     $('.splash_container').css('visibility', 'hidden');
 }
@@ -798,7 +797,6 @@ $("#splash_popup_close_btn").on('click', function(){
         opacity: 0
     }, 250, function(){ $(this).hide(); });
     setPreference("SHOW_SPLASH", 0);
-    console.log("Clicked closed SHOW_SPLASH is:", getPreference("SHOW_SPLASH"));
 });
 
 
