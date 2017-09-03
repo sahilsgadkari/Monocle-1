@@ -837,6 +837,7 @@ $('#settings').on('click', '.settings-panel button', function () {
         return;
     }
     var id = item.data('id');
+    var r_id = item.data('raid_id');
     var key = item.parent().data('group');
     var value = item.data('value');
     item.parent().children("button").removeClass("active");
@@ -879,8 +880,8 @@ $('#settings').on('click', '.settings-panel button', function () {
         setPreference(key, value);
     }
     if (key.indexOf('raid_filter-') > -1){
-        // This is a raid's filter button
-        moveRaidToLayer(id, value);
+        // This is a raid's level filter button
+        moveRaidToLayer(r_id, id, value);
     }else{
         setPreference(key, value);
     }
@@ -904,12 +905,12 @@ function moveToLayer(id, layer){
     }
 }
 
-function moveRaidToLayer(id, layer){
-    setPreference("raid_filter-"+id, layer);
+function moveRaidToLayer(r_id, poke_id, layer){
+    setPreference("raid_filter-"+r_id, layer);
     layer = layer.toLowerCase();
     for(var k in markers) {
         var m = markers[k];
-        if ((m !== undefined) && (m.raw.raid_level === id)){
+        if ((m !== undefined) && (m.raw.raid_level === r_id)){
             m.removeFrom(overlays[m.overlay]);
             if (layer === 'display_raid'){
                 m.overlay = "Raids";
@@ -932,8 +933,8 @@ function populateSettingsPanels(){
                 '<div class="raid_filter_label"><b>Level ' + i + '  </b></div>' +
                 '<div class="raid_filter_container">' +
                 '<div id="raid_filter_button_group" class="btn-group" role="group" data-group="raid_filter-' + i + '">' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="display_raid">Display</button>' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="hide_raid">Hide</button>' +
+                    '<button type="button" class="btn btn-default" data-raid_id="' + i + '" data-value="display_raid">Display</button>' +
+                    '<button type="button" class="btn btn-default" data-raid_id="' + i + '" data-value="hide_raid">Hide</button>' +
                 '</div>' +
             '</div>';
 
