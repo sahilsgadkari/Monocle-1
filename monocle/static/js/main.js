@@ -800,6 +800,14 @@ $("#splash_popup_close_btn").on('click', function(){
 });
 
 
+$("#splash_donate_close_btn").on('click', function(){
+    $("#splash_popup").animate({
+        opacity: 0
+    }, 250, function(){ $(this).hide(); });
+    setPreference("SHOW_SPLASH", 0);
+});
+
+
 $('.hide-marker').on('click', function(){
     // Button action to hide My Location marker
     map.removeLayer(_LocationMarker);

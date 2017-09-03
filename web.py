@@ -46,32 +46,33 @@ def splash():
     splash = ''
     splash_message = ''
     
-    if conf.SHOW_SPLASH and not conf.SPLASH_MESSAGE:
-        splash = '<div id="splash_popup" class="splash_container">'
-        splash += '<div class="splash_text">'
-        splash += 'Funding levels to maintain scans and maps are running low.<br>Please consider donating.<br><br>Thank you for your support.'
-        splash += '</div>'
-        splash += '<div class="splash_btn_container">'
-        splash += '<div class="splash_donate_btn">'
-        splash += '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">'
-        splash += '<input type="hidden" name="cmd" value="_s-xclick">'
-        splash += '<input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">'
-        splash += '<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">'
-        splash += '<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">'
-        splash += '</form>'
-        splash += '</div>'
-        splash += '<button id="splash_popup_close_btn" type="button" class="splash_clear_btn">Next Time</button>'
-        splash += '</div>'
-        splash += '</div>'
-    else:
-        splash = '<div id="splash_popup" class="splash_container">'
-        splash += '<div class="splash_text">'
-        splash += conf.SPLASH_MESSAGE
-        splash += '</div>'
-        splash += '<div class="splash_btn_container">'
-        splash += '<button id="splash_popup_close_btn" type="button" class="splash_clear_btn">OK</button>'
-        splash += '</div>'
-        splash += '</div>'
+    if conf.SHOW_SPLASH:
+        if conf.SPLASH_MESSAGE is None:
+            splash = '<div id="splash_popup" class="splash_container">'
+            splash += '<div class="splash_text">'
+            splash += 'Funding levels to maintain scans and maps are running low.<br>Please consider donating.<br><br>Thank you for your support.'
+            splash += '</div>'
+            splash += '<div class="splash_btn_container">'
+            splash += '<div class="splash_donate_btn">'
+            splash += '<form id="splash_donate_close_btn" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">'
+            splash += '<input type="hidden" name="cmd" value="_s-xclick">'
+            splash += '<input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">'
+            splash += '<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">'
+            splash += '<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">'
+            splash += '</form>'
+            splash += '</div>'
+            splash += '<button id="splash_popup_close_btn" type="button" class="splash_clear_btn">Next Time</button>'
+            splash += '</div>'
+            splash += '</div>'
+        else:
+            splash = '<div id="splash_popup" class="splash_container">'
+            splash += '<div class="splash_text">'
+            splash += conf.SPLASH_MESSAGE
+            splash += '</div>'
+            splash += '<div class="splash_btn_container">'
+            splash += '<button id="splash_popup_close_btn" type="button" class="splash_clear_btn">OK</button>'
+            splash += '</div>'
+            splash += '</div>'
     return Markup(splash)
 
 def social_links():
