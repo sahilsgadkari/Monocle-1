@@ -768,6 +768,7 @@ def _get_raids(session):
             fr.fort_id,
             fr.id,
             f.name,
+            fs.team,
             fr.raid_battle_ms,
             fr.raid_spawn_ms,
             fr.raid_end_ms,
@@ -781,6 +782,7 @@ def _get_raids(session):
             f.lon
         FROM fort_raids fr
         JOIN forts f ON f.id=fr.fort_id
+        JOIN (SELECT fort_id,team FROM fort_sightings WHERE id IN (SELECT MAX(id) FROM fort_sightings GROUP BY fort_id) ORDER BY fort_id) AS fs ON fs.fort_id=fr.fort_id
         WHERE fr.raid_end_ms > UNIX_TIMESTAMP()
     ''').fetchall()
 

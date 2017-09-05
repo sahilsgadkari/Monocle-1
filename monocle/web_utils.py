@@ -144,6 +144,7 @@ def get_raid_markers(names=POKEMON, moves=MOVES):
             'id': 'raid-' + str(raid['fort_id']),
             'raid_id': raid['id'],
             'gym_name': raid['name'],
+            'gym_team': raid['team'],
             'raid_battle': raid['raid_battle_ms'],
             'raid_spawn': raid['raid_spawn_ms'],
             'raid_end': raid['raid_end_ms'],

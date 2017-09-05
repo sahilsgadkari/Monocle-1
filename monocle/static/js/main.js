@@ -278,8 +278,19 @@ function getRaidPopupContent (item) {
   
     var content = '<div class="raid-popup">';
     if (item.raid_pokemon_id !== 0) {
-        content += '<img src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png"><br>';
+        content += '<div class="raid_popup-icon_container"><img class="boss-icon" src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png">';
+        if (item.gym_team > 0) {
+            if (item.gym_team === 1 ) {
+                content += '<img class="team-logo" src="static/img/mystic.png">';
+            } else if (item.gym_team === 2) {
+                content += '<img class="team-logo" src="static/img/valor.png">';
+            } else if (item.gym_team === 3) {
+                content += '<img class="team-logo" src="static/img/instinct.png">';
+            }
+        }
+        content += '</div>';
     }
+    
     if (item.raid_level === 5) {
         content += '<b>Level 5 Raid</b>'
     } else if (item.raid_level === 4) {
@@ -293,6 +304,15 @@ function getRaidPopupContent (item) {
     }
     if (item.gym_name != null) {
         content += '<br><b>' + item.gym_name + ' Gym</b>';
+        if (item.gym_team === 0) {
+            content += '<br><b>An unoccupied gym</b>';
+        } else if (item.gym_team === 1 ) {
+            content += '<br><b>Occupied by Team Mystic</b>';
+        } else if (item.gym_team === 2) {
+            content += '<br><b>Occupied by Team Valor</b>';
+        } else if (item.gym_team === 3) {
+            content += '<br><b>Occupied by Team Instinct</b>';
+        }
     }
     content += '<br><b>Boss:</b> ' + raid_boss_name +
                '<br><b>CP:</b> ' + raid_boss_cp +
@@ -315,19 +335,19 @@ function getFortPopupContent (item) {
     var minutes = parseInt((item.time_occupied / 60) - (hours * 60));
     var seconds = parseInt(item.time_occupied - (minutes * 60) - (hours * 3600));
     var fort_occupied_time = hours + 'h ' + minutes + 'm ' + seconds + 's';
-    var content = '<div class="fort-popup"><div class="popup-container">'
+    var content = '<div class="fort-popup">'
   
     if (item.pokemon_id !== 0) {
-        content += '<img class="guard-icon" src="static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
+        content += '<div class="fort_popup-icon_container"><img class="guard-icon" src="static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
     }
     if (item.team === 0) {
         content += '<b>An empty Gym!</b>';
-        content += '<b>' + item.gym_name + ' Gym</b><br>';
+        content += '<br><b>' + item.gym_name + ' Gym</b><br>';
         content += '<br>Last changed: ' + this.convertToTwelveHourTime(item.last_modified);
     }
     else {
         if (item.team === 1 ) {
-            content += '<img class="team-logo" src="static/img/mystic.png"></div><br>';
+            content += '<img class="team-logo" src="static/img/mystic.png"></div>';
             if (item.gym_name != null) {
                 content += '<b>' + item.gym_name + ' Gym</b><br>';
                 content += '<b>is currently occupied by:</b>';
@@ -337,7 +357,7 @@ function getFortPopupContent (item) {
             content += '<br><b>Team Mystic</b>'
         }
         else if (item.team === 2 ) {
-            content += '<img class="team-logo" src="static/img/valor.png"></div><br>';
+            content += '<img class="team-logo" src="static/img/valor.png"></div>';
             if (item.gym_name != null) {
                 content += '<b>' + item.gym_name + ' Gym</b><br>';
                 content += '<b>is currently occupied by:</b>';
@@ -347,7 +367,7 @@ function getFortPopupContent (item) {
             content += '<br><b>Team Valor</b>'
         }
         else if (item.team === 3 ) {
-            content += '<img class="team-logo" src="static/img/instinct.png"></div><br>';
+            content += '<img class="team-logo" src="static/img/instinct.png"></div>';
             if (item.gym_name != null) {
                 content += '<b>' + item.gym_name + ' Gym</b><br>';
                 content += '<b>is currently occupied by:</b>';

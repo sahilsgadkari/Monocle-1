@@ -51,16 +51,48 @@
     bottom: 230px;
 }
 
-.popup-container {
-    position: relative;
+.fort-popup {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.raid-popup {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.fort_popup-icon_container {
+    position: absolute;
+    display: inline-block;
+    top: 10px;
+    left: 85px;
     text-align: center;
 }
 
+.raid_popup-icon_container {
+    position: absolute;
+    display: inline-block;
+    top: 10px;
+    left: 85px;
+    text-align: center;
+}
+
+
 .team-logo {
+    position: absolute;
+    left: -6px;
     z-index: 1;
 }
 
 .guard-icon {
+    position: absolute;
+    left: 6px;
+    z-index: 2;
+}
+
+.boss-icon {
+    position: absolute;
+    left: 0px;
     z-index: 2;
 }
 
@@ -68,16 +100,8 @@
     z-index: 1;
 }
 
-.fort-popup {
-    text-align: center;
-}
-
 .raid-icon {
     z-index: 2;
-}
-
-.raid-popup {
-    text-align: center;
 }
 
 .leaflet-control-layers-toggle {
