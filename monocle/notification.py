@@ -852,6 +852,7 @@ class Notifier:
                 "raid_lat": fort_raid['lat'],
                 "raid_lon": fort_raid['lon'],
                 "raid_gym_name": gym_name,
+                "raid_gym_team": fort_raid['gym_team'],
                 "raid_begin": fort_raid['raid_battle_ms'],
                 "raid_spawn": fort_raid['raid_spawn_ms'],
                 "raid_end": fort_raid['raid_end_ms'],

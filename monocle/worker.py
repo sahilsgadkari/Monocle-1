@@ -860,6 +860,7 @@ class Worker:
                             raid['move_2'] = fort.raid_info.raid_pokemon.move_2
                         if raid not in RAID_CACHE:
                             db_proc.add(raid)
+                            raid['gym_team'] = fort.owned_by_team
                             LOOP.create_task(self.notifier.webhook_raids(raid, map_objects.time_of_day))
 
             if more_points:
