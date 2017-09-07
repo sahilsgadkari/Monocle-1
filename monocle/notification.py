@@ -843,7 +843,14 @@ class Notifier:
         
         gym_name = ''
         gym_name = FORT_NAMES_CACHE.get_name(fort_id)
-        
+        gym_team = 'Neutral'
+        if fort_raid['gym_team'] == 1:
+            gym_team = 'Mystic'
+        elif fort_raid['gym_team'] == 2:
+            gym_team = 'Valor'
+        elif fort_raid['gym_team'] == 3:
+            gym_team = 'Instinct'
+
         data = {
             'type': "raid",
             'message': {
@@ -852,7 +859,7 @@ class Notifier:
                 "raid_lat": fort_raid['lat'],
                 "raid_lon": fort_raid['lon'],
                 "raid_gym_name": gym_name,
-                "raid_gym_team": fort_raid['gym_team'],
+                "raid_gym_team": gym_team,
                 "raid_begin": fort_raid['raid_battle_ms'],
                 "raid_spawn": fort_raid['raid_spawn_ms'],
                 "raid_end": fort_raid['raid_end_ms'],
