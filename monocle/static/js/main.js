@@ -289,6 +289,18 @@ function getRaidPopupContent (item) {
             }
         }
         content += '</div>';
+    } else {
+        content += '<div class="raid_popup-icon_container"><img class="boss-icon" src="static/monocle-icons/raids/egg_level_' + item.raid_level + '.png">';
+        if (item.gym_team > 0) {
+            if (item.gym_team === 1 ) {
+                content += '<img class="team-logo" src="static/img/mystic.png">';
+            } else if (item.gym_team === 2) {
+                content += '<img class="team-logo" src="static/img/valor.png">';
+            } else if (item.gym_team === 3) {
+                content += '<img class="team-logo" src="static/img/instinct.png">';
+            }
+        }
+        content += '</div>';
     }
     
     if (item.raid_level === 5) {
