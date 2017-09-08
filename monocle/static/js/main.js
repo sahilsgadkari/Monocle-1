@@ -290,7 +290,7 @@ function getRaidPopupContent (item) {
         }
         content += '</div>';
     } else {
-        content += '<div class="raid_popup-icon_container"><img class="boss-icon" src="static/monocle-icons/raids/egg_level_' + item.raid_level + '.png">';
+        content += '<div class="raid_popup-icon_container"><img class="egg-icon" src="static/monocle-icons/raids/egg_level_' + item.raid_level + '.png">';
         if (item.gym_team > 0) {
             if (item.gym_team === 1 ) {
                 content += '<img class="team-logo" src="static/img/mystic.png">';
@@ -332,12 +332,14 @@ function getRaidPopupContent (item) {
                '<br><b>Charge Move:</b> ' + raid_boss_move_2 +
                '<br><b>Raid Starts:</b> ' + start_time +
                '<br><b>Raid Ends:</b> ' + end_time;
-    if (item.raid_level >= 3) {
+    if ((item.raid_level >= 3) && (item.raid_pokemon_id !== 0)) {
          content += '<br><b>Weak Against:</b><br><img src="static/monocle-icons/raids/counter-' + item.raid_pokemon_id + '.png">';
     }
     content += '<br><br><a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get Directions</a>';
-    content += '&nbsp; | &nbsp;';
-    content += '<a href="https://pokemongo.gamepress.gg/pokemon/' + item.raid_pokemon_id + '#raid-boss-counters" target="_blank" title="Raid Boss Counters">Raid Boss Counters</a>';
+    if (item.raid_pokemon_id !== 0) {
+        content += '&nbsp; | &nbsp;';
+        content += '<a href="https://pokemongo.gamepress.gg/pokemon/' + item.raid_pokemon_id + '#raid-boss-counters" target="_blank" title="Raid Boss Counters">Raid Boss Counters</a>';
+    }
     content += '</div>'
     return content;
 }
