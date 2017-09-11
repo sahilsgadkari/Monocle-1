@@ -95,7 +95,7 @@ def donate_tab():
     donate_tab = ''
     
     if conf.PAYPAL_URL:
-        donate_tab = '<div class="panel panel-default setting-panel" data-panel="donate">'
+        donate_tab = '<div class="panel panel-default settings-panel" data-panel="donate">'
         donate_tab += '<div class="panel-heading">Donations Welcome</div>'
         donate_tab += '<div class="panel-body"><br>Maps are free to use. Donations are more than welcome to help fund the scans that power these maps.<br><br>'
         donate_tab += '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">'
