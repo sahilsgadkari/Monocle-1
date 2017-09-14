@@ -56,7 +56,7 @@ def splash():
             splash += '<div class="splash_donate_btn">'
             splash += '<form id="splash_donate_close_btn" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">'
             splash += '<input type="hidden" name="cmd" value="_s-xclick">'
-            splash += '<input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">'
+            splash += '<input type="hidden" name="hosted_button_id" value="' + conf.PAYPAL_BUTTON_CODE + '">'
             splash += '<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">'
             splash += '<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">'
             splash += '</form>'
@@ -95,23 +95,37 @@ def donate_tab():
     donate_tab = ''
     
     if conf.PAYPAL_URL:
-        donate_tab = '<div class="panel panel-default settings-panel" data-panel="donate">'
-        donate_tab += '<div class="panel-heading">Donations Welcome</div>'
-        donate_tab += '<div class="panel-body"><br>Maps are free to use. Donations are more than welcome to help fund the scans that power these maps.<br><br>'
-        donate_tab += '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">'
-        donate_tab += '<input type="hidden" name="cmd" value="_s-xclick">'
-        donate_tab += '<input type="hidden" name="hosted_button_id" value="ETNR83LYZNN4L">'
-        donate_tab += '<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">'
-        donate_tab += '<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">'
-        donate_tab += '</form>'
-        donate_tab += '<br>Monthly operational costs and current balance will be provided when funds run low.<br><br>'
-        if conf.BALANCE and conf.FUNDING_GOAL:
-            donate_tab += '<div>Monthly Operational Cost: $' + conf.FUNDING_GOAL + '</div>'
-            donate_tab += '<div>Current Balance: $' + conf.BALANCE + ' (updated daily)</div>'
-        donate_tab += '</div>'
-        donate_tab += '</div>'
-    
+        donate_tab = '<li><a href="#" data-panel="donate">Donate</a></li>'
     return Markup(donate_tab)
+
+def donate_tab_content():
+    donate_tab_content = ''
+    
+    if conf.PAYPAL_URL:
+        donate_tab_content = '<div class="panel panel-default settings-panel" data-panel="donate">'
+        donate_tab_content += '<div class="panel-heading">Donations Welcome</div>'
+        donate_tab_content += '<div class="panel-body"><br>Maps are free to use. Donations are more than welcome to help fund the scans that power these maps.<br><br>'
+        donate_tab_content += '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">'
+        donate_tab_content += '<input type="hidden" name="cmd" value="_s-xclick">'
+        donate_tab_content += '<input type="hidden" name="hosted_button_id" value="' + conf.PAYPAL_BUTTON_CODE + '">'
+        donate_tab_content += '<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">'
+        donate_tab_content += '<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">'
+        donate_tab_content += '</form>'
+        donate_tab_content += '<br>Monthly operational costs and current balance will be provided when funds run low.<br><br>'
+        if conf.BALANCE and conf.FUNDING_GOAL:
+            donate_tab_content += '<div>Monthly Operational Cost: $' + conf.FUNDING_GOAL + '</div>'
+            donate_tab_content += '<div>Current Balance: $' + conf.BALANCE + ' (updated daily)</div>'
+        donate_tab_content += '</div>'
+        donate_tab_content += '</div>'
+    
+    return Markup(donate_tab_content)
+
+def announcements_tab():
+    announcements_tab = ''
+    
+    if conf.ANNOUNCEMENTS:
+        announcements_tab = '<li><a href="#" data-panel="info">Info</a></li>'
+    return Markup(announcements_tab)
 
 def announcements():
     announcements = ''
@@ -180,7 +194,9 @@ def render_map():
         force_splash=conf.FORCE_SPLASH,
         show_balance=balance(),
         show_donate_tab=donate_tab(),
+        show_donate_tab_content=donate_tab_content(),
         social_links=social_links(),
+        show_announcements_tab=announcements_tab(),
         announcements=announcements(),
         pogosd_region=conf.POGOSD_REGION,
         display_pokemon=conf.SHOW_POKEMON_BY_DEFAULT,

@@ -90,41 +90,42 @@ SEARCH_SLEEP = 2.5
 ### these next 6 options use more requests but look more like the real client
 APP_SIMULATION = True     # mimic the actual app's login requests
 COMPLETE_TUTORIAL = True  # complete the tutorial process and configure avatar for all accounts that haven't yet
-INCUBATE_EGGS = True      # incubate eggs if available
+INCUBATE_EGGS = True        # incubate eggs if available
 
 ## encounter Pokémon to store IVs.
 ## valid options:
 # 'all' will encounter every Pokémon that hasn't been already been encountered
-# 'some' will encounter Pokémon if they are in ENCOUNTER_IDS or eligible for notification
 # 'notifying' will encounter Pokémon that are eligible for notifications
 # None will never encounter Pokémon
-ENCOUNTER = None
-#ENCOUNTER_IDS = (3, 6, 9, 45, 62, 71, 80, 85, 87, 89, 91, 94, 114, 130, 131, 134)
+#ENCOUNTER = 'notifying'
+ENCOUNTER = 'some'
+ENCOUNTER_IDS = { 201 }
 
 # PokéStops
-SPIN_POKESTOPS = True  # spin all PokéStops that are within range
+SPIN_POKESTOPS = True # spin all PokéStops that are within range
 SPIN_COOLDOWN = 300    # spin only one PokéStop every n seconds (default 300)
 
 # minimum number of each item to keep if the bag is cleaned
-# bag cleaning is disabled if this is not present or is commented out
-''' # triple quotes are comments, remove them to use this ITEM_LIMITS example
+# remove or set to None to disable bag cleaning
+# automatically disabled if SPIN_POKESTOPS is disabled
+# triple quotes are comments, remove them to use this ITEM_LIMITS example
 ITEM_LIMITS = {
     1:    20,  # Poké Ball
-    2:    50,  # Great Ball
-    3:   100,  # Ultra Ball
+    2:    40,  # Great Ball
+    3:    50,  # Ultra Ball
     101:   0,  # Potion
     102:   0,  # Super Potion
     103:   0,  # Hyper Potion
-    104:  40,  # Max Potion
+    104:  20,  # Max Potion
     201:   0,  # Revive
-    202:  40,  # Max Revive
-    701:  20,  # Razz Berry
+    202:  20,  # Max Revive
+    701:  10,  # Razz Berry
     702:  20,  # Bluk Berry
-    703:  20,  # Nanab Berry
+    703:  10,  # Nanab Berry
     704:  20,  # Wepar Berry
-    705:  20,  # Pinap Berry
+    705:  10,  # Pinap Berry
 }
-'''
+
 
 # Update the console output every x seconds
 REFRESH_RATE = 0.75  # 750ms
@@ -132,7 +133,7 @@ REFRESH_RATE = 0.75  # 750ms
 STAT_REFRESH = 5
 
 # sent with GET_PLAYER requests, should match your region
-PLAYER_LOCALE = {'country': 'US', 'language': 'en', 'timezone': 'America/Denver'}
+PLAYER_LOCALE = {'country': 'US', 'language': 'en', 'timezone': 'America/Los Angeles'}
 
 # retry a request after failure this many times before giving up
 MAX_RETRIES = 3
@@ -182,10 +183,10 @@ MAP_WORKERS = True
 #MAP_FILTER_IDS = [161, 165, 16, 19, 167]
 
 # unix timestamp of last spawn point migration, spawn times learned before this will be ignored
-LAST_MIGRATION = 1481932800  # Dec. 17th, 2016
+LAST_MIGRATION = 1496448000 # June 3, 2017
 
 # Treat a spawn point's expiration time as unknown if nothing is seen at it on more than x consecutive visits
-FAILURES_ALLOWED = 2
+FAILURES_ALLOWED = 3
 
 ## Map data provider and appearance, previews available at:
 ## https://leaflet-extras.github.io/leaflet-providers/preview/
@@ -202,16 +203,17 @@ FAILURES_ALLOWED = 2
 
 # Bytestring key to authenticate with manager for inter-process communication
 #AUTHKEY = b'm3wtw0'
-# Address to use for manager, leave commented if you're not sure.
+# Address to use for manager, leave unset or set to None if you're note sure.
 #MANAGER_ADDRESS = r'\\.\pipe\monocle'  # must be in this format for Windows
 #MANAGER_ADDRESS = 'monocle.sock'       # the socket name for Unix systems
-#MANAGER_ADDRESS = ('127.0.0.1', 5002)  # could be used for CAPTCHA solving and live worker maps on remote systems
+#MANAGER_ADDRESS = ('127.0.0.1', 5002)    # could be used for CAPTCHA solving and live worker maps on remote systems
 
 # Store the cell IDs so that they don't have to be recalculated every visit.
-# Enabling will (potentially drastically) increase memory usage.
-#CACHE_CELLS = False
+# Highly recommended unless you don't have enough memory for them.
+# Disabling will increase processor usage.
+#CACHE_CELLS = True
 
-# Only for use with web_sanic (requires PostgreSQL)
+# Only for use with web-sanic (requires PostgreSQL)
 #DB = {'host': '127.0.0.1', 'user': 'monocle_role', 'password': 'pik4chu', 'port': '5432', 'database': 'monocle'}
 
 # Disable to use Python's event loop even if uvloop is installed
@@ -223,9 +225,8 @@ FAILURES_ALLOWED = 2
 ### FRONTEND CONFIGURATION
 LOAD_CUSTOM_HTML_FILE = False # File path MUST be 'templates/custom.html'
 LOAD_CUSTOM_CSS_FILE = False  # File path MUST be 'static/css/custom.css'
-LOAD_CUSTOM_JS_FILE = False   # File path MUST be 'static/js/custom.js'
+LOAD_CUSTOM_JS_FILE = False  # File path MUST be 'static/js/custom.js'
 
-#PAYPAL_URL = None  # URL of PayPal link 'Full URL'
 #FB_PAGE_ID = None
 #TWITTER_SCREEN_NAME = None  # Username withouth '@' char
 #DISCORD_INVITE_ID = None
@@ -234,12 +235,9 @@ LOAD_CUSTOM_JS_FILE = False   # File path MUST be 'static/js/custom.js'
 ## Variables below will be used as default values on frontend
 FIXED_OPACITY = False  # Make marker opacity independent of remaining time
 SHOW_TIMER = False  # Show remaining time on a label under each pokemon marker
-SHOW_IV = False # Show IV below each pokemon marker
-TICKER_ITEMS = None # Display red horizontal ticker at the top. Use '<p>text</p>' format
-MOTD = None # Display a blocking message. Use 'text' format to enter text into blue banner
 
 ### OPTIONS BELOW THIS POINT ARE ONLY NECESSARY FOR NOTIFICATIONS ###
-NOTIFY = False  # enable notifications
+NOTIFY = True  # enable notifications
 
 # create images with Pokémon image and optionally include IVs and moves
 # requires cairo and ENCOUNTER = 'notifying' or 'all'
@@ -258,28 +256,28 @@ TIME_REQUIRED = 600  # 10 minutes
 ### Only set either the NOTIFY_RANKING or NOTIFY_IDS, not both!
 # The (x) rarest Pokémon will be eligible for notification. Whether a
 # notification is sent or not depends on its score, as explained below.
-NOTIFY_RANKING = 90
+NOTIFY_RANKING = None
 
 # Pokémon to potentially notify about, in order of preference.
 # The first in the list will have a rarity score of 1, the last will be 0.
-#NOTIFY_IDS = (130, 89, 131, 3, 9, 134, 62, 94, 91, 87, 71, 45, 85, 114, 80, 6)
+NOTIFY_IDS = None
 
 # Sightings of the top (x) will always be notified about, even if below TIME_REQUIRED
 # (ignored if using NOTIFY_IDS instead of NOTIFY_RANKING)
 ALWAYS_NOTIFY = 14
 
 # Always notify about the following Pokémon even if their time remaining or scores are not high enough
-#ALWAYS_NOTIFY_IDS = {89, 130, 144, 145, 146, 150, 151}
+ALWAYS_NOTIFY_IDS = {3,6,9,26,40,45,62,65,68,71,80,83,87,94,103,108,110,113,115,117,122,130,131,132,137,142,143,144,145,146,147,148,149,150,151,154,157,159,160,172,173,174,175,176,181,182,186,189,192,195,196,197,199,201,205,208,212,214,221,222,225,230,232,233,235,236,237,238,239,240,242,243,244,245,246,247,248,249,250,251}
 
 # Never notify about the following Pokémon, even if they would otherwise be eligible
-#NEVER_NOTIFY_IDS = TRASH_IDS
+#NEVER_NOTIFY_IDS = { }
 
 # Override the rarity score for particular Pokémon
 # format is: {pokemon_id: rarity_score}
 #RARITY_OVERRIDE = {148: 0.6, 149: 0.9}
 
 # Ignore IV score and only base decision on rarity score (default if IVs not known)
-#IGNORE_IVS = False
+IGNORE_IVS = True
 
 # Ignore rarity score and only base decision on IV score
 #IGNORE_RARITY = False
@@ -293,8 +291,9 @@ FULL_TIME = 1800  # the number of seconds after a notification when only MINIMUM
 INITIAL_SCORE = 0.7  # the required score immediately after a notification
 MINIMUM_SCORE = 0.4  # the required score after FULL_TIME seconds have passed
 
+
 ### The following values are fake, replace them with your own keys to enable
-### notifications, otherwise exclude them from your config
+### notifications, otherwise leave them out of your config or set them to None.
 ### You must provide keys for at least one service to use notifications.
 
 #PB_API_KEY = 'o.9187cb7d5b857c97bfcaa8d63eaa8494'
@@ -359,3 +358,84 @@ MINIMUM_SCORE = 0.4  # the required score after FULL_TIME seconds have passed
 #LANDMARKS.add('the University of Utah', shortname='the U of U', hashtags={'Utes'}, phrase='at', is_area=True)
 ## provide corner points to create a polygon of the area since OpenStreetMap does not have a shape for it
 #LANDMARKS.add('Yalecrest', points=((40.750263, -111.836502), (40.750377, -111.851108), (40.751515, -111.853833), (40.741212, -111.853909), (40.741188, -111.836519)), is_area=True)
+
+################## CUSTOMIZED CONFIGURATION ITEMS FOR POGOSD ####################
+
+## Show details like IV and Moves in Map
+MAP_SHOW_DETAILS = False
+SHOW_IV = False # Show IV below each pokemon marker
+
+## For DARK_MAP_OPACITY and LIGHT_MAP_OPACITY choose value between 1.0 and 0.0
+DARK_MAP_OPACITY = 0.80
+DARK_MAP_PROVIDER_URL = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'
+DARK_MAP_PROVIDER_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
+LIGHT_MAP_OPACITY = 1.0
+LIGHT_MAP_PROVIDER_URL = 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'
+LIGHT_MAP_PROVIDER_ATTRIBUTION = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+
+## Send Gym info to webhook(s). If True this will flood webhooks with Gym data since duplication of gym data still occurs
+GYM_WEBHOOK = False
+
+## Slow down how often Gym name is retrieved, not currently used though
+#GYM_COOLDOWN
+
+## Pull Gym name to populate Gym Table. This will populate a gym name cache upon initial startup. When set to true, consider clearing the fort DB from time to time as well as cache files. To clear fort DB, do so in this order: TRUNCATE fort_raids; TRUNCATE fort_sightings; TRUNCATE forts;. Then delete fort_names.pickle, forts.pickle, raids.pickle
+PULL_GYM_NAME = True
+
+## Show raid timers by default above raid icons
+SHOW_RAID_TIMER = False
+
+## Raid IDs to hide (filter) by default
+RAID_IDS = (1,2)
+
+## Show Unown letter (form) menu item to hide/display letter
+SHOW_FORM_MENU_ITEM = False
+
+## Default setting to hide/display Unown letter above Unown icon
+SHOW_FORM = True
+
+## If set to True, enables a splash message to be displayed once until the button is clicked to clear it. User will not see splash message again unless FORCE_SPLASH = True below.
+SHOW_SPLASH = False
+
+## Force splash message to show regardless of clicking clear button
+FORCE_SPLASH = False
+
+## If SHOW_SPLASH = True, the following configuration item changes the splash message from default which is currently a donation request plus a paypal button.  PAYPAL_BUTTON_CODE needs to be defined below for button to work correctly.
+## Example: SPLASH_MESSAGE = 'Scans are currently only reporting Raids and Gyms due to shadow bans. We will work to restore full scanning capabilities ASAP.'
+## Default: SPLASH_MESSAGE = 'Funding levels to maintain scans and maps are running low.<br>Please consider donating.<br><br>Thank you for your support.'
+SPLASH_MESSAGE = None
+
+## Show PayPal link if URL is provided below within ''. If set to None, the Donations tab will not be displayed on map settings. If PAYPAL_URL is defined, PAYPAL_BUTTON_CODE must be either defined or set to ''
+PAYPAL_URL = None
+PAYPAL_BUTTON_CODE = None
+
+## Show monetary balances in Donations tab. For BALANCE and FUNDING_GOAL use single quotes ''
+BALANCE = '352'
+FUNDING_GOAL = '310'
+
+## Default layers control. Anything set to True will have the layer shown on the map by default (checked)
+SHOW_POKEMON_BY_DEFAULT = True
+SHOW_GYMS_BY_DEFAULT = False
+SHOW_RAIDS_BY_DEFAULT = False
+SHOW_SCAN_AREA_BY_DEFAULT = True
+SHOW_SPAWNPOINTS_BY_DEFAULT = False ## This shows both spawnpoints and workers
+
+## Switch scan to Gym Scan Only Mode. This requires a modification to your database copying your gym points into a separate table and treating them as spawnpoints for workers to visit. Utilizes a minimal amount of workers to perform gym and raid scans.
+## For mysql, utilize this query: CREATE TABLE gympoints SELECT * FROM spawnpoints; TRUNCATE gympoints; ALTER TABLE gympoints ADD PRIMARY KEY (id); ALTER TABLE gympoints MODIFY COLUMN id int(11) NOT NULL AUTO_INCREMENT; INSERT INTO gympoints (spawn_id, lat, lon) SELECT id, lat, lon FROM forts; UPDATE gympoints SET despawn_time = FLOOR(1 + RAND() * (3600 - 1)); UPDATE gympoints SET spawn_id = FLOOR(8854000000000 + RAND() * (8855000000000 - 8854000000000));
+GYM_POINTS = False;
+
+## For POGOSD_REGION blank should be '', region should be '/se_sd', '/sw_sd', etc. Used with nginx to statically change data URL data flows
+POGOSD_REGION = ''
+
+## If defined, displays a scrolling ticker across the top of the map frontend.
+## Example: TICKER_ITEMS = '<p>Scans out of commission until further notice.</p><p>Shadow bans are resulting in complete bans.</p><p>You will not see Raids or Pokemon.</p>'
+TICKER_ITEMS = None
+TICKER_COLOR = 'yellow'  # Color choices are: red (default), orange, yellow
+
+## If defined within '', displays a static splash screen on the map frontend.
+## Example: MOTD = 'We are currently offline until further notice.'
+MOTD = None
+
+## For ANNOUNCEMENTS use the following for each line <li>blah blah</li><br><br>
+#ANNOUNCEMENTS = None
+
