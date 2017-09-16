@@ -118,10 +118,11 @@ var RaidIcon = L.Icon.extend({
         var div = document.createElement('div');
         var sponsor = '';
         
+        // Woah woah woah. Copying again?
         if (this.options.raid_gym_name === "Starbucks") {
              sponsor = 'starbucks';
         }
-        if (this.options.raid_gym_name === "GET YOUR LEVEL BADGE") {
+        if ((this.options.raid_gym_name === "GET YOUR LEVEL BADGE") || (this.options.raid_gym_name === "GET MORE FREE ITEMS")) {
              sponsor = 'sprint';
         }
         
@@ -345,10 +346,11 @@ function getRaidPopupContent (item) {
     }
     if (item.gym_name != null) {
         content += '<br><b>' + item.gym_name + ' Gym</b>';
+        // And again?
         if (item.gym_name === "Starbucks") {
             content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
         }
-        if (item.gym_name === "GET YOUR LEVEL BADGE") {
+        if ((item.gym_name === "GET YOUR LEVEL BADGE") || (item.gym_name === "GET MORE FREE ITEMS")) {
             content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sprint.png">';
         }
         if (item.gym_team === 0) {
