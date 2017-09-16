@@ -116,6 +116,15 @@ var RaidIcon = L.Icon.extend({
     },
     createIcon: function() {
         var div = document.createElement('div');
+        var sponsor = '';
+        
+        if (this.options.raid_gym_name === "Starbucks") {
+             sponsor = 'starbucks';
+        }
+        if (this.options.raid_gym_name === "GET YOUR LEVEL BADGE") {
+             sponsor = 'sprint';
+        }
+        
 
         if (this.options.raid_pokemon_id !== 0) {
             div.innerHTML =
@@ -125,17 +134,37 @@ var RaidIcon = L.Icon.extend({
                     '</div>' +
                     '<div class="raid_platform_container">' +
                         '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_start_level_' + this.options.raid_level + '.png?201" />' +
+                    '</div>';
+            if (sponsor !== '') {
+                div.innerHTML +=
+                    '<div class="raid_sponsor_container">' +
+                        '<img class="sponsor_icon" src="static/monocle-icons/raids/' + sponsor + '.png" />' +
                     '</div>' +
                     '<div class="raid_remaining_text" data-expire1="' + this.options.raid_starts_at + '" data-expire2="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + this.options.raid_starts_at + '</div>' +
                 '</div>';
+            } else {
+                div.innerHTML +=
+                    '<div class="raid_remaining_text" data-expire1="' + this.options.raid_starts_at + '" data-expire2="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + this.options.raid_starts_at + '</div>' +
+                '</div>';
+            }
         } else {
             div.innerHTML =
                 '<div class="pokemarker">' +
                     '<div class="pre_raid_container">' +
                         '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_level_' + this.options.raid_level + '.png?201" />' +
+                    '</div>';
+            if (sponsor !== '') {
+                div.innerHTML +=
+                    '<div class="raid_sponsor_container">' +
+                        '<img class="sponsor_icon" src="static/monocle-icons/raids/' + sponsor + '.png" />' +
                     '</div>' +
                     '<div class="raid_remaining_text" data-expire1="' + this.options.raid_starts_at + '" data-expire2="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + this.options.raid_starts_at + '</div>' +
                 '</div>';
+            } else {
+                div.innerHTML +=
+                    '<div class="raid_remaining_text" data-expire1="' + this.options.raid_starts_at + '" data-expire2="' + this.options.raid_ends_at + '">' + this.options.raid_ends_at + this.options.raid_starts_at + '</div>' +
+                '</div>';
+            }
         }
         return div;
     }
@@ -316,6 +345,12 @@ function getRaidPopupContent (item) {
     }
     if (item.gym_name != null) {
         content += '<br><b>' + item.gym_name + ' Gym</b>';
+        if (item.gym_name === "Starbucks") {
+            content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
+        }
+        if (item.gym_name === "GET YOUR LEVEL BADGE") {
+            content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sprint.png">';
+        }
         if (item.gym_team === 0) {
             content += '<br><b>An unoccupied gym</b>';
         } else if (item.gym_team === 1 ) {
@@ -505,7 +540,7 @@ function FortMarker (raw) {
 }
 
 function RaidMarker (raw) {
-    var raid_boss_icon = new RaidIcon({raid_pokemon_id: raw.raid_pokemon_id, raid_level: raw.raid_level, raid_ends_at: raw.raid_end, raid_starts_at: raw.raid_battle});
+    var raid_boss_icon = new RaidIcon({raid_pokemon_id: raw.raid_pokemon_id, raid_level: raw.raid_level, raid_ends_at: raw.raid_end, raid_starts_at: raw.raid_battle, raid_gym_name: raw.gym_name});
     var raid_marker = L.marker([raw.lat, raw.lon], {icon: raid_boss_icon, opacity: 1, zIndexOffset: 5000});
 
     if (raw.hide_raid) {
