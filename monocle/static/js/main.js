@@ -361,7 +361,7 @@ function getRaidPopupContent (item) {
     }
     if (item.gym_name != null) {
         content += '<br><b>' + item.gym_name + ' Gym</b>';
-        if (item.image_url != '') {
+        if (item.image_url !== null) {
              content += '<br><img class="gym_image" src="' + item.image_url + '">';
         }
         // And again?
