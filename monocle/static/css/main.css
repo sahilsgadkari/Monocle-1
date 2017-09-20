@@ -405,6 +405,11 @@
 }
 
 
+.gym_image {
+    max-width: 100px;
+    height: auto;
+}
+
 .sponsor_icon {
   
 }

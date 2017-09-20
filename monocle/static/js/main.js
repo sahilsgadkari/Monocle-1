@@ -346,6 +346,9 @@ function getRaidPopupContent (item) {
     }
     if (item.gym_name != null) {
         content += '<br><b>' + item.gym_name + ' Gym</b>';
+        if (item.image_url != '') {
+             content += '<br><img class="gym_image" src="' + item.image_url + '">';
+        }
         // And again?
         if (item.gym_name === "Starbucks") {
             content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
@@ -1025,7 +1028,7 @@ function populateSettingsPanels(){
             '<h5>Pokemon Filters</h5><br>' +
             '<div data-group="display_all_none">' +
                 '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
-                '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
+            '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
 
     for (var i = 1; i <= _pokemon_count; i++){
         var partHtml =

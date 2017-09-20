@@ -369,6 +369,7 @@ class Fort(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
+    image_url = Column(String(255))
     external_id = Column(String(35), unique=True)
     lat = Column(FLOAT_TYPE)
     lon = Column(FLOAT_TYPE)
@@ -590,6 +591,7 @@ def add_fort_sighting(session, raw_fort):
         fort = Fort(
             external_id=raw_fort['external_id'],
             name=raw_fort['name'],
+            image_url=raw_fort['image_url'],
             lat=raw_fort['lat'],
             lon=raw_fort['lon'],
         )
@@ -719,6 +721,7 @@ def _get_forts_sqlite(session):
             fs.fort_id,
             fs.id,
             f.name,
+            f.image_url,
             fs.team,
             fs.guard_pokemon_id,
             fs.last_modified,
@@ -743,6 +746,7 @@ def _get_forts(session):
             fs.fort_id,
             fs.id,
             f.name,
+            f.image_url,
             fs.team,
             fs.guard_pokemon_id,
             fs.last_modified,
@@ -768,6 +772,7 @@ def _get_raids(session):
             fr.fort_id,
             fr.id,
             f.name,
+            f.image_url,
             fs.team,
             fr.raid_battle_ms,
             fr.raid_spawn_ms,
@@ -783,7 +788,6 @@ def _get_raids(session):
         FROM fort_raids fr
         JOIN forts f ON f.id=fr.fort_id
         JOIN (SELECT fort_id,team FROM fort_sightings WHERE id IN (SELECT MAX(id) FROM fort_sightings GROUP BY fort_id) ORDER BY fort_id) AS fs ON fs.fort_id=fr.fort_id
-        WHERE fr.raid_end_ms > UNIX_TIMESTAMP()
     ''').fetchall()
 
 get_raids = _get_raids_sqlite if DB_TYPE == 'sqlite' else _get_raids

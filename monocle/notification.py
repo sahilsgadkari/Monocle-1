@@ -860,6 +860,7 @@ class Notifier:
                 "raid_lon": fort_raid['lon'],
                 "raid_gym_name": gym_name,
                 "raid_gym_team": gym_team,
+                "raid_gym_image_url": fort_raid['image_url'],
                 "raid_begin": fort_raid['raid_battle_ms'],
                 "raid_spawn": fort_raid['raid_spawn_ms'],
                 "raid_end": fort_raid['raid_end_ms'],
