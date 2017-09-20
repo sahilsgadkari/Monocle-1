@@ -97,15 +97,30 @@ var FortIcon = L.Icon.extend({
     },
     createIcon: function() {
         var div = document.createElement('div');
-            div.innerHTML =
-                '<div class="fortmarker">' +
-                    '<div class="fort_container">' +
-                        '<img class="fort_icon" src="static/monocle-icons/forts/' + this.options.fort_team + '.png?201" />' +
-                    '</div>' +
-                    '<div class="fort_slots_container">' +
-                        '<img class="fort_slots_icon" src="static/img/num_' + this.options.open_slots + '.png" />' +
-                    '</div>' +
-                '</div>';
+//        var sponsor = '';
+        
+//        if (this.options.gym_name === "Starbucks") {
+//             sponsor = 'starbucks';
+//        }
+//        if ((this.options.gym_name === "GET YOUR LEVEL BADGE") || (this.options.raid_gym_name === "GET MORE FREE ITEMS")) {
+//             sponsor = 'sprint';
+//        }
+        
+        div.innerHTML =
+            '<div class="fortmarker">' +
+                '<div class="fort_container">' +
+                    '<img class="fort_icon" src="static/monocle-icons/forts/' + this.options.fort_team + '.png?201" />' +
+                '</div>' +
+                '<div class="fort_slots_container">' +
+                    '<img class="fort_slots_icon" src="static/img/num_' + this.options.open_slots + '.png" />' +
+                '</div>' +
+            '</div>';
+//        if (sponsor !== '') {
+//            div.innerHTML +=
+//                '<div class="fort_sponsor_container">' +
+//                    '<img class="sponsor_icon" src="static/monocle-icons/raids/' + sponsor + '.png" />' +
+//                '</div>';
+//        }
         return div;
     }
 });
@@ -397,40 +412,42 @@ function getFortPopupContent (item) {
     if (item.team === 0) {
         content += '<b>An empty Gym!</b>';
         content += '<br><b>' + item.gym_name + ' Gym</b><br>';
+        // Copying again?
+        if (item.gym_name === "Starbucks") {
+            content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
+        }
+        if ((item.gym_name === "GET YOUR LEVEL BADGE") || (item.gym_name === "GET MORE FREE ITEMS")) {
+            content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sprint.png">';
+        }
         content += '<br>Last changed: ' + this.convertToTwelveHourTime(item.last_modified);
     }
     else {
-        if (item.team === 1 ) {
-            content += '<img class="team-logo" src="static/img/mystic.png"></div>';
-            if (item.gym_name != null) {
-                content += '<b>' + item.gym_name + ' Gym</b><br>';
-                content += '<b>is currently occupied by:</b>';
-            } else {
-                content += '<b>Gym is currently occupied by:</b>';
-            }
-            content += '<br><b>Team Mystic</b>'
+        if (item.team === 1) {
+            var team_logo = 'mystic.png';
+            var team_name = 'Mystic';
+        } else if (item.team === 2) {
+            var team_logo = 'valor.png';
+            var team_name = 'Valor';
+        } else if (item.team === 3) {
+            var team_logo = 'instinct.png';
+            var team_name = 'Instinct';
         }
-        else if (item.team === 2 ) {
-            content += '<img class="team-logo" src="static/img/valor.png"></div>';
-            if (item.gym_name != null) {
-                content += '<b>' + item.gym_name + ' Gym</b><br>';
-                content += '<b>is currently occupied by:</b>';
-            } else {
-                content += '<b>Gym is currently occupied by:</b>';
+        content += '<img class="team-logo" src="static/img/' + team_logo + '"></div>';
+        if (item.gym_name != null) {
+            content += '<b>' + item.gym_name + ' Gym</b>';
+            // And again?
+            if (item.gym_name === "Starbucks") {
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
             }
-            content += '<br><b>Team Valor</b>'
-        }
-        else if (item.team === 3 ) {
-            content += '<img class="team-logo" src="static/img/instinct.png"></div>';
-            if (item.gym_name != null) {
-                content += '<b>' + item.gym_name + ' Gym</b><br>';
-                content += '<b>is currently occupied by:</b>';
-            } else {
-                content += '<b>Gym is currently occupied by:</b>';
+            if ((item.gym_name === "GET YOUR LEVEL BADGE") || (item.gym_name === "GET MORE FREE ITEMS")) {
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sprint.png">';
             }
-            content += '<br><b>Team Instinct</b>'
+            content += '<br><b>is currently occupied by:</b>';
+        } else {
+            content += '<br><b>Gym is currently occupied by:</b>';
         }
-      
+        content += '<br><b>Team ' + team_name + '</b>'
+
         if (item.slots_available !== null) {
             content += '<br>Guarding Pokemon: ' + item.pokemon_name + ' (#' + item.pokemon_id + ')' +
                        '<br>Slots Open: <b>' + item.slots_available + '/6</b>' +
@@ -530,7 +547,7 @@ function FortMarker (raw) {
     } else {
         var open_slots = 9999;
     }
-    var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots});
+    var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
     var fort_marker = L.marker([raw.lat, raw.lon], {icon: fort_icon, opacity: 1, zIndexOffset: 1000});
   
     fort_marker.raw = raw;
@@ -559,7 +576,8 @@ function RaidMarker (raw) {
     }else if (userPreference === 'hide_raid'){
         raid_marker.overlay = 'FilteredRaids';
     }
-  
+
+    raid_marker.sponsor = getSponsorGymType(raw);
     raid_marker.raw = raw;
     markers[raw.id] = raid_marker;
     raid_marker.on('popupopen',function popupopen (event) {
@@ -640,8 +658,12 @@ function addRaidsToMap (data, map) {
             existing.removeFrom(overlays.Raids);
             markers[item.id] = undefined;
         }
-        var userPreference = getPreference('raid_filter-'+item.raid_level);
-        if (userPreference === 'hide_raid') {
+        
+        var levelPreference = getPreference('raid_filter-'+item.raid_level);
+        var sponsorPreference = getPreference('sponsored_filter');
+        var sponsor_type = getSponsorGymType(item);
+
+        if ((levelPreference === 'hide_raid') || ((sponsor_type === 'non-sponsored') && (sponsorPreference === 'sponsored_only'))) {
             marker = RaidMarker(item);
             marker.addTo(hidden_overlays.FilteredRaids);
         } else {
@@ -961,12 +983,21 @@ $('#settings').on('click', '.settings-panel button', function () {
     }else{
         setPreference(key, value);
     }
+    
     if (key.indexOf('raid_filter-') > -1){
         // This is a raid's level filter button
         moveRaidToLayer(r_id, id, value);
     }else{
         setPreference(key, value);
     }
+    
+    if (key.indexOf('sponsored_filter') > -1){
+        // This is a raid's sponsor filter button
+        moveSponsoredToLayer(value);
+    }else{
+        setPreference(key, value);
+    }
+    
 });
 
 function moveToLayer(id, layer){
@@ -988,18 +1019,69 @@ function moveToLayer(id, layer){
 }
 
 function moveRaidToLayer(r_id, poke_id, layer){
+    var sponsorPreference = getPreference('sponsored_filter');
     setPreference("raid_filter-"+r_id, layer);
     layer = layer.toLowerCase();
     for(var k in markers) {
         var m = markers[k];
-        if ((m !== undefined) && (m.raw.raid_level === r_id)){
-            m.removeFrom(overlays[m.overlay]);
-            if (layer === 'display_raid'){
-                m.overlay = "Raids";
-                m.addTo(overlays.Raids);
-            }else if (layer === 'hide_raid') {
-                m.overlay = "FilteredRaids";
-                m.addTo(hidden_overlays.FilteredRaids);
+        if (sponsorPreference === 'sponsored_only') {
+            if ((m !== undefined) && (m.raw.raid_level === r_id)){
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                if (m.sponsor === 'sponsored') {
+                    if (layer === 'display_raid') {
+                        m.overlay = "Raids";
+                        m.addTo(overlays.Raids);
+                    }else if (layer === 'hide_raid') {
+                        m.overlay = "FilteredRaids";
+                        m.addTo(hidden_overlays.FilteredRaids);
+                    }
+                } else {
+                    if (layer === 'display_raid') {
+                        m.overlay = "Raids";
+                    }else if (layer === 'hide_raid') {
+                        m.overlay = "FilteredRaids";
+                    }
+                }
+            }
+        } else {
+            if ((m !== undefined) && (m.raw.raid_level === r_id)){
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                if (layer === 'display_raid'){
+                    m.overlay = "Raids";
+                    m.addTo(overlays.Raids);
+                }else if (layer === 'hide_raid') {
+                    m.overlay = "FilteredRaids";
+                    m.addTo(hidden_overlays.FilteredRaids);
+                }
+            }
+        }
+    }
+}
+
+function moveSponsoredToLayer(layer){
+    setPreference("sponsored_filter", layer);
+    layer = layer.toLowerCase();
+    for(var k in markers) {
+        var m = markers[k];
+        if (m !== undefined){
+            if (layer === 'sponsored_only') {
+                if ((m.sponsor === 'sponsored') && (m.overlay === 'Raids')){
+                    m.removeFrom(hidden_overlays.FilteredRaids);
+                    m.addTo(overlays.Raids);
+                } else {
+                    m.removeFrom(overlays.Raids);
+                    m.addTo(hidden_overlays.FilteredRaids);
+                }
+            } else {
+                if ((m.sponsor === 'sponsored') || (m.sponsor === 'non-sponsored')) {
+                    if (m.overlay === 'Raids') {
+                        m.removeFrom(hidden_overlays.FilteredRaids);
+                        m.addTo(overlays.Raids);
+                    } else {
+                        m.removeFrom(overlays.Raids);
+                        m.addTo(hidden_overlays.FilteredRaids);
+                    }
+                }
             }
         }
     }
@@ -1008,7 +1090,7 @@ function moveRaidToLayer(r_id, poke_id, layer){
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml =
-            '<h5>Raid Filters</h5><br>';
+            '<h5>Raid Level Filters</h5><br>';
     for (var i = 1; i <= 5; i++){
         var partHtml =
             '<div class="text-center">' +
@@ -1022,6 +1104,15 @@ function populateSettingsPanels(){
 
         newHtml += partHtml
     }
+
+    newHtml +=
+            '<hr />'+
+            '<h5>Sponsored Raid Filter</h5><br>' +
+            '<div id="sponsored_raid_filter_button_group" class="btn-group" role="group" data-group="sponsored_filter">' +
+                '<button type="button" class="btn btn-default" data-value="sponsored_only">Sponsored Only</button>' +
+                '<button type="button" class="btn btn-default" data-value="all_raids">All Raids</button>' +
+            '</div>';
+  
     newHtml +=
             '</div>' +
             '<hr />'+
@@ -1046,6 +1137,8 @@ function populateSettingsPanels(){
 }
 
 function setSettingsDefaults(){
+    _defaultSettings['sponsored_filter'] = "all_raids";
+
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
     };
@@ -1226,4 +1319,15 @@ function onLocationFound(e) {
     });
   
   
+}
+
+function getSponsorGymType(raw) {
+    var sponsor_type = '';
+  
+    if (raw.gym_name === "Starbucks" || raw.gym_name === "GET YOUR LEVEL BADGE" || raw.gym_name === "GET MORE FREE ITEMS" ) {
+        sponsor_type = 'sponsored';
+    } else {
+        sponsor_type = 'non-sponsored';
+    }
+    return sponsor_type;
 }

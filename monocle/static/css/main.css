@@ -379,6 +379,13 @@
     z-index: -10;
 }
 
+.fort_sponsor_container {
+    position: absolute;
+    top: -30px;
+    left: -23px;
+    z-index: -10;
+}
+
 .fort_container {
     position: absolute;
     top: -18px;
