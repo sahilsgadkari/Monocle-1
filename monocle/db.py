@@ -788,6 +788,7 @@ def _get_raids(session):
         FROM fort_raids fr
         JOIN forts f ON f.id=fr.fort_id
         JOIN (SELECT fort_id,team FROM fort_sightings WHERE id IN (SELECT MAX(id) FROM fort_sightings GROUP BY fort_id) ORDER BY fort_id) AS fs ON fs.fort_id=fr.fort_id
+        WHERE fr.raid_end_ms > UNIX_TIMESTAMP()
     ''').fetchall()
 
 get_raids = _get_raids_sqlite if DB_TYPE == 'sqlite' else _get_raids
