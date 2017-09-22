@@ -97,14 +97,33 @@ var FortIcon = L.Icon.extend({
     },
     createIcon: function() {
         var div = document.createElement('div');
-//        var sponsor = '';
+        div.innerHTML =
+            '<div class="fortmarker">' +
+                '<div class="fort_container">' +
+                    '<img class="fort_icon" src="static/monocle-icons/forts/' + this.options.fort_team + '.png?201" />' +
+                '</div>' +
+                '<div class="fort_slots_container">' +
+                    '<img class="fort_slots_icon" src="static/img/num_' + this.options.open_slots + '.png" />' +
+                '</div>' +
+            '</div>';
+        return div;
+    }
+});
+
+var AltFortIcon = L.Icon.extend({
+    options: {
+        popupAnchor: [0, 5],
+    },
+    createIcon: function() {
+        var div = document.createElement('div');
+        var sponsor = '';
         
-//        if (this.options.gym_name === "Starbucks") {
-//             sponsor = 'starbucks';
-//        }
-//        if ((this.options.gym_name === "GET YOUR LEVEL BADGE") || (this.options.raid_gym_name === "GET MORE FREE ITEMS")) {
-//             sponsor = 'sprint';
-//        }
+        if (this.options.gym_name === "Starbucks") {
+             sponsor = 'starbucks';
+        }
+        if ((this.options.gym_name === "GET YOUR LEVEL BADGE") || (this.options.raid_gym_name === "GET MORE FREE ITEMS")) {
+             sponsor = 'sprint';
+        }
         
         div.innerHTML =
             '<div class="fortmarker">' +
@@ -115,12 +134,12 @@ var FortIcon = L.Icon.extend({
                     '<img class="fort_slots_icon" src="static/img/num_' + this.options.open_slots + '.png" />' +
                 '</div>' +
             '</div>';
-//        if (sponsor !== '') {
-//            div.innerHTML +=
-//                '<div class="fort_sponsor_container">' +
-//                    '<img class="sponsor_icon" src="static/monocle-icons/raids/' + sponsor + '.png" />' +
-//                '</div>';
-//        }
+        if (sponsor !== '') {
+            div.innerHTML +=
+                '<div class="fort_sponsor_container">' +
+                    '<img class="sponsor_icon" src="static/monocle-icons/raids/' + sponsor + '.png" />' +
+                '</div>';
+        }
         return div;
     }
 });
@@ -362,7 +381,9 @@ function getRaidPopupContent (item) {
     if (item.gym_name != null) {
         content += '<br><b>' + item.gym_name + ' Gym</b>';
         if (item.image_url !== null) {
-             content += '<br><img class="gym_image" src="' + item.image_url + '">';
+             if (item.image_url !== '') { // Check if image_url is blank
+                 content += '<br><img class="gym_image" src="' + item.image_url + '">';
+             }
         }
         // And again?
         if (item.gym_name === "Starbucks") {
@@ -412,6 +433,11 @@ function getFortPopupContent (item) {
     if (item.team === 0) {
         content += '<b>An empty Gym!</b>';
         content += '<br><b>' + item.gym_name + ' Gym</b><br>';
+        if (item.image_url !== null) {
+             if (item.image_url !== '') { // Check if image_url is blank
+                 content += '<br><img class="gym_image" src="' + item.image_url + '">';
+             }
+        }
         // Copying again?
         if (item.gym_name === "Starbucks") {
             content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
@@ -435,6 +461,11 @@ function getFortPopupContent (item) {
         content += '<img class="team-logo" src="static/img/' + team_logo + '"></div>';
         if (item.gym_name != null) {
             content += '<b>' + item.gym_name + ' Gym</b>';
+            if (item.image_url !== null) {
+                 if (item.image_url !== '') { // Check if image_url is blank
+                     content += '<br><img class="gym_image" src="' + item.image_url + '">';
+                 }
+            }
             // And again?
             if (item.gym_name === "Starbucks") {
                 content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
@@ -547,7 +578,27 @@ function FortMarker (raw) {
     } else {
         var open_slots = 9999;
     }
-    var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
+  
+    var current_time = new Date();
+    var current_hour = current_time.getHours();
+    var gym_start_hour = 20; // Start at 8pm
+    var gym_end_hour = 4; // End at 4am
+
+    if (gym_end_hour < gym_start_hour) { // Time span goes past midnight
+        if ((current_hour >= gym_start_hour && current_hour <= 23) || (current_hour >= 0 && current_hour <= gym_end_hour)) {
+            var fort_icon = new AltFortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
+        } else {
+            var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
+        }
+    
+    } else {
+        if (current_hour >= gym_start_hour && current_hour <= gym_end_hour) {
+            var fort_icon = new AltFortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
+        } else {
+            var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
+        }
+    }
+  
     var fort_marker = L.marker([raw.lat, raw.lon], {icon: fort_icon, opacity: 1, zIndexOffset: 1000});
   
     fort_marker.raw = raw;
