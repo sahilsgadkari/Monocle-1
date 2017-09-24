@@ -854,7 +854,7 @@ class Notifier:
         data = {
             'type': "raid",
             'message': {
-                "fort_id": fort_raid['external_id'],
+                "external_id": fort_raid['external_id'],
                 "raid_seed": fort_raid['raid_seed'],
                 "raid_lat": fort_raid['lat'],
                 "raid_lon": fort_raid['lon'],

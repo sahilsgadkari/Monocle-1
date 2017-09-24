@@ -385,6 +385,23 @@ function getRaidPopupContent (item) {
                  content += '<br><img class="gym_image" src="' + item.image_url + '">';
              }
         }
+      
+        // For future use
+        /*
+        if (item.external_id.includes(".")) {
+            //console.log("Normal gym with ext_id: ", item.external_id);
+        } else {
+            if (item.gym_name === "Starbucks") {
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
+            } else if ((item.gym_name === "GET YOUR LEVEL BADGE") || (item.gym_name === "GET MORE FREE ITEMS")) {
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sprint.png">';
+            } else { // Missing gym name data
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sponsored.png">
+            }
+            //console.log("Sponsored gym with ext_id: ", item.external_id);
+        }
+        */
+        
         // And again?
         if (item.gym_name === "Starbucks") {
             content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
@@ -438,6 +455,23 @@ function getFortPopupContent (item) {
                  content += '<br><img class="gym_image" src="' + item.image_url + '">';
              }
         }
+      
+        // For future use
+        /*
+        if (item.external_id.includes(".")) {
+            //console.log("Normal gym with ext_id: ", item.external_id);
+        } else {
+            if (item.gym_name === "Starbucks") {
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
+            } else if ((item.gym_name === "GET YOUR LEVEL BADGE") || (item.gym_name === "GET MORE FREE ITEMS")) {
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sprint.png">';
+            } else { // Missing gym name data
+                content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sponsored.png">
+            }
+            //console.log("Sponsored gym with ext_id: ", item.external_id);
+        }
+        */
+      
         // Copying again?
         if (item.gym_name === "Starbucks") {
             content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
@@ -466,6 +500,23 @@ function getFortPopupContent (item) {
                      content += '<br><img class="gym_image" src="' + item.image_url + '">';
                  }
             }
+          
+            // For future use
+            /*
+            if (item.external_id.includes(".")) {
+                //console.log("Normal gym with ext_id: ", item.external_id);
+            } else {
+                if (item.gym_name === "Starbucks") {
+                    content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
+                } else if ((item.gym_name === "GET YOUR LEVEL BADGE") || (item.gym_name === "GET MORE FREE ITEMS")) {
+                    content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sprint.png">';
+                } else { // Missing gym name data
+                    content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/sponsored.png">
+                }
+                //console.log("Sponsored gym with ext_id: ", item.external_id);
+            }
+            */
+        
             // And again?
             if (item.gym_name === "Starbucks") {
                 content += '<br><img class="sponsor_icon" src="static/monocle-icons/raids/starbucks.png">';
