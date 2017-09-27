@@ -1030,7 +1030,7 @@ map.whenReady(function () {
         getWorkers();
     }
     setInterval(getPokemon, 30000);
-    setInterval(getGyms, 90000)
+    setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
