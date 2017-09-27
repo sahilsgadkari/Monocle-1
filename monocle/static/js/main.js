@@ -242,7 +242,8 @@ if (_DisplaySpawnpointsLayer === 'True') {
 }
 
 var hidden_overlays = {
-    FilteredRaids: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
+    FilteredRaids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+    FilteredGyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
 };
 
 function unsetHidden (event) {
@@ -649,8 +650,17 @@ function FortMarker (raw) {
             var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
         }
     }
-  
+
     var fort_marker = L.marker([raw.lat, raw.lon], {icon: fort_icon, opacity: 1, zIndexOffset: 1000});
+    var selectedGym = getPreference('gym_selection');
+
+    if (selectedGym === raw.team.toString()) {
+        fort_marker.overlay = 'Gyms';
+    } else if (selectedGym == 4) {
+        fort_marker.overlay = 'Gyms';
+    } else {
+        fort_marker.overlay = 'FilteredGyms';
+    }
   
     fort_marker.raw = raw;
     markers[raw.id] = fort_marker;
@@ -736,10 +746,51 @@ function addPokemonToMap (data, map) {
     }
 }
 
+function addGymCounts (data) {
+    var team_count = new gymCounter();
+    var instinct_container = $('.instinct-gym-filter[data-value="3"]')
+    var valor_container = $('.valor-gym-filter[data-value="2"]')
+    var mystic_container = $('.mystic-gym-filter[data-value="1"]')
+    var empty_container = $('.empty-gym-filter[data-value="0"]')
+    var total_container = $('.all-gyms-filter[data-value="4"]')
+  
+    team_count.add(data);
+  
+    mystic_container.html(team_count.mystic);
+    valor_container.html(team_count.valor);
+    instinct_container.html(team_count.instinct);
+    empty_container.html(team_count.empty);
+    total_container.html(team_count.total);
+}
+
+function gymCounter() {
+    this.mystic = 0;
+    this.valor = 0;
+    this.instinct = 0;
+    this.empty = 0;
+    this.total = 0;
+}
+
+gymCounter.prototype.add = function(data) {
+    data.forEach(function(item) {
+        if ( item.team == 1 ) {
+            ++this.mystic;
+        } else if ( item.team == 2 ) {
+            ++this.valor;
+        } else if ( item.team == 3 ) {
+            ++this.instinct;
+        } else {
+            ++this.empty;
+        }
+        this.total = this.mystic + this.valor + this.instinct + this.empty;
+    }, this);
+};
+
 function addGymsToMap (data, map) {
     data.forEach(function (item) {
         // No change since last time? Then don't do anything
         var existing = markers[item.id];
+        
         if (typeof existing !== 'undefined') {
             if (existing.raw.sighting_id === item.sighting_id) {
                 return;
@@ -747,8 +798,22 @@ function addGymsToMap (data, map) {
             existing.removeFrom(overlays.Gyms);
             markers[item.id] = undefined;
         }
-        marker = FortMarker(item);
-        marker.addTo(overlays.Gyms);
+        
+        // May need some code here to assign filters based on local storage
+        var selectedGym = getPreference('gym_selection');
+        
+        if (selectedGym === item.team.toString()) {
+            marker = FortMarker(item);
+            marker.addTo(overlays.Gyms);
+        } else if (selectedGym == 4) {
+            marker = FortMarker(item);
+            marker.addTo(overlays.Gyms);
+        } else {
+            marker = FortMarker(item);
+            marker.addTo(hidden_overlays.FilteredGyms);
+        }
+        
+        
     });
 }
 
@@ -847,6 +912,7 @@ function getGyms () {
         });
     }).then(function (data) {
         addGymsToMap(data, map);
+        addGymCounts(data);
         //overlays.Gyms.refreshClusters();
     });
 }
@@ -973,6 +1039,7 @@ if ((getPreference("SHOW_SPLASH") === '0') && (_ForceSplashMessage != 'True')) {
     $('.splash_container').css('visibility', 'hidden');
 }
 
+
 $("#settings>ul.nav>li>a").on('click', function(e){
     // Click handler for each tab button.
     $(this).parent().parent().children("li").removeClass('active');
@@ -1017,6 +1084,91 @@ $('.my-settings').on('click', function () {
     $("#settings").show().animate({
         opacity: 1
     }, 250);
+});
+
+$('.instinct-gym-filter').on('click', function () {
+    var item = $(this);
+    var key = item.parent().data('group');
+    var value = item.data('value');
+        
+    if (key.indexOf('gym_selection') > -1){
+        // This is a gym's sponsor filter button
+        gymToDisplay(value);
+    }else{
+        setPreference(key, value);
+    }
+    
+    if (!map.hasLayer(overlays.Gyms)) {
+        map.addLayer(overlays.Gyms);
+    }
+});
+
+$('.valor-gym-filter').on('click', function () {
+    var item = $(this);
+    var key = item.parent().data('group');
+    var value = item.data('value');
+        
+    if (key.indexOf('gym_selection') > -1){
+        // This is a gym's sponsor filter button
+        gymToDisplay(value);
+    }else{
+        setPreference(key, value);
+    }
+    
+    if (!map.hasLayer(overlays.Gyms)) {
+        map.addLayer(overlays.Gyms);
+    }
+});
+
+$('.mystic-gym-filter').on('click', function () {
+    var item = $(this);
+    var key = item.parent().data('group');
+    var value = item.data('value');
+        
+    if (key.indexOf('gym_selection') > -1){
+        // This is a gym's sponsor filter button
+        gymToDisplay(value);
+    }else{
+        setPreference(key, value);
+    }
+    
+    if (!map.hasLayer(overlays.Gyms)) {
+        map.addLayer(overlays.Gyms);
+    }
+});
+
+$('.empty-gym-filter').on('click', function () {
+    var item = $(this);
+    var key = item.parent().data('group');
+    var value = item.data('value');
+        
+    if (key.indexOf('gym_selection') > -1){
+        // This is a gym's sponsor filter button
+        gymToDisplay(value);
+    }else{
+        setPreference(key, value);
+    }
+    
+    if (!map.hasLayer(overlays.Gyms)) {
+        map.addLayer(overlays.Gyms);
+    }
+});
+
+$('.all-gyms-filter').on('click', function () {
+    var item = $(this);
+    var key = item.parent().data('group');
+    var value = item.data('value');
+        
+    if (key.indexOf('gym_selection') > -1){
+        // This is a gym's sponsor filter button
+        gymToDisplay(value);
+    }else{
+        setPreference(key, value);
+    }
+    
+    if (!map.hasLayer(overlays.Gyms)) {
+        map.addLayer(overlays.Gyms);
+    }
 });
 
 $('#reset_btn').on('click', function () {
@@ -1096,6 +1248,13 @@ $('#settings').on('click', '.settings-panel button', function () {
     if (key.indexOf('sponsored_filter') > -1){
         // This is a raid's sponsor filter button
         moveSponsoredToLayer(value);
+    }else{
+        setPreference(key, value);
+    }
+
+    if (key.indexOf('gym_filter_buttons') > -1){
+        // This is the gym filter buttons switch
+        setGymButtonsDisplay(value);
     }else{
         setPreference(key, value);
     }
@@ -1189,6 +1348,41 @@ function moveSponsoredToLayer(layer){
     }
 }
 
+function gymToDisplay(layer){
+    setPreference("gym_selection", layer);
+    for(var k in markers) {
+        var m = markers[k];
+        if (m !== undefined && m.raw.id.includes("fort-")) {
+            if (m.raw.team === layer) {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "Gyms";
+                m.addTo(overlays.Gyms);
+            } else if (layer == 4) {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "Gyms";
+                m.addTo(overlays.Gyms);
+            } else {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "FilteredGyms";
+                m.addTo(hidden_overlays.FilteredGyms);
+            }
+        }
+    }
+}
+
+function setGymButtonsDisplay(value){
+    setPreference("gym_filter_buttons", value);
+    if (value == "display_gym_filters") {
+        $(".gym_btn").each(function() {
+            $(this).css('visibility', 'visible');
+        });
+    } else {
+        $(".gym_btn").each(function() {
+            $(this).css('visibility', 'hidden');
+        });
+    }
+}
+
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml =
@@ -1214,9 +1408,16 @@ function populateSettingsPanels(){
                 '<button type="button" class="btn btn-default" data-value="sponsored_only">Sponsored Only</button>' +
                 '<button type="button" class="btn btn-default" data-value="all_raids">All Raids</button>' +
             '</div>';
+
+    newHtml +=
+            '<hr />'+
+            '<h5>Gym Filter Buttons</h5><br>' +
+            '<div id="gym_filter_button_group" class="btn-group" role="group" data-group="gym_filter_buttons">' +
+                '<button type="button" class="btn btn-default" data-value="display_gym_filters">Display</button>' +
+                '<button type="button" class="btn btn-default" data-value="hide_gym_filters">Hide</button>' +
+            '</div>';
   
     newHtml +=
-            '</div>' +
             '<hr />'+
             '<h5>Pokemon Filters</h5><br>' +
             '<div data-group="display_all_none">' +
@@ -1240,6 +1441,8 @@ function populateSettingsPanels(){
 
 function setSettingsDefaults(){
     _defaultSettings['sponsored_filter'] = "all_raids";
+    _defaultSettings['gym_selection'] = 4;
+    _defaultSettings['gym_filter_buttons'] = "hide_gym_filters";
 
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
@@ -1262,6 +1465,10 @@ function setSettingsDefaults(){
 
 populateSettingsPanels();
 setSettingsDefaults();
+
+if ((getPreference("gym_filter_buttons") === "hide_gym_filters")) {
+    $('.gym_btn').css('visibility', 'hidden');
+}
 
 function getPreference(key, ret){
     return localStorage.getItem(key) ? localStorage.getItem(key) : (key in _defaultSettings ? _defaultSettings[key] : ret);
@@ -1431,5 +1638,14 @@ function getSponsorGymType(raw) {
     } else {
         sponsor_type = 'non-sponsored';
     }
+  
+    // For future use
+    /*
+    if raw.external_id.includes(".")) {
+        sponsor_type = 'non-sponsored';
+    } else {
+        sponsor_type = 'sponsored';
+    }
+    */
     return sponsor_type;
 }

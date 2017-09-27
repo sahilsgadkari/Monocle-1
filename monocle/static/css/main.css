@@ -35,7 +35,7 @@
     bottom: 70px;
 }
 
- .map_btn + .map_btn + .map_btn {
+.map_btn + .map_btn + .map_btn {
     bottom: 110px;
 }
 
@@ -48,6 +48,110 @@
 }
 
  .map_btn + .map_btn + .map_btn + .map_btn + .map_btn + .map_btn {
+    bottom: 230px;
+}
+
+.gym_btn {
+    z-index: 1000;
+    position: absolute;
+    bottom: 30px;
+    right: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+    background-image: url('../img/3_team.png');
+    background-size: 32px 32px;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    text-shadow: -1px 1px 2px #000000;
+    padding: 6px 0;
+    background-color: #f2c900;
+}
+
+.gym_btn:hover {
+    background-color: #f4f4f4;
+    text-decoration: none;
+    color: black;
+    text-shadow: 0px 0px 5px white;
+}
+
+.gym_btn + .gym_btn {
+    bottom: 70px;
+    background-image: url('../img/2_team.png');
+    background-size: 32px 32px;
+    background-position: center;
+    background-color: #d11b1b;
+    color: white;
+    text-shadow: -1px 1px 2px #000000;
+}
+
+.gym_btn + .gym_btn:hover {
+    background-color: #f4f4f4;
+    text-decoration: none;
+    color: black;
+    text-shadow: 0px 0px 5px white;
+}
+
+.gym_btn + .gym_btn + .gym_btn {
+    bottom: 110px;
+    background-image: url('../img/1_team.png');
+    background-size: 32px 32px;
+    background-position: center;
+    background-color: #0537b7;
+    color: white;
+    text-shadow: -1px 1px 2px #000000;
+}
+
+.gym_btn + .gym_btn + .gym_btn:hover {
+    background-color: #f4f4f4;
+    text-decoration: none;
+    color: black;
+    text-shadow: 0px 0px 5px white;
+}
+
+.gym_btn + .gym_btn + .gym_btn + .gym_btn {
+    bottom: 150px;
+    background-image: url('../img/0_team.png');
+    background-size: 32px 32px;
+    background-position: center;
+    background-color: grey;
+}
+
+.gym_btn + .gym_btn + .gym_btn + .gym_btn:hover {
+    background-color: #f4f4f4;
+    text-decoration: none;
+    color: black;
+    text-shadow: 0px 0px 5px white;
+}
+
+.gym_btn + .gym_btn + .gym_btn + .gym_btn + .gym_btn {
+    padding: 10px 0;
+    width: 40px;
+    height: 40px;
+    background-image: url('../img/4_team.png');
+    background-size: 40px 40px;
+    background-position: center;
+    border-radius: 20px;
+    bottom: 190px;
+    right: 6px;
+    background-color: white;
+    color: black;
+    text-shadow: 0px 0px 5px white;
+}
+
+.gym_btn + .gym_btn + .gym_btn + .gym_btn + .gym_btn:hover {
+    background-color: white;
+    text-decoration: none;
+}
+
+ .gym_btn + .gym_btn + .gym_btn + .gym_btn + .gym_btn + .gym_btn {
     bottom: 230px;
 }
 
