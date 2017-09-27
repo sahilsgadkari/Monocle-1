@@ -746,7 +746,6 @@ function addPokemonToMap (data, map) {
     }
 }
 
-// Count on you to copy more of my code.
 function addGymCounts (data) {
     var team_count = new gymCounter();
     var instinct_container = $('.instinct-gym-filter[data-value="3"]')
@@ -987,10 +986,7 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
                       });
 }
 else{
-  var map = L.map('main-map', {
-                preferCanvas: true,
-                maxZoom: 18
-                }).setView(_MapCoords, 16);
+  var map = L.map('main-map', {preferCanvas: true, maxZoom: 18,}).setView(_MapCoords, 16);
 }
 
 if (_DisplayPokemonLayer === 'True') {
@@ -1038,20 +1034,6 @@ map.whenReady(function () {
         setInterval(getWorkers, 30000);;
     }
 });
-
-map.on('overlayadd', onOverLayAdd);
-function onOverLayAdd(e) {
-    if (e.name == 'Gyms') {
-        $('.gym_btn').css('visibility', 'visible');
-    }
-}
-
-map.on('overlayremove', onOverLayRemove);
-function onOverLayRemove(e) {
-    var gymDisplayPreference = getPreference('gym_filter_buttons');
-    if ((e.name == 'Gyms') && (gymDisplayPreference != 'display_gym_filters')) {
-        $('.gym_btn').css('visibility', 'hidden');
-    }
 
 if ((getPreference("SHOW_SPLASH") === '0') && (_ForceSplashMessage != 'True')) {
     $('.splash_container').css('visibility', 'hidden');
@@ -1425,6 +1407,14 @@ function populateSettingsPanels(){
             '<div id="sponsored_raid_filter_button_group" class="btn-group" role="group" data-group="sponsored_filter">' +
                 '<button type="button" class="btn btn-default" data-value="sponsored_only">Sponsored Only</button>' +
                 '<button type="button" class="btn btn-default" data-value="all_raids">All Raids</button>' +
+            '</div>';
+
+    newHtml +=
+            '<hr />'+
+            '<h5>Gym Filter Buttons</h5><br>' +
+            '<div id="gym_filter_button_group" class="btn-group" role="group" data-group="gym_filter_buttons">' +
+                '<button type="button" class="btn btn-default" data-value="display_gym_filters">Display</button>' +
+                '<button type="button" class="btn btn-default" data-value="hide_gym_filters">Hide</button>' +
             '</div>';
   
     newHtml +=
