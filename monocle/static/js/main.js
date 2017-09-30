@@ -275,6 +275,7 @@ function getPopupContent (item) {
     var minutes = parseInt(diff / 60);
     var seconds = parseInt(diff - (minutes * 60));
     var expires_at = minutes + 'm ' + seconds + 's';
+    var expires_time = convertToTwelveHourTime(item.expires_at);
     var form = getForm(item.form);
     if (item.form > 0) {
        var pokemon_name = item.name + ' - ' + form;
@@ -287,11 +288,13 @@ function getPopupContent (item) {
         var totaliv = 100 * (item.atk + item.def + item.sta) / 45;
         content += ' - <b>' + totaliv.toFixed(2) + '%</b><br>';
         content += 'Disappears in: ' + expires_at + '<br>';
+        content += 'Available until: ' + expires_time + '<br>';
         content += 'Quick Move: ' + item.move1 + ' ( ' + item.damage1 + ' dps )<br>';
         content += 'Charge Move: ' + item.move2 + ' ( ' + item.damage2 + ' dps )<br>';
         content += 'IV: ' + item.atk + ' atk, ' + item.def + ' def, ' + item.sta + ' sta<br>'
     } else {
         content += '<br>Disappears in: ' + expires_at + '<br>';
+        content += 'Available until: ' + expires_time + '<br>';
     }
 
     var userPref = getPreference('filter-'+item.pokemon_id);
@@ -1582,8 +1585,11 @@ function updateTime() {
 
 function convertToTwelveHourTime(raw_time) {
     var processed_time = new Date(raw_time * 1000);
-    if (processed_time.getHours() < 13 ) {
+    if ((processed_time.getHours() < 13) && (processed_time.getHours() > 0) ) {
         var hours = processed_time.getHours();
+    } else if (processed_time.getHours() < 1) {
+    console.log("hours: " + processed_time.getHours());
+        var hours = 12;
     } else {
         var hours = processed_time.getHours() - 12;
     }
