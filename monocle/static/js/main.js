@@ -1662,6 +1662,8 @@ setSettingsDefaults();
 
 if ((getPreference("gym_filter_buttons") === "hide_gym_filters")) {
     $('.gym_btn').css('visibility', 'hidden');
+} else {
+    savedGymsToDisplay();
 }
 
 function getPreference(key, ret){
