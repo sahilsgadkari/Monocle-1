@@ -1008,6 +1008,16 @@ function onOverLayAdd(e) {
     if (e.name == 'Gyms') {
         $('.gym_btn').css('visibility', 'visible');
     }
+  
+    savedGymsToDisplay();
+/*    
+    console.log("instinct pref: ", getPreference('instinct_gym_filter'));
+    console.log("instinct display ", $('.instinct-gym-filter').hasClass('active'));
+    console.log("mystic pref: ", getPreference('mystic_gym_filter'));
+    console.log("mystic display ", $('.mystic-gym-filter').hasClass('active'));
+    console.log("open_spot pref: ", getPreference('open_spot_gym_filter'));
+    console.log("open_spot display ", $('.open-spot-gym-filter').hasClass('active'));
+*/
 }
 
 map.on('overlayremove', onOverLayRemove);
@@ -1079,9 +1089,11 @@ $('.instinct-gym-filter').on('click', function () {
     if ($(this).hasClass('active')) {
        $(this).removeClass('active');
        $('.instinct-gym-filter').css('opacity', '0.4');
+       setPreference("instinct_gym_filter", "not-active");
     } else {
        $(this).addClass('active');
        $('.instinct-gym-filter').css('opacity', '1.0');
+       setPreference("instinct_gym_filter", "active");
     }
             
     if (key.indexOf('gym_selection') > -1){
@@ -1104,9 +1116,11 @@ $('.valor-gym-filter').on('click', function () {
     if ($(this).hasClass('active')) {
        $(this).removeClass('active');
        $('.valor-gym-filter').css('opacity', '0.4');
+       setPreference("valor_gym_filter", "not-active");
     } else {
        $(this).addClass('active');
        $('.valor-gym-filter').css('opacity', '1.0');
+       setPreference("valor_gym_filter", "active");
     }
             
     if (key.indexOf('gym_selection') > -1){
@@ -1129,9 +1143,11 @@ $('.mystic-gym-filter').on('click', function () {
     if ($(this).hasClass('active')) {
        $(this).removeClass('active');
        $('.mystic-gym-filter').css('opacity', '0.4');
+       setPreference("mystic_gym_filter", "not-active");
     } else {
        $(this).addClass('active');
        $('.mystic-gym-filter').css('opacity', '1.0');
+       setPreference("mystic_gym_filter", "active");
     }
             
     if (key.indexOf('gym_selection') > -1){
@@ -1154,9 +1170,11 @@ $('.empty-gym-filter').on('click', function () {
     if ($(this).hasClass('active')) {
        $(this).removeClass('active');
        $('.empty-gym-filter').css('opacity', '0.4');
+       setPreference("empty_gym_filter", "not-active");
     } else {
        $(this).addClass('active');
        $('.empty-gym-filter').css('opacity', '1.0');
+       setPreference("empty_gym_filter", "active");
     }
             
     if (key.indexOf('gym_selection') > -1){
@@ -1175,17 +1193,21 @@ $('.open-spot-gym-filter').on('click', function () {
     var item = $(this);
     var key = item.parent().data('group');
     var value = item.data('value');
-
+//console.log("before click display set: ", $('.open-spot-gym-filter').hasClass('active'));
     if ($(this).hasClass('active')) {
        $(this).removeClass('active');
        $('.open-spot-gym-filter').css('opacity', '0.40');
        $('.open-spot-gym-filter').css('background-image', 'url(' + "static/img/no-spots.png" + ')');
+       setPreference("open_spot_gym_filter", "not-active");
     } else {
        $(this).addClass('active');
        $('.open-spot-gym-filter').css('opacity', '1.0');
        $('.open-spot-gym-filter').css('background-image', 'url(' + "static/img/all-gyms.png" + ')');
+       setPreference("open_spot_gym_filter", "active");
     }
-            
+    
+//console.log("setPref on open-spot: ", getPreference('open_spot_gym_filter'));
+//console.log("after click display set: ", $('.open-spot-gym-filter').hasClass('active'));
     if (key.indexOf('gym_selection') > -1){
         // This is a gym's filter button
         gymToDisplay(value);
@@ -1414,7 +1436,6 @@ function gymToDisplay(team_selection) {
     var display_empty = $('.empty-gym-filter').hasClass('active');
     var display_open_spots = $('.open-spot-gym-filter').hasClass('active');
   
-    setPreference("gym_selection", team_selection);
     for(var k in markers) {
         var m = markers[k];
         if (m !== undefined && m.raw.id.includes("fort-")) {
@@ -1455,6 +1476,93 @@ function gymToDisplay(team_selection) {
                     m.addTo(hidden_overlays.FilteredGyms);
                 }
             }
+        }
+    }
+}
+
+function savedGymsToDisplay() {
+    if (getPreference('mystic_gym_filter') === "active") {
+        $('.mystic-gym-filter').css('opacity', '1.0');
+        $('.mystic-gym-filter').addClass('active');
+        display_mystic = true;
+    } else {
+        $('.mystic-gym-filter').css('opacity', '0.4');
+        $('.mystic-gym-filter').removeClass('active');
+        display_mystic = false;
+    }
+    if (getPreference('valor_gym_filter') === "active") {
+        $('.valor-gym-filter').css('opacity', '1.0');
+        $('.valor-gym-filter').addClass('active');
+        display_valor = true;
+    } else {
+        $('.valor-gym-filter').css('opacity', '0.4');
+        $('.valor-gym-filter').removeClass('active');
+        display_valor = false;
+    }
+    if (getPreference('instinct_gym_filter') === "active") {
+        $('.instinct-gym-filter').css('opacity', '1.0');
+        $('.instinct-gym-filter').addClass('active');
+        display_instinct = true;
+    } else {
+        $('.instinct-gym-filter').css('opacity', '0.4');
+        $('.instinct-gym-filter').removeClass('active');
+        display_instinct = false;
+    }
+    if (getPreference('empty_gym_filter') === "active") {
+        $('.empty-gym-filter').css('opacity', '1.0');
+        $('.empty-gym-filter').addClass('active');
+        display_empty = true;
+    } else {
+        $('.empty-gym-filter').css('opacity', '0.4');
+        $('.empty-gym-filter').removeClass('active');
+        display_empty = false;
+    }
+    if (getPreference('open_spot_gym_filter') === "active") {
+        $('.open-spot-gym-filter').css('opacity', '1.0');
+        $('.open-spot-gym-filter').addClass('active');
+        $('.open-spot-gym-filter').css('background-image', 'url(' + "static/img/all-gyms.png" + ')');
+        display_open_spots = true;
+    } else {
+        $('.open-spot-gym-filter').css('opacity', '0.4');
+        $('.open-spot-gym-filter').removeClass('active');
+        $('.open-spot-gym-filter').css('background-image', 'url(' + "static/img/no-spots.png" + ')');
+        display_open_spots = false;
+    }
+
+  
+    for(var k in markers) {
+        var m = markers[k];
+        if (m !== undefined && m.raw.id.includes("fort-")) {
+            if ((m.raw.team === 1) && (display_mystic)) {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "Gyms";
+                m.addTo(overlays.Gyms);
+            } else if ((m.raw.team === 2) && (display_valor)) {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "Gyms";
+                m.addTo(overlays.Gyms);
+            } else if ((m.raw.team === 3) && (display_instinct)) {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "Gyms";
+                m.addTo(overlays.Gyms);
+            } else if ((m.raw.team === 0) && (display_empty)) {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "Gyms";
+                m.addTo(overlays.Gyms);
+            } else {
+                m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                m.overlay = "FilteredGyms";
+                m.addTo(hidden_overlays.FilteredGyms);
+            }
+          
+            if (!display_open_spots) {
+                if (m.raw.slots_available == 0) {
+                    m.removeFrom(overlays[m.overlay]); // Remove this marker from current overlay
+                    m.overlay = "FilteredGyms";
+                    m.addTo(hidden_overlays.FilteredGyms);
+                }
+            }
+          
         }
     }
 }
@@ -1524,6 +1632,11 @@ function setSettingsDefaults(){
     _defaultSettings['sponsored_filter'] = "all_raids";
     _defaultSettings['gym_selection'] = 4;
     _defaultSettings['gym_filter_buttons'] = "hide_gym_filters";
+    _defaultSettings['mystic_gym_filter'] = "active";
+    _defaultSettings['valor_gym_filter'] = "active";
+    _defaultSettings['instinct_gym_filter'] = "active";
+    _defaultSettings['empty_gym_filter'] = "active";
+    _defaultSettings['open_spot_gym_filter'] = "active";
 
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
