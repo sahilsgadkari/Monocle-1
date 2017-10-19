@@ -1,5 +1,8 @@
 var _last_pokemon_id = 0;
-var _pokemon_count = 251;
+var _pokemon_count = 386; // Orignally 251 for Gen 1 - 2
+var _pokemon_count_gen_1 = 151;
+var _pokemon_count_gen_2 = 251;
+var _pokemon_count_gen_3 = 386;
 var _WorkerIconUrl = 'static/monocle-icons/assets/ball.png';
 var _PokestopIconUrl = 'static/monocle-icons/assets/stop.png';
 var _LocationMarker;
@@ -8,6 +11,8 @@ var _LocationRadar;
 var _dark = L.tileLayer(_DarkMapProviderUrl, {opacity: _DarkMapOpacity, attribution: _DarkMapProviderAttribution});
 var _light = L.tileLayer(_LightMapProviderUrl, {opacity: _LightMapOpacity, attribution: _LightMapProviderAttribution});
 // You should ask next time.
+var _SpriteSheet;
+
 var ultraIconSmall = new L.icon({
             iconUrl: 'static/img/ultra-ball.png',
             iconSize: [10, 10],
@@ -1010,14 +1015,6 @@ function onOverLayAdd(e) {
     }
   
     savedGymsToDisplay();
-/*    
-    console.log("instinct pref: ", getPreference('instinct_gym_filter'));
-    console.log("instinct display ", $('.instinct-gym-filter').hasClass('active'));
-    console.log("mystic pref: ", getPreference('mystic_gym_filter'));
-    console.log("mystic display ", $('.mystic-gym-filter').hasClass('active'));
-    console.log("open_spot pref: ", getPreference('open_spot_gym_filter'));
-    console.log("open_spot display ", $('.open-spot-gym-filter').hasClass('active'));
-*/
 }
 
 map.on('overlayremove', onOverLayRemove);
@@ -1193,7 +1190,6 @@ $('.open-spot-gym-filter').on('click', function () {
     var item = $(this);
     var key = item.parent().data('group');
     var value = item.data('value');
-//console.log("before click display set: ", $('.open-spot-gym-filter').hasClass('active'));
     if ($(this).hasClass('active')) {
        $(this).removeClass('active');
        $('.open-spot-gym-filter').css('opacity', '0.40');
@@ -1206,8 +1202,6 @@ $('.open-spot-gym-filter').on('click', function () {
        setPreference("open_spot_gym_filter", "active");
     }
     
-//console.log("setPref on open-spot: ", getPreference('open_spot_gym_filter'));
-//console.log("after click display set: ", $('.open-spot-gym-filter').hasClass('active'));
     if (key.indexOf('gym_selection') > -1){
         // This is a gym's filter button
         gymToDisplay(value);
@@ -1340,6 +1334,24 @@ $('#settings').on('click', '.settings-panel button', function () {
         setPreference(key, value);
     }
     
+    if (key.indexOf('gen1_buttons') > -1){
+        setGen1Buttons(value);
+    }else{
+        setPreference(key, value);
+    }
+    
+    if (key.indexOf('gen2_buttons') > -1){
+        setGen2Buttons(value);
+    }else{
+        setPreference(key, value);
+    }
+
+    if (key.indexOf('gen3_buttons') > -1){
+        setGen3Buttons(value);
+    }else{
+        setPreference(key, value);
+    }
+
 });
 
 function moveToLayer(id, layer){
@@ -1580,6 +1592,34 @@ function setGymButtonsDisplay(value){
     }
 }
 
+function setGen1Buttons(value){
+    setPreference("gen1_buttons", value);
+    if (value == "display_gen1") {
+        $('.gen_1').css('display', '');
+    } else if (value === "collapse_gen1") {
+        $('.gen_1').css('display', 'none');
+    }
+}
+
+function setGen2Buttons(value){
+    setPreference("gen2_buttons", value);
+    if (value == "display_gen2") {
+        $('.gen_2').css('display', '');
+    } else if (value === "collapse_gen2") {
+        $('.gen_2').css('display', 'none');
+    }
+}
+
+function setGen3Buttons(value){
+    setPreference("gen3_buttons", value);
+    if (value == "display_gen3") {
+        $('.gen_3').css('display', '');
+    } else if (value === "collapse_gen3") {
+        $('.gen_3').css('display', 'none');
+    }
+}
+
+
 function populateSettingsPanels(){
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml =
@@ -1613,9 +1653,22 @@ function populateSettingsPanels(){
                 '<button type="button" class="btn btn-default" data-value="trash">Hide All</button>' +
             '</div><br><h6>*Browser will pause briefly to hide all.</h6><br><br>';
 
-    for (var i = 1; i <= _pokemon_count; i++){
+    // Generation divider
+    newHtml +=
+            '<div class="gen_label"><b>Generation 1  </b></div>' +
+            '<div class="btn-group" role="group" data-group="gen1_buttons">' +
+                '<button type="button" class="btn btn-default" data-value="display_gen1">Display Filters</button>' +
+                '<button type="button" class="btn btn-default" data-value="collapse_gen1">Collapse</button>' +
+            '</div>';
+
+
+    // Open Gen 1 Div Container
+    newHtml +=
+            '<div class="gen_1" data-group="gen_1_group"><br>';
+
+    for (var i = 1; i <= _pokemon_count_gen_1; i++){
         var partHtml =
-            '<div class="text-center">' +
+            '<div class="filter_buttons_group text-center">' +
                 '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
                 '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
                     '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
@@ -1625,6 +1678,71 @@ function populateSettingsPanels(){
 
         newHtml += partHtml
     }
+  
+    newHtml +=
+            '</div>';
+    // Close Gen 1 Div Container
+
+    // Generation divider
+    newHtml +=
+            '<hr />' +
+            '<div class="gen_label"><b>Generation 2  </b></div>' +
+            '<div class="btn-group" role="group" data-group="gen2_buttons">' +
+                '<button type="button" class="btn btn-default" data-value="display_gen2">Display Filters</button>' +
+                '<button type="button" class="btn btn-default" data-value="collapse_gen2">Collapse</button>' +
+            '</div>';
+
+    // Open Gen 2 Div Container
+    newHtml +=
+            '<div class="gen_2" data-group="gen_2_group"><br>';
+
+    for (var i = _pokemon_count_gen_1 + 1; i <= _pokemon_count_gen_2; i++){
+        var partHtml =
+            '<div class="filter_buttons_group text-center">' +
+                '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
+                '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
+                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
+                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+                '</div>' +
+            '</div>';
+
+        newHtml += partHtml
+    }
+  
+    newHtml +=
+            '</div>';
+    // Close Gen 2 Div Container
+
+    // Generation divider
+    newHtml +=
+            '<hr />' +
+            '<div class="gen_label"><b>Generation 3  </b></div>' +
+            '<div class="btn-group" role="group" data-group="gen3_buttons">' +
+                '<button type="button" class="btn btn-default" data-value="display_gen3">Display Filters</button>' +
+                '<button type="button" class="btn btn-default" data-value="collapse_gen3">Collapse</button>' +
+            '</div>';
+
+    // Open Gen 3 Div Container
+    newHtml +=
+            '<div class="gen_3" data-group="gen_3_group"><br>';
+
+    for (var i = _pokemon_count_gen_2 + 1; i <= _pokemon_count_gen_3; i++){
+        var partHtml =
+            '<div class="filter_buttons_group text-center">' +
+                '<div id="menu" class="sprite"><span class="sprite-'+i+'"></span></div>' +
+                '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
+                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
+                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+                '</div>' +
+            '</div>';
+
+        newHtml += partHtml
+    }
+  
+    newHtml +=
+            '</div>';
+    // Close Gen 3 Div Container
+
     container.html(newHtml);
 }
 
@@ -1637,6 +1755,9 @@ function setSettingsDefaults(){
     _defaultSettings['instinct_gym_filter'] = "active";
     _defaultSettings['empty_gym_filter'] = "active";
     _defaultSettings['open_spot_gym_filter'] = "active";
+    _defaultSettings['gen1_buttons'] = "display_gen1"; // CONTINUE HERE
+    _defaultSettings['gen2_buttons'] = "display_gen2";
+    _defaultSettings['gen3_buttons'] = "collapse_gen3";
 
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
@@ -1664,6 +1785,24 @@ if ((getPreference("gym_filter_buttons") === "hide_gym_filters")) {
     $('.gym_btn').css('visibility', 'hidden');
 } else {
     savedGymsToDisplay();
+}
+
+if ((getPreference("gen1_buttons") === "display_gen1")) {
+    $('.gen_1').css('display', '');
+} else {
+    $('.gen_1').css('display', 'none');
+}
+
+if ((getPreference("gen2_buttons") === "display_gen2")) {
+    $('.gen_2').css('display', '');
+} else {
+    $('.gen_2').css('display', 'none');
+}
+
+if ((getPreference("gen3_buttons") === "display_gen3")) {
+    $('.gen_3').css('display', '');
+} else {
+    $('.gen_3').css('display', 'none');
 }
 
 function getPreference(key, ret){

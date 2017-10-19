@@ -39,15 +39,15 @@
     bottom: 110px;
 }
 
- .map_btn + .map_btn + .map_btn + .map_btn {
+.map_btn + .map_btn + .map_btn + .map_btn {
     bottom: 150px;
 }
 
- .map_btn + .map_btn + .map_btn + .map_btn + .map_btn {
+.map_btn + .map_btn + .map_btn + .map_btn + .map_btn {
     bottom: 190px;
 }
 
- .map_btn + .map_btn + .map_btn + .map_btn + .map_btn + .map_btn {
+.map_btn + .map_btn + .map_btn + .map_btn + .map_btn + .map_btn {
     bottom: 230px;
 }
 
@@ -620,3 +620,26 @@
     margin-bottom: 0;
     font-weight: initial;
 }
+
+.filter_buttons_group{
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.gen_1{
+    display: ;
+}
+
+.gen_2{
+    display: ;
+}
+
+.gen_3{
+    display: ;
+}
+
+.gen_label {
+    display: inline-table;
+    width: 100px;
+}
+
