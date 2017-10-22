@@ -1293,6 +1293,60 @@ $('#settings').on('click', '.settings-panel button', function () {
         });
         item.removeClass("active");
     }
+    
+    if (key === "hide_gen_1") {
+        for (var id = 1; id <= _pokemon_count_gen_1; id++){
+            moveToLayer(id, value);
+        }
+        
+        $("#settings div.btn-group").each(function(){
+        var item = $(this);
+        var key = item.data('group');
+        var value = getPreference(key);
+        if (value === false)
+            value = "0";
+        else if (value === true)
+            value = "1";
+        item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
+        });
+        item.removeClass("active");
+    }
+
+    if (key === "hide_gen_2") {
+        for (var id = _pokemon_count_gen_1 + 1; id <= _pokemon_count_gen_2; id++){
+            moveToLayer(id, value);
+        }
+
+        $("#settings div.btn-group").each(function(){
+        var item = $(this);
+        var key = item.data('group');
+        var value = getPreference(key);
+        if (value === false)
+            value = "0";
+        else if (value === true)
+            value = "1";
+        item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
+        });
+        item.removeClass("active");
+    }
+
+    if (key === "hide_gen_3") {
+        for (var id = _pokemon_count_gen_2 + 1; id <= _pokemon_count_gen_3; id++){
+            moveToLayer(id, value);
+        }
+
+        $("#settings div.btn-group").each(function(){
+        var item = $(this);
+        var key = item.data('group');
+        var value = getPreference(key);
+        if (value === false)
+            value = "0";
+        else if (value === true)
+            value = "1";
+        item.children("button").removeClass("active").filter("[data-value='"+value+"']").addClass("active");
+        });
+        item.removeClass("active");
+    }
 
     // Stealing my code again?
     if (key === "MAP_CHOICE"){
@@ -1664,8 +1718,14 @@ function populateSettingsPanels(){
 
     // Open Gen 1 Div Container
     newHtml +=
-            '<div class="gen_1" data-group="gen_1_group"><br>';
+            '<div class="gen_1" data-group="gen_1_group">';
 
+    newHtml +=
+            '<hr />' +
+            '<div data-group="hide_gen_1">' +
+                '<button type="button" class="btn btn-default" data-value="trash">Hide Generation 1</button>' +
+            '</div><br>';
+  
     for (var i = 1; i <= _pokemon_count_gen_1; i++){
         var partHtml =
             '<div class="filter_buttons_group text-center">' +
@@ -1694,7 +1754,13 @@ function populateSettingsPanels(){
 
     // Open Gen 2 Div Container
     newHtml +=
-            '<div class="gen_2" data-group="gen_2_group"><br>';
+            '<div class="gen_2" data-group="gen_2_group">';
+
+    newHtml +=
+            '<hr />' +
+            '<div data-group="hide_gen_2">' +
+                '<button type="button" class="btn btn-default" data-value="trash">Hide Generation 2</button>' +
+            '</div><br>';
 
     for (var i = _pokemon_count_gen_1 + 1; i <= _pokemon_count_gen_2; i++){
         var partHtml =
@@ -1724,7 +1790,14 @@ function populateSettingsPanels(){
 
     // Open Gen 3 Div Container
     newHtml +=
-            '<div class="gen_3" data-group="gen_3_group"><br>';
+            '<div class="gen_3" data-group="gen_3_group">';
+
+    newHtml +=
+            '<hr />' +
+            '<div data-group="hide_gen_3">' +
+                '<button type="button" class="btn btn-default" data-value="pokemon">Show Generation 3</button>   ' +
+                '<button type="button" class="btn btn-default" data-value="trash">Hide Generation 3</button>' +
+            '</div><br>';
 
     for (var i = _pokemon_count_gen_2 + 1; i <= _pokemon_count_gen_3; i++){
         var partHtml =
@@ -1757,7 +1830,7 @@ function setSettingsDefaults(){
     _defaultSettings['open_spot_gym_filter'] = "active";
     _defaultSettings['gen1_buttons'] = "display_gen1"; // CONTINUE HERE
     _defaultSettings['gen2_buttons'] = "display_gen2";
-    _defaultSettings['gen3_buttons'] = "collapse_gen3";
+    _defaultSettings['gen3_buttons'] = "display_gen3";
 
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
