@@ -30,7 +30,8 @@ with accounts_file.open('w') as csvfile:
             banned.append(account)
             continue
         if not account.get('level', False):
-            invalid.append(account)
+            #invalid.append(account)
+            underlevel.append(account)
             continue
         if account.get('level') < 2:
             underlevel.append(account)

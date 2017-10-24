@@ -1,2327 +1,2327 @@
-.sprite span {
-    background-image: url(../img/spritesheet_medium_v3.png);
+.sprite-cart span {
+    background-image: url(../img/spritesheet_medium_v3_cart.png);
     background-repeat: no-repeat;
     display: block;
 }
 
-#menu.sprite span {
+#menu.sprite-cart span {
   position: relative;
   float: left;
   top: -8px;
   left: 22%;
 }
 
-.sprite-1 {
+.sprite-cart-1 {
     width: 48px;
     height: 48px;
     background-position: -5px -5px;
 }
 
-.sprite-10 {
+.sprite-cart-10 {
     width: 48px;
     height: 48px;
     background-position: -63px -5px;
 }
 
-.sprite-100 {
+.sprite-cart-100 {
     width: 48px;
     height: 48px;
     background-position: -121px -5px;
 }
 
-.sprite-101 {
+.sprite-cart-101 {
     width: 48px;
     height: 48px;
     background-position: -179px -5px;
 }
 
-.sprite-102 {
+.sprite-cart-102 {
     width: 48px;
     height: 48px;
     background-position: -237px -5px;
 }
 
-.sprite-103 {
+.sprite-cart-103 {
     width: 48px;
     height: 48px;
     background-position: -295px -5px;
 }
 
-.sprite-104 {
+.sprite-cart-104 {
     width: 48px;
     height: 48px;
     background-position: -353px -5px;
 }
 
-.sprite-105 {
+.sprite-cart-105 {
     width: 48px;
     height: 48px;
     background-position: -411px -5px;
 }
 
-.sprite-106 {
+.sprite-cart-106 {
     width: 48px;
     height: 48px;
     background-position: -469px -5px;
 }
 
-.sprite-107 {
+.sprite-cart-107 {
     width: 48px;
     height: 48px;
     background-position: -527px -5px;
 }
 
-.sprite-108 {
+.sprite-cart-108 {
     width: 48px;
     height: 48px;
     background-position: -585px -5px;
 }
 
-.sprite-109 {
+.sprite-cart-109 {
     width: 48px;
     height: 48px;
     background-position: -643px -5px;
 }
 
-.sprite-11 {
+.sprite-cart-11 {
     width: 48px;
     height: 48px;
     background-position: -701px -5px;
 }
 
-.sprite-110 {
+.sprite-cart-110 {
     width: 48px;
     height: 48px;
     background-position: -759px -5px;
 }
 
-.sprite-111 {
+.sprite-cart-111 {
     width: 48px;
     height: 48px;
     background-position: -817px -5px;
 }
 
-.sprite-112 {
+.sprite-cart-112 {
     width: 48px;
     height: 48px;
     background-position: -875px -5px;
 }
 
-.sprite-113 {
+.sprite-cart-113 {
     width: 48px;
     height: 48px;
     background-position: -933px -5px;
 }
 
-.sprite-114 {
+.sprite-cart-114 {
     width: 48px;
     height: 48px;
     background-position: -991px -5px;
 }
 
-.sprite-115 {
+.sprite-cart-115 {
     width: 48px;
     height: 48px;
     background-position: -1049px -5px;
 }
 
-.sprite-116 {
+.sprite-cart-116 {
     width: 48px;
     height: 48px;
     background-position: -5px -63px;
 }
 
-.sprite-117 {
+.sprite-cart-117 {
     width: 48px;
     height: 48px;
     background-position: -63px -63px;
 }
 
-.sprite-118 {
+.sprite-cart-118 {
     width: 48px;
     height: 48px;
     background-position: -121px -63px;
 }
 
-.sprite-119 {
+.sprite-cart-119 {
     width: 48px;
     height: 48px;
     background-position: -179px -63px;
 }
 
-.sprite-12 {
+.sprite-cart-12 {
     width: 48px;
     height: 48px;
     background-position: -237px -63px;
 }
 
-.sprite-120 {
+.sprite-cart-120 {
     width: 48px;
     height: 48px;
     background-position: -295px -63px;
 }
 
-.sprite-121 {
+.sprite-cart-121 {
     width: 48px;
     height: 48px;
     background-position: -353px -63px;
 }
 
-.sprite-122 {
+.sprite-cart-122 {
     width: 48px;
     height: 48px;
     background-position: -411px -63px;
 }
 
-.sprite-123 {
+.sprite-cart-123 {
     width: 48px;
     height: 48px;
     background-position: -469px -63px;
 }
 
-.sprite-124 {
+.sprite-cart-124 {
     width: 48px;
     height: 48px;
     background-position: -527px -63px;
 }
 
-.sprite-125 {
+.sprite-cart-125 {
     width: 48px;
     height: 48px;
     background-position: -585px -63px;
 }
 
-.sprite-126 {
+.sprite-cart-126 {
     width: 48px;
     height: 48px;
     background-position: -643px -63px;
 }
 
-.sprite-127 {
+.sprite-cart-127 {
     width: 48px;
     height: 48px;
     background-position: -701px -63px;
 }
 
-.sprite-128 {
+.sprite-cart-128 {
     width: 48px;
     height: 48px;
     background-position: -759px -63px;
 }
 
-.sprite-129 {
+.sprite-cart-129 {
     width: 48px;
     height: 48px;
     background-position: -817px -63px;
 }
 
-.sprite-13 {
+.sprite-cart-13 {
     width: 48px;
     height: 48px;
     background-position: -875px -63px;
 }
 
-.sprite-130 {
+.sprite-cart-130 {
     width: 48px;
     height: 48px;
     background-position: -933px -63px;
 }
 
-.sprite-131 {
+.sprite-cart-131 {
     width: 48px;
     height: 48px;
     background-position: -991px -63px;
 }
 
-.sprite-132 {
+.sprite-cart-132 {
     width: 48px;
     height: 48px;
     background-position: -1049px -63px;
 }
 
-.sprite-133 {
+.sprite-cart-133 {
     width: 48px;
     height: 48px;
     background-position: -5px -121px;
 }
 
-.sprite-134 {
+.sprite-cart-134 {
     width: 48px;
     height: 48px;
     background-position: -63px -121px;
 }
 
-.sprite-135 {
+.sprite-cart-135 {
     width: 48px;
     height: 48px;
     background-position: -121px -121px;
 }
 
-.sprite-136 {
+.sprite-cart-136 {
     width: 48px;
     height: 48px;
     background-position: -179px -121px;
 }
 
-.sprite-137 {
+.sprite-cart-137 {
     width: 48px;
     height: 48px;
     background-position: -237px -121px;
 }
 
-.sprite-138 {
+.sprite-cart-138 {
     width: 48px;
     height: 48px;
     background-position: -295px -121px;
 }
 
-.sprite-139 {
+.sprite-cart-139 {
     width: 48px;
     height: 48px;
     background-position: -353px -121px;
 }
 
-.sprite-14 {
+.sprite-cart-14 {
     width: 48px;
     height: 48px;
     background-position: -411px -121px;
 }
 
-.sprite-140 {
+.sprite-cart-140 {
     width: 48px;
     height: 48px;
     background-position: -469px -121px;
 }
 
-.sprite-141 {
+.sprite-cart-141 {
     width: 48px;
     height: 48px;
     background-position: -527px -121px;
 }
 
-.sprite-142 {
+.sprite-cart-142 {
     width: 48px;
     height: 48px;
     background-position: -585px -121px;
 }
 
-.sprite-143 {
+.sprite-cart-143 {
     width: 48px;
     height: 48px;
     background-position: -643px -121px;
 }
 
-.sprite-144 {
+.sprite-cart-144 {
     width: 48px;
     height: 48px;
     background-position: -701px -121px;
 }
 
-.sprite-145 {
+.sprite-cart-145 {
     width: 48px;
     height: 48px;
     background-position: -759px -121px;
 }
 
-.sprite-146 {
+.sprite-cart-146 {
     width: 48px;
     height: 48px;
     background-position: -817px -121px;
 }
 
-.sprite-147 {
+.sprite-cart-147 {
     width: 48px;
     height: 48px;
     background-position: -875px -121px;
 }
 
-.sprite-148 {
+.sprite-cart-148 {
     width: 48px;
     height: 48px;
     background-position: -933px -121px;
 }
 
-.sprite-149 {
+.sprite-cart-149 {
     width: 48px;
     height: 48px;
     background-position: -991px -121px;
 }
 
-.sprite-15 {
+.sprite-cart-15 {
     width: 48px;
     height: 48px;
     background-position: -1049px -121px;
 }
 
-.sprite-150 {
+.sprite-cart-150 {
     width: 48px;
     height: 48px;
     background-position: -5px -179px;
 }
 
-.sprite-151 {
+.sprite-cart-151 {
     width: 48px;
     height: 48px;
     background-position: -63px -179px;
 }
 
-.sprite-152 {
+.sprite-cart-152 {
     width: 48px;
     height: 48px;
     background-position: -121px -179px;
 }
 
-.sprite-153 {
+.sprite-cart-153 {
     width: 48px;
     height: 48px;
     background-position: -179px -179px;
 }
 
-.sprite-154 {
+.sprite-cart-154 {
     width: 48px;
     height: 48px;
     background-position: -237px -179px;
 }
 
-.sprite-155 {
+.sprite-cart-155 {
     width: 48px;
     height: 48px;
     background-position: -295px -179px;
 }
 
-.sprite-156 {
+.sprite-cart-156 {
     width: 48px;
     height: 48px;
     background-position: -353px -179px;
 }
 
-.sprite-157 {
+.sprite-cart-157 {
     width: 48px;
     height: 48px;
     background-position: -411px -179px;
 }
 
-.sprite-158 {
+.sprite-cart-158 {
     width: 48px;
     height: 48px;
     background-position: -469px -179px;
 }
 
-.sprite-159 {
+.sprite-cart-159 {
     width: 48px;
     height: 48px;
     background-position: -527px -179px;
 }
 
-.sprite-16 {
+.sprite-cart-16 {
     width: 48px;
     height: 48px;
     background-position: -585px -179px;
 }
 
-.sprite-160 {
+.sprite-cart-160 {
     width: 48px;
     height: 48px;
     background-position: -643px -179px;
 }
 
-.sprite-161 {
+.sprite-cart-161 {
     width: 48px;
     height: 48px;
     background-position: -701px -179px;
 }
 
-.sprite-162 {
+.sprite-cart-162 {
     width: 48px;
     height: 48px;
     background-position: -759px -179px;
 }
 
-.sprite-163 {
+.sprite-cart-163 {
     width: 48px;
     height: 48px;
     background-position: -817px -179px;
 }
 
-.sprite-164 {
+.sprite-cart-164 {
     width: 48px;
     height: 48px;
     background-position: -875px -179px;
 }
 
-.sprite-165 {
+.sprite-cart-165 {
     width: 48px;
     height: 48px;
     background-position: -933px -179px;
 }
 
-.sprite-166 {
+.sprite-cart-166 {
     width: 48px;
     height: 48px;
     background-position: -991px -179px;
 }
 
-.sprite-167 {
+.sprite-cart-167 {
     width: 48px;
     height: 48px;
     background-position: -1049px -179px;
 }
 
-.sprite-168 {
+.sprite-cart-168 {
     width: 48px;
     height: 48px;
     background-position: -5px -237px;
 }
 
-.sprite-169 {
+.sprite-cart-169 {
     width: 48px;
     height: 48px;
     background-position: -63px -237px;
 }
 
-.sprite-17 {
+.sprite-cart-17 {
     width: 48px;
     height: 48px;
     background-position: -121px -237px;
 }
 
-.sprite-170 {
+.sprite-cart-170 {
     width: 48px;
     height: 48px;
     background-position: -179px -237px;
 }
 
-.sprite-171 {
+.sprite-cart-171 {
     width: 48px;
     height: 48px;
     background-position: -237px -237px;
 }
 
-.sprite-172 {
+.sprite-cart-172 {
     width: 48px;
     height: 48px;
     background-position: -295px -237px;
 }
 
-.sprite-173 {
+.sprite-cart-173 {
     width: 48px;
     height: 48px;
     background-position: -353px -237px;
 }
 
-.sprite-174 {
+.sprite-cart-174 {
     width: 48px;
     height: 48px;
     background-position: -411px -237px;
 }
 
-.sprite-175 {
+.sprite-cart-175 {
     width: 48px;
     height: 48px;
     background-position: -469px -237px;
 }
 
-.sprite-176 {
+.sprite-cart-176 {
     width: 48px;
     height: 48px;
     background-position: -527px -237px;
 }
 
-.sprite-177 {
+.sprite-cart-177 {
     width: 48px;
     height: 48px;
     background-position: -585px -237px;
 }
 
-.sprite-178 {
+.sprite-cart-178 {
     width: 48px;
     height: 48px;
     background-position: -643px -237px;
 }
 
-.sprite-179 {
+.sprite-cart-179 {
     width: 48px;
     height: 48px;
     background-position: -701px -237px;
 }
 
-.sprite-18 {
+.sprite-cart-18 {
     width: 48px;
     height: 48px;
     background-position: -759px -237px;
 }
 
-.sprite-180 {
+.sprite-cart-180 {
     width: 48px;
     height: 48px;
     background-position: -817px -237px;
 }
 
-.sprite-181 {
+.sprite-cart-181 {
     width: 48px;
     height: 48px;
     background-position: -875px -237px;
 }
 
-.sprite-182 {
+.sprite-cart-182 {
     width: 48px;
     height: 48px;
     background-position: -933px -237px;
 }
 
-.sprite-183 {
+.sprite-cart-183 {
     width: 48px;
     height: 48px;
     background-position: -991px -237px;
 }
 
-.sprite-184 {
+.sprite-cart-184 {
     width: 48px;
     height: 48px;
     background-position: -1049px -237px;
 }
 
-.sprite-185 {
+.sprite-cart-185 {
     width: 48px;
     height: 48px;
     background-position: -5px -295px;
 }
 
-.sprite-186 {
+.sprite-cart-186 {
     width: 48px;
     height: 48px;
     background-position: -63px -295px;
 }
 
-.sprite-187 {
+.sprite-cart-187 {
     width: 48px;
     height: 48px;
     background-position: -121px -295px;
 }
 
-.sprite-188 {
+.sprite-cart-188 {
     width: 48px;
     height: 48px;
     background-position: -179px -295px;
 }
 
-.sprite-189 {
+.sprite-cart-189 {
     width: 48px;
     height: 48px;
     background-position: -237px -295px;
 }
 
-.sprite-19 {
+.sprite-cart-19 {
     width: 48px;
     height: 48px;
     background-position: -295px -295px;
 }
 
-.sprite-190 {
+.sprite-cart-190 {
     width: 48px;
     height: 48px;
     background-position: -353px -295px;
 }
 
-.sprite-191 {
+.sprite-cart-191 {
     width: 48px;
     height: 48px;
     background-position: -411px -295px;
 }
 
-.sprite-192 {
+.sprite-cart-192 {
     width: 48px;
     height: 48px;
     background-position: -469px -295px;
 }
 
-.sprite-193 {
+.sprite-cart-193 {
     width: 48px;
     height: 48px;
     background-position: -527px -295px;
 }
 
-.sprite-194 {
+.sprite-cart-194 {
     width: 48px;
     height: 48px;
     background-position: -585px -295px;
 }
 
-.sprite-195 {
+.sprite-cart-195 {
     width: 48px;
     height: 48px;
     background-position: -643px -295px;
 }
 
-.sprite-196 {
+.sprite-cart-196 {
     width: 48px;
     height: 48px;
     background-position: -701px -295px;
 }
 
-.sprite-197 {
+.sprite-cart-197 {
     width: 48px;
     height: 48px;
     background-position: -759px -295px;
 }
 
-.sprite-198 {
+.sprite-cart-198 {
     width: 48px;
     height: 48px;
     background-position: -817px -295px;
 }
 
-.sprite-199 {
+.sprite-cart-199 {
     width: 48px;
     height: 48px;
     background-position: -875px -295px;
 }
 
-.sprite-2 {
+.sprite-cart-2 {
     width: 48px;
     height: 48px;
     background-position: -933px -295px;
 }
 
-.sprite-20 {
+.sprite-cart-20 {
     width: 48px;
     height: 48px;
     background-position: -991px -295px;
 }
 
-.sprite-200 {
+.sprite-cart-200 {
     width: 48px;
     height: 48px;
     background-position: -1049px -295px;
 }
 
-.sprite-201 {
+.sprite-cart-201 {
     width: 48px;
     height: 48px;
     background-position: -5px -353px;
 }
 
-.sprite-202 {
+.sprite-cart-202 {
     width: 48px;
     height: 48px;
     background-position: -63px -353px;
 }
 
-.sprite-203 {
+.sprite-cart-203 {
     width: 48px;
     height: 48px;
     background-position: -121px -353px;
 }
 
-.sprite-204 {
+.sprite-cart-204 {
     width: 48px;
     height: 48px;
     background-position: -179px -353px;
 }
 
-.sprite-205 {
+.sprite-cart-205 {
     width: 48px;
     height: 48px;
     background-position: -237px -353px;
 }
 
-.sprite-206 {
+.sprite-cart-206 {
     width: 48px;
     height: 48px;
     background-position: -295px -353px;
 }
 
-.sprite-207 {
+.sprite-cart-207 {
     width: 48px;
     height: 48px;
     background-position: -353px -353px;
 }
 
-.sprite-208 {
+.sprite-cart-208 {
     width: 48px;
     height: 48px;
     background-position: -411px -353px;
 }
 
-.sprite-209 {
+.sprite-cart-209 {
     width: 48px;
     height: 48px;
     background-position: -469px -353px;
 }
 
-.sprite-21 {
+.sprite-cart-21 {
     width: 48px;
     height: 48px;
     background-position: -527px -353px;
 }
 
-.sprite-210 {
+.sprite-cart-210 {
     width: 48px;
     height: 48px;
     background-position: -585px -353px;
 }
 
-.sprite-211 {
+.sprite-cart-211 {
     width: 48px;
     height: 48px;
     background-position: -643px -353px;
 }
 
-.sprite-212 {
+.sprite-cart-212 {
     width: 48px;
     height: 48px;
     background-position: -701px -353px;
 }
 
-.sprite-213 {
+.sprite-cart-213 {
     width: 48px;
     height: 48px;
     background-position: -759px -353px;
 }
 
-.sprite-214 {
+.sprite-cart-214 {
     width: 48px;
     height: 48px;
     background-position: -817px -353px;
 }
 
-.sprite-215 {
+.sprite-cart-215 {
     width: 48px;
     height: 48px;
     background-position: -875px -353px;
 }
 
-.sprite-216 {
+.sprite-cart-216 {
     width: 48px;
     height: 48px;
     background-position: -933px -353px;
 }
 
-.sprite-217 {
+.sprite-cart-217 {
     width: 48px;
     height: 48px;
     background-position: -991px -353px;
 }
 
-.sprite-218 {
+.sprite-cart-218 {
     width: 48px;
     height: 48px;
     background-position: -1049px -353px;
 }
 
-.sprite-219 {
+.sprite-cart-219 {
     width: 48px;
     height: 48px;
     background-position: -5px -411px;
 }
 
-.sprite-22 {
+.sprite-cart-22 {
     width: 48px;
     height: 48px;
     background-position: -63px -411px;
 }
 
-.sprite-220 {
+.sprite-cart-220 {
     width: 48px;
     height: 48px;
     background-position: -121px -411px;
 }
 
-.sprite-221 {
+.sprite-cart-221 {
     width: 48px;
     height: 48px;
     background-position: -179px -411px;
 }
 
-.sprite-222 {
+.sprite-cart-222 {
     width: 48px;
     height: 48px;
     background-position: -237px -411px;
 }
 
-.sprite-223 {
+.sprite-cart-223 {
     width: 48px;
     height: 48px;
     background-position: -295px -411px;
 }
 
-.sprite-224 {
+.sprite-cart-224 {
     width: 48px;
     height: 48px;
     background-position: -353px -411px;
 }
 
-.sprite-225 {
+.sprite-cart-225 {
     width: 48px;
     height: 48px;
     background-position: -411px -411px;
 }
 
-.sprite-226 {
+.sprite-cart-226 {
     width: 48px;
     height: 48px;
     background-position: -469px -411px;
 }
 
-.sprite-227 {
+.sprite-cart-227 {
     width: 48px;
     height: 48px;
     background-position: -527px -411px;
 }
 
-.sprite-228 {
+.sprite-cart-228 {
     width: 48px;
     height: 48px;
     background-position: -585px -411px;
 }
 
-.sprite-229 {
+.sprite-cart-229 {
     width: 48px;
     height: 48px;
     background-position: -643px -411px;
 }
 
-.sprite-23 {
+.sprite-cart-23 {
     width: 48px;
     height: 48px;
     background-position: -701px -411px;
 }
 
-.sprite-230 {
+.sprite-cart-230 {
     width: 48px;
     height: 48px;
     background-position: -759px -411px;
 }
 
-.sprite-231 {
+.sprite-cart-231 {
     width: 48px;
     height: 48px;
     background-position: -817px -411px;
 }
 
-.sprite-232 {
+.sprite-cart-232 {
     width: 48px;
     height: 48px;
     background-position: -875px -411px;
 }
 
-.sprite-233 {
+.sprite-cart-233 {
     width: 48px;
     height: 48px;
     background-position: -933px -411px;
 }
 
-.sprite-234 {
+.sprite-cart-234 {
     width: 48px;
     height: 48px;
     background-position: -991px -411px;
 }
 
-.sprite-235 {
+.sprite-cart-235 {
     width: 48px;
     height: 48px;
     background-position: -1049px -411px;
 }
 
-.sprite-236 {
+.sprite-cart-236 {
     width: 48px;
     height: 48px;
     background-position: -5px -469px;
 }
 
-.sprite-237 {
+.sprite-cart-237 {
     width: 48px;
     height: 48px;
     background-position: -63px -469px;
 }
 
-.sprite-238 {
+.sprite-cart-238 {
     width: 48px;
     height: 48px;
     background-position: -121px -469px;
 }
 
-.sprite-239 {
+.sprite-cart-239 {
     width: 48px;
     height: 48px;
     background-position: -179px -469px;
 }
 
-.sprite-24 {
+.sprite-cart-24 {
     width: 48px;
     height: 48px;
     background-position: -237px -469px;
 }
 
-.sprite-240 {
+.sprite-cart-240 {
     width: 48px;
     height: 48px;
     background-position: -295px -469px;
 }
 
-.sprite-241 {
+.sprite-cart-241 {
     width: 48px;
     height: 48px;
     background-position: -353px -469px;
 }
 
-.sprite-242 {
+.sprite-cart-242 {
     width: 48px;
     height: 48px;
     background-position: -411px -469px;
 }
 
-.sprite-243 {
+.sprite-cart-243 {
     width: 48px;
     height: 48px;
     background-position: -469px -469px;
 }
 
-.sprite-244 {
+.sprite-cart-244 {
     width: 48px;
     height: 48px;
     background-position: -527px -469px;
 }
 
-.sprite-245 {
+.sprite-cart-245 {
     width: 48px;
     height: 48px;
     background-position: -585px -469px;
 }
 
-.sprite-246 {
+.sprite-cart-246 {
     width: 48px;
     height: 48px;
     background-position: -643px -469px;
 }
 
-.sprite-247 {
+.sprite-cart-247 {
     width: 48px;
     height: 48px;
     background-position: -701px -469px;
 }
 
-.sprite-248 {
+.sprite-cart-248 {
     width: 48px;
     height: 48px;
     background-position: -759px -469px;
 }
 
-.sprite-249 {
+.sprite-cart-249 {
     width: 48px;
     height: 48px;
     background-position: -817px -469px;
 }
 
-.sprite-25 {
+.sprite-cart-25 {
     width: 48px;
     height: 48px;
     background-position: -875px -469px;
 }
 
-.sprite-250 {
+.sprite-cart-250 {
     width: 48px;
     height: 48px;
     background-position: -933px -469px;
 }
 
-.sprite-251 {
+.sprite-cart-251 {
     width: 48px;
     height: 48px;
     background-position: -991px -469px;
 }
 
-.sprite-252 {
+.sprite-cart-252 {
     width: 48px;
     height: 48px;
     background-position: -1049px -469px;
 }
 
-.sprite-253 {
+.sprite-cart-253 {
     width: 48px;
     height: 48px;
     background-position: -5px -527px;
 }
 
-.sprite-254 {
+.sprite-cart-254 {
     width: 48px;
     height: 48px;
     background-position: -63px -527px;
 }
 
-.sprite-255 {
+.sprite-cart-255 {
     width: 48px;
     height: 48px;
     background-position: -121px -527px;
 }
 
-.sprite-256 {
+.sprite-cart-256 {
     width: 48px;
     height: 48px;
     background-position: -179px -527px;
 }
 
-.sprite-257 {
+.sprite-cart-257 {
     width: 48px;
     height: 48px;
     background-position: -237px -527px;
 }
 
-.sprite-258 {
+.sprite-cart-258 {
     width: 48px;
     height: 48px;
     background-position: -295px -527px;
 }
 
-.sprite-259 {
+.sprite-cart-259 {
     width: 48px;
     height: 48px;
     background-position: -353px -527px;
 }
 
-.sprite-26 {
+.sprite-cart-26 {
     width: 48px;
     height: 48px;
     background-position: -411px -527px;
 }
 
-.sprite-260 {
+.sprite-cart-260 {
     width: 48px;
     height: 48px;
     background-position: -469px -527px;
 }
 
-.sprite-261 {
+.sprite-cart-261 {
     width: 48px;
     height: 48px;
     background-position: -527px -527px;
 }
 
-.sprite-262 {
+.sprite-cart-262 {
     width: 48px;
     height: 48px;
     background-position: -585px -527px;
 }
 
-.sprite-263 {
+.sprite-cart-263 {
     width: 48px;
     height: 48px;
     background-position: -643px -527px;
 }
 
-.sprite-264 {
+.sprite-cart-264 {
     width: 48px;
     height: 48px;
     background-position: -701px -527px;
 }
 
-.sprite-265 {
+.sprite-cart-265 {
     width: 48px;
     height: 48px;
     background-position: -759px -527px;
 }
 
-.sprite-266 {
+.sprite-cart-266 {
     width: 48px;
     height: 48px;
     background-position: -817px -527px;
 }
 
-.sprite-267 {
+.sprite-cart-267 {
     width: 48px;
     height: 48px;
     background-position: -875px -527px;
 }
 
-.sprite-268 {
+.sprite-cart-268 {
     width: 48px;
     height: 48px;
     background-position: -933px -527px;
 }
 
-.sprite-269 {
+.sprite-cart-269 {
     width: 48px;
     height: 48px;
     background-position: -991px -527px;
 }
 
-.sprite-27 {
+.sprite-cart-27 {
     width: 48px;
     height: 48px;
     background-position: -1049px -527px;
 }
 
-.sprite-270 {
+.sprite-cart-270 {
     width: 48px;
     height: 48px;
     background-position: -5px -585px;
 }
 
-.sprite-271 {
+.sprite-cart-271 {
     width: 48px;
     height: 48px;
     background-position: -63px -585px;
 }
 
-.sprite-272 {
+.sprite-cart-272 {
     width: 48px;
     height: 48px;
     background-position: -121px -585px;
 }
 
-.sprite-273 {
+.sprite-cart-273 {
     width: 48px;
     height: 48px;
     background-position: -179px -585px;
 }
 
-.sprite-274 {
+.sprite-cart-274 {
     width: 48px;
     height: 48px;
     background-position: -237px -585px;
 }
 
-.sprite-275 {
+.sprite-cart-275 {
     width: 48px;
     height: 48px;
     background-position: -295px -585px;
 }
 
-.sprite-276 {
+.sprite-cart-276 {
     width: 48px;
     height: 48px;
     background-position: -353px -585px;
 }
 
-.sprite-277 {
+.sprite-cart-277 {
     width: 48px;
     height: 48px;
     background-position: -411px -585px;
 }
 
-.sprite-278 {
+.sprite-cart-278 {
     width: 48px;
     height: 48px;
     background-position: -469px -585px;
 }
 
-.sprite-279 {
+.sprite-cart-279 {
     width: 48px;
     height: 48px;
     background-position: -527px -585px;
 }
 
-.sprite-28 {
+.sprite-cart-28 {
     width: 48px;
     height: 48px;
     background-position: -585px -585px;
 }
 
-.sprite-280 {
+.sprite-cart-280 {
     width: 48px;
     height: 48px;
     background-position: -643px -585px;
 }
 
-.sprite-281 {
+.sprite-cart-281 {
     width: 48px;
     height: 48px;
     background-position: -701px -585px;
 }
 
-.sprite-282 {
+.sprite-cart-282 {
     width: 48px;
     height: 48px;
     background-position: -759px -585px;
 }
 
-.sprite-283 {
+.sprite-cart-283 {
     width: 48px;
     height: 48px;
     background-position: -817px -585px;
 }
 
-.sprite-284 {
+.sprite-cart-284 {
     width: 48px;
     height: 48px;
     background-position: -875px -585px;
 }
 
-.sprite-285 {
+.sprite-cart-285 {
     width: 48px;
     height: 48px;
     background-position: -933px -585px;
 }
 
-.sprite-286 {
+.sprite-cart-286 {
     width: 48px;
     height: 48px;
     background-position: -991px -585px;
 }
 
-.sprite-287 {
+.sprite-cart-287 {
     width: 48px;
     height: 48px;
     background-position: -1049px -585px;
 }
 
-.sprite-288 {
+.sprite-cart-288 {
     width: 48px;
     height: 48px;
     background-position: -5px -643px;
 }
 
-.sprite-289 {
+.sprite-cart-289 {
     width: 48px;
     height: 48px;
     background-position: -63px -643px;
 }
 
-.sprite-29 {
+.sprite-cart-29 {
     width: 48px;
     height: 48px;
     background-position: -121px -643px;
 }
 
-.sprite-290 {
+.sprite-cart-290 {
     width: 48px;
     height: 48px;
     background-position: -179px -643px;
 }
 
-.sprite-291 {
+.sprite-cart-291 {
     width: 48px;
     height: 48px;
     background-position: -237px -643px;
 }
 
-.sprite-292 {
+.sprite-cart-292 {
     width: 48px;
     height: 48px;
     background-position: -295px -643px;
 }
 
-.sprite-293 {
+.sprite-cart-293 {
     width: 48px;
     height: 48px;
     background-position: -353px -643px;
 }
 
-.sprite-294 {
+.sprite-cart-294 {
     width: 48px;
     height: 48px;
     background-position: -411px -643px;
 }
 
-.sprite-295 {
+.sprite-cart-295 {
     width: 48px;
     height: 48px;
     background-position: -469px -643px;
 }
 
-.sprite-296 {
+.sprite-cart-296 {
     width: 48px;
     height: 48px;
     background-position: -527px -643px;
 }
 
-.sprite-297 {
+.sprite-cart-297 {
     width: 48px;
     height: 48px;
     background-position: -585px -643px;
 }
 
-.sprite-298 {
+.sprite-cart-298 {
     width: 48px;
     height: 48px;
     background-position: -643px -643px;
 }
 
-.sprite-299 {
+.sprite-cart-299 {
     width: 48px;
     height: 48px;
     background-position: -701px -643px;
 }
 
-.sprite-3 {
+.sprite-cart-3 {
     width: 48px;
     height: 48px;
     background-position: -759px -643px;
 }
 
-.sprite-30 {
+.sprite-cart-30 {
     width: 48px;
     height: 48px;
     background-position: -817px -643px;
 }
 
-.sprite-300 {
+.sprite-cart-300 {
     width: 48px;
     height: 48px;
     background-position: -875px -643px;
 }
 
-.sprite-301 {
+.sprite-cart-301 {
     width: 48px;
     height: 48px;
     background-position: -933px -643px;
 }
 
-.sprite-302 {
+.sprite-cart-302 {
     width: 48px;
     height: 48px;
     background-position: -991px -643px;
 }
 
-.sprite-303 {
+.sprite-cart-303 {
     width: 48px;
     height: 48px;
     background-position: -1049px -643px;
 }
 
-.sprite-304 {
+.sprite-cart-304 {
     width: 48px;
     height: 48px;
     background-position: -5px -701px;
 }
 
-.sprite-305 {
+.sprite-cart-305 {
     width: 48px;
     height: 48px;
     background-position: -63px -701px;
 }
 
-.sprite-306 {
+.sprite-cart-306 {
     width: 48px;
     height: 48px;
     background-position: -121px -701px;
 }
 
-.sprite-307 {
+.sprite-cart-307 {
     width: 48px;
     height: 48px;
     background-position: -179px -701px;
 }
 
-.sprite-308 {
+.sprite-cart-308 {
     width: 48px;
     height: 48px;
     background-position: -237px -701px;
 }
 
-.sprite-309 {
+.sprite-cart-309 {
     width: 48px;
     height: 48px;
     background-position: -295px -701px;
 }
 
-.sprite-31 {
+.sprite-cart-31 {
     width: 48px;
     height: 48px;
     background-position: -353px -701px;
 }
 
-.sprite-310 {
+.sprite-cart-310 {
     width: 48px;
     height: 48px;
     background-position: -411px -701px;
 }
 
-.sprite-311 {
+.sprite-cart-311 {
     width: 48px;
     height: 48px;
     background-position: -469px -701px;
 }
 
-.sprite-312 {
+.sprite-cart-312 {
     width: 48px;
     height: 48px;
     background-position: -527px -701px;
 }
 
-.sprite-313 {
+.sprite-cart-313 {
     width: 48px;
     height: 48px;
     background-position: -585px -701px;
 }
 
-.sprite-314 {
+.sprite-cart-314 {
     width: 48px;
     height: 48px;
     background-position: -643px -701px;
 }
 
-.sprite-315 {
+.sprite-cart-315 {
     width: 48px;
     height: 48px;
     background-position: -701px -701px;
 }
 
-.sprite-316 {
+.sprite-cart-316 {
     width: 48px;
     height: 48px;
     background-position: -759px -701px;
 }
 
-.sprite-317 {
+.sprite-cart-317 {
     width: 48px;
     height: 48px;
     background-position: -817px -701px;
 }
 
-.sprite-318 {
+.sprite-cart-318 {
     width: 48px;
     height: 48px;
     background-position: -875px -701px;
 }
 
-.sprite-319 {
+.sprite-cart-319 {
     width: 48px;
     height: 48px;
     background-position: -933px -701px;
 }
 
-.sprite-32 {
+.sprite-cart-32 {
     width: 48px;
     height: 48px;
     background-position: -991px -701px;
 }
 
-.sprite-320 {
+.sprite-cart-320 {
     width: 48px;
     height: 48px;
     background-position: -1049px -701px;
 }
 
-.sprite-321 {
+.sprite-cart-321 {
     width: 48px;
     height: 48px;
     background-position: -5px -759px;
 }
 
-.sprite-322 {
+.sprite-cart-322 {
     width: 48px;
     height: 48px;
     background-position: -63px -759px;
 }
 
-.sprite-323 {
+.sprite-cart-323 {
     width: 48px;
     height: 48px;
     background-position: -121px -759px;
 }
 
-.sprite-324 {
+.sprite-cart-324 {
     width: 48px;
     height: 48px;
     background-position: -179px -759px;
 }
 
-.sprite-325 {
+.sprite-cart-325 {
     width: 48px;
     height: 48px;
     background-position: -237px -759px;
 }
 
-.sprite-326 {
+.sprite-cart-326 {
     width: 48px;
     height: 48px;
     background-position: -295px -759px;
 }
 
-.sprite-327 {
+.sprite-cart-327 {
     width: 48px;
     height: 48px;
     background-position: -353px -759px;
 }
 
-.sprite-328 {
+.sprite-cart-328 {
     width: 48px;
     height: 48px;
     background-position: -411px -759px;
 }
 
-.sprite-329 {
+.sprite-cart-329 {
     width: 48px;
     height: 48px;
     background-position: -469px -759px;
 }
 
-.sprite-33 {
+.sprite-cart-33 {
     width: 48px;
     height: 48px;
     background-position: -527px -759px;
 }
 
-.sprite-330 {
+.sprite-cart-330 {
     width: 48px;
     height: 48px;
     background-position: -585px -759px;
 }
 
-.sprite-331 {
+.sprite-cart-331 {
     width: 48px;
     height: 48px;
     background-position: -643px -759px;
 }
 
-.sprite-332 {
+.sprite-cart-332 {
     width: 48px;
     height: 48px;
     background-position: -701px -759px;
 }
 
-.sprite-333 {
+.sprite-cart-333 {
     width: 48px;
     height: 48px;
     background-position: -759px -759px;
 }
 
-.sprite-334 {
+.sprite-cart-334 {
     width: 48px;
     height: 48px;
     background-position: -817px -759px;
 }
 
-.sprite-335 {
+.sprite-cart-335 {
     width: 48px;
     height: 48px;
     background-position: -875px -759px;
 }
 
-.sprite-336 {
+.sprite-cart-336 {
     width: 48px;
     height: 48px;
     background-position: -933px -759px;
 }
 
-.sprite-337 {
+.sprite-cart-337 {
     width: 48px;
     height: 48px;
     background-position: -991px -759px;
 }
 
-.sprite-338 {
+.sprite-cart-338 {
     width: 48px;
     height: 48px;
     background-position: -1049px -759px;
 }
 
-.sprite-339 {
+.sprite-cart-339 {
     width: 48px;
     height: 48px;
     background-position: -5px -817px;
 }
 
-.sprite-34 {
+.sprite-cart-34 {
     width: 48px;
     height: 48px;
     background-position: -63px -817px;
 }
 
-.sprite-340 {
+.sprite-cart-340 {
     width: 48px;
     height: 48px;
     background-position: -121px -817px;
 }
 
-.sprite-341 {
+.sprite-cart-341 {
     width: 48px;
     height: 48px;
     background-position: -179px -817px;
 }
 
-.sprite-342 {
+.sprite-cart-342 {
     width: 48px;
     height: 48px;
     background-position: -237px -817px;
 }
 
-.sprite-343 {
+.sprite-cart-343 {
     width: 48px;
     height: 48px;
     background-position: -295px -817px;
 }
 
-.sprite-344 {
+.sprite-cart-344 {
     width: 48px;
     height: 48px;
     background-position: -353px -817px;
 }
 
-.sprite-345 {
+.sprite-cart-345 {
     width: 48px;
     height: 48px;
     background-position: -411px -817px;
 }
 
-.sprite-346 {
+.sprite-cart-346 {
     width: 48px;
     height: 48px;
     background-position: -469px -817px;
 }
 
-.sprite-347 {
+.sprite-cart-347 {
     width: 48px;
     height: 48px;
     background-position: -527px -817px;
 }
 
-.sprite-348 {
+.sprite-cart-348 {
     width: 48px;
     height: 48px;
     background-position: -585px -817px;
 }
 
-.sprite-349 {
+.sprite-cart-349 {
     width: 48px;
     height: 48px;
     background-position: -643px -817px;
 }
 
-.sprite-35 {
+.sprite-cart-35 {
     width: 48px;
     height: 48px;
     background-position: -701px -817px;
 }
 
-.sprite-350 {
+.sprite-cart-350 {
     width: 48px;
     height: 48px;
     background-position: -759px -817px;
 }
 
-.sprite-351 {
+.sprite-cart-351 {
     width: 48px;
     height: 48px;
     background-position: -817px -817px;
 }
 
-.sprite-352 {
+.sprite-cart-352 {
     width: 48px;
     height: 48px;
     background-position: -875px -817px;
 }
 
-.sprite-353 {
+.sprite-cart-353 {
     width: 48px;
     height: 48px;
     background-position: -933px -817px;
 }
 
-.sprite-354 {
+.sprite-cart-354 {
     width: 48px;
     height: 48px;
     background-position: -991px -817px;
 }
 
-.sprite-355 {
+.sprite-cart-355 {
     width: 48px;
     height: 48px;
     background-position: -1049px -817px;
 }
 
-.sprite-356 {
+.sprite-cart-356 {
     width: 48px;
     height: 48px;
     background-position: -5px -875px;
 }
 
-.sprite-357 {
+.sprite-cart-357 {
     width: 48px;
     height: 48px;
     background-position: -63px -875px;
 }
 
-.sprite-358 {
+.sprite-cart-358 {
     width: 48px;
     height: 48px;
     background-position: -121px -875px;
 }
 
-.sprite-359 {
+.sprite-cart-359 {
     width: 48px;
     height: 48px;
     background-position: -179px -875px;
 }
 
-.sprite-36 {
+.sprite-cart-36 {
     width: 48px;
     height: 48px;
     background-position: -237px -875px;
 }
 
-.sprite-360 {
+.sprite-cart-360 {
     width: 48px;
     height: 48px;
     background-position: -295px -875px;
 }
 
-.sprite-361 {
+.sprite-cart-361 {
     width: 48px;
     height: 48px;
     background-position: -353px -875px;
 }
 
-.sprite-362 {
+.sprite-cart-362 {
     width: 48px;
     height: 48px;
     background-position: -411px -875px;
 }
 
-.sprite-363 {
+.sprite-cart-363 {
     width: 48px;
     height: 48px;
     background-position: -469px -875px;
 }
 
-.sprite-364 {
+.sprite-cart-364 {
     width: 48px;
     height: 48px;
     background-position: -527px -875px;
 }
 
-.sprite-365 {
+.sprite-cart-365 {
     width: 48px;
     height: 48px;
     background-position: -585px -875px;
 }
 
-.sprite-366 {
+.sprite-cart-366 {
     width: 48px;
     height: 48px;
     background-position: -643px -875px;
 }
 
-.sprite-367 {
+.sprite-cart-367 {
     width: 48px;
     height: 48px;
     background-position: -701px -875px;
 }
 
-.sprite-368 {
+.sprite-cart-368 {
     width: 48px;
     height: 48px;
     background-position: -759px -875px;
 }
 
-.sprite-369 {
+.sprite-cart-369 {
     width: 48px;
     height: 48px;
     background-position: -817px -875px;
 }
 
-.sprite-37 {
+.sprite-cart-37 {
     width: 48px;
     height: 48px;
     background-position: -875px -875px;
 }
 
-.sprite-370 {
+.sprite-cart-370 {
     width: 48px;
     height: 48px;
     background-position: -933px -875px;
 }
 
-.sprite-371 {
+.sprite-cart-371 {
     width: 48px;
     height: 48px;
     background-position: -991px -875px;
 }
 
-.sprite-372 {
+.sprite-cart-372 {
     width: 48px;
     height: 48px;
     background-position: -1049px -875px;
 }
 
-.sprite-373 {
+.sprite-cart-373 {
     width: 48px;
     height: 48px;
     background-position: -5px -933px;
 }
 
-.sprite-374 {
+.sprite-cart-374 {
     width: 48px;
     height: 48px;
     background-position: -63px -933px;
 }
 
-.sprite-375 {
+.sprite-cart-375 {
     width: 48px;
     height: 48px;
     background-position: -121px -933px;
 }
 
-.sprite-376 {
+.sprite-cart-376 {
     width: 48px;
     height: 48px;
     background-position: -179px -933px;
 }
 
-.sprite-377 {
+.sprite-cart-377 {
     width: 48px;
     height: 48px;
     background-position: -237px -933px;
 }
 
-.sprite-378 {
+.sprite-cart-378 {
     width: 48px;
     height: 48px;
     background-position: -295px -933px;
 }
 
-.sprite-379 {
+.sprite-cart-379 {
     width: 48px;
     height: 48px;
     background-position: -353px -933px;
 }
 
-.sprite-38 {
+.sprite-cart-38 {
     width: 48px;
     height: 48px;
     background-position: -411px -933px;
 }
 
-.sprite-380 {
+.sprite-cart-380 {
     width: 48px;
     height: 48px;
     background-position: -469px -933px;
 }
 
-.sprite-381 {
+.sprite-cart-381 {
     width: 48px;
     height: 48px;
     background-position: -527px -933px;
 }
 
-.sprite-382 {
+.sprite-cart-382 {
     width: 48px;
     height: 48px;
     background-position: -585px -933px;
 }
 
-.sprite-383 {
+.sprite-cart-383 {
     width: 48px;
     height: 48px;
     background-position: -643px -933px;
 }
 
-.sprite-384 {
+.sprite-cart-384 {
     width: 48px;
     height: 48px;
     background-position: -701px -933px;
 }
 
-.sprite-385 {
+.sprite-cart-385 {
     width: 48px;
     height: 48px;
     background-position: -759px -933px;
 }
 
-.sprite-386 {
+.sprite-cart-386 {
     width: 48px;
     height: 48px;
     background-position: -817px -933px;
 }
 
-.sprite-39 {
+.sprite-cart-39 {
     width: 48px;
     height: 48px;
     background-position: -875px -933px;
 }
 
-.sprite-4 {
+.sprite-cart-4 {
     width: 48px;
     height: 48px;
     background-position: -933px -933px;
 }
 
-.sprite-40 {
+.sprite-cart-40 {
     width: 48px;
     height: 48px;
     background-position: -991px -933px;
 }
 
-.sprite-41 {
+.sprite-cart-41 {
     width: 48px;
     height: 48px;
     background-position: -1049px -933px;
 }
 
-.sprite-42 {
+.sprite-cart-42 {
     width: 48px;
     height: 48px;
     background-position: -5px -991px;
 }
 
-.sprite-43 {
+.sprite-cart-43 {
     width: 48px;
     height: 48px;
     background-position: -63px -991px;
 }
 
-.sprite-44 {
+.sprite-cart-44 {
     width: 48px;
     height: 48px;
     background-position: -121px -991px;
 }
 
-.sprite-45 {
+.sprite-cart-45 {
     width: 48px;
     height: 48px;
     background-position: -179px -991px;
 }
 
-.sprite-46 {
+.sprite-cart-46 {
     width: 48px;
     height: 48px;
     background-position: -237px -991px;
 }
 
-.sprite-47 {
+.sprite-cart-47 {
     width: 48px;
     height: 48px;
     background-position: -295px -991px;
 }
 
-.sprite-48 {
+.sprite-cart-48 {
     width: 48px;
     height: 48px;
     background-position: -353px -991px;
 }
 
-.sprite-49 {
+.sprite-cart-49 {
     width: 48px;
     height: 48px;
     background-position: -411px -991px;
 }
 
-.sprite-5 {
+.sprite-cart-5 {
     width: 48px;
     height: 48px;
     background-position: -469px -991px;
 }
 
-.sprite-50 {
+.sprite-cart-50 {
     width: 48px;
     height: 48px;
     background-position: -527px -991px;
 }
 
-.sprite-51 {
+.sprite-cart-51 {
     width: 48px;
     height: 48px;
     background-position: -585px -991px;
 }
 
-.sprite-52 {
+.sprite-cart-52 {
     width: 48px;
     height: 48px;
     background-position: -643px -991px;
 }
 
-.sprite-53 {
+.sprite-cart-53 {
     width: 48px;
     height: 48px;
     background-position: -701px -991px;
 }
 
-.sprite-54 {
+.sprite-cart-54 {
     width: 48px;
     height: 48px;
     background-position: -759px -991px;
 }
 
-.sprite-55 {
+.sprite-cart-55 {
     width: 48px;
     height: 48px;
     background-position: -817px -991px;
 }
 
-.sprite-56 {
+.sprite-cart-56 {
     width: 48px;
     height: 48px;
     background-position: -875px -991px;
 }
 
-.sprite-57 {
+.sprite-cart-57 {
     width: 48px;
     height: 48px;
     background-position: -933px -991px;
 }
 
-.sprite-58 {
+.sprite-cart-58 {
     width: 48px;
     height: 48px;
     background-position: -991px -991px;
 }
 
-.sprite-59 {
+.sprite-cart-59 {
     width: 48px;
     height: 48px;
     background-position: -1049px -991px;
 }
 
-.sprite-6 {
+.sprite-cart-6 {
     width: 48px;
     height: 48px;
     background-position: -5px -1049px;
 }
 
-.sprite-60 {
+.sprite-cart-60 {
     width: 48px;
     height: 48px;
     background-position: -63px -1049px;
 }
 
-.sprite-61 {
+.sprite-cart-61 {
     width: 48px;
     height: 48px;
     background-position: -121px -1049px;
 }
 
-.sprite-62 {
+.sprite-cart-62 {
     width: 48px;
     height: 48px;
     background-position: -179px -1049px;
 }
 
-.sprite-63 {
+.sprite-cart-63 {
     width: 48px;
     height: 48px;
     background-position: -237px -1049px;
 }
 
-.sprite-64 {
+.sprite-cart-64 {
     width: 48px;
     height: 48px;
     background-position: -295px -1049px;
 }
 
-.sprite-65 {
+.sprite-cart-65 {
     width: 48px;
     height: 48px;
     background-position: -353px -1049px;
 }
 
-.sprite-66 {
+.sprite-cart-66 {
     width: 48px;
     height: 48px;
     background-position: -411px -1049px;
 }
 
-.sprite-67 {
+.sprite-cart-67 {
     width: 48px;
     height: 48px;
     background-position: -469px -1049px;
 }
 
-.sprite-68 {
+.sprite-cart-68 {
     width: 48px;
     height: 48px;
     background-position: -527px -1049px;
 }
 
-.sprite-69 {
+.sprite-cart-69 {
     width: 48px;
     height: 48px;
     background-position: -585px -1049px;
 }
 
-.sprite-7 {
+.sprite-cart-7 {
     width: 48px;
     height: 48px;
     background-position: -643px -1049px;
 }
 
-.sprite-70 {
+.sprite-cart-70 {
     width: 48px;
     height: 48px;
     background-position: -701px -1049px;
 }
 
-.sprite-71 {
+.sprite-cart-71 {
     width: 48px;
     height: 48px;
     background-position: -759px -1049px;
 }
 
-.sprite-72 {
+.sprite-cart-72 {
     width: 48px;
     height: 48px;
     background-position: -817px -1049px;
 }
 
-.sprite-73 {
+.sprite-cart-73 {
     width: 48px;
     height: 48px;
     background-position: -875px -1049px;
 }
 
-.sprite-74 {
+.sprite-cart-74 {
     width: 48px;
     height: 48px;
     background-position: -933px -1049px;
 }
 
-.sprite-75 {
+.sprite-cart-75 {
     width: 48px;
     height: 48px;
     background-position: -991px -1049px;
 }
 
-.sprite-76 {
+.sprite-cart-76 {
     width: 48px;
     height: 48px;
     background-position: -1049px -1049px;
 }
 
-.sprite-77 {
+.sprite-cart-77 {
     width: 48px;
     height: 48px;
     background-position: -1107px -5px;
 }
 
-.sprite-78 {
+.sprite-cart-78 {
     width: 48px;
     height: 48px;
     background-position: -1107px -63px;
 }
 
-.sprite-79 {
+.sprite-cart-79 {
     width: 48px;
     height: 48px;
     background-position: -1107px -121px;
 }
 
-.sprite-8 {
+.sprite-cart-8 {
     width: 48px;
     height: 48px;
     background-position: -1107px -179px;
 }
 
-.sprite-80 {
+.sprite-cart-80 {
     width: 48px;
     height: 48px;
     background-position: -1107px -237px;
 }
 
-.sprite-81 {
+.sprite-cart-81 {
     width: 48px;
     height: 48px;
     background-position: -1107px -295px;
 }
 
-.sprite-82 {
+.sprite-cart-82 {
     width: 48px;
     height: 48px;
     background-position: -1107px -353px;
 }
 
-.sprite-83 {
+.sprite-cart-83 {
     width: 48px;
     height: 48px;
     background-position: -1107px -411px;
 }
 
-.sprite-84 {
+.sprite-cart-84 {
     width: 48px;
     height: 48px;
     background-position: -1107px -469px;
 }
 
-.sprite-85 {
+.sprite-cart-85 {
     width: 48px;
     height: 48px;
     background-position: -1107px -527px;
 }
 
-.sprite-86 {
+.sprite-cart-86 {
     width: 48px;
     height: 48px;
     background-position: -1107px -585px;
 }
 
-.sprite-87 {
+.sprite-cart-87 {
     width: 48px;
     height: 48px;
     background-position: -1107px -643px;
 }
 
-.sprite-88 {
+.sprite-cart-88 {
     width: 48px;
     height: 48px;
     background-position: -1107px -701px;
 }
 
-.sprite-89 {
+.sprite-cart-89 {
     width: 48px;
     height: 48px;
     background-position: -1107px -759px;
 }
 
-.sprite-9 {
+.sprite-cart-9 {
     width: 48px;
     height: 48px;
     background-position: -1107px -817px;
 }
 
-.sprite-90 {
+.sprite-cart-90 {
     width: 48px;
     height: 48px;
     background-position: -1107px -875px;
 }
 
-.sprite-91 {
+.sprite-cart-91 {
     width: 48px;
     height: 48px;
     background-position: -1107px -933px;
 }
 
-.sprite-92 {
+.sprite-cart-92 {
     width: 48px;
     height: 48px;
     background-position: -1107px -991px;
 }
 
-.sprite-93 {
+.sprite-cart-93 {
     width: 48px;
     height: 48px;
     background-position: -1107px -1049px;
 }
 
-.sprite-94 {
+.sprite-cart-94 {
     width: 48px;
     height: 48px;
     background-position: -5px -1107px;
 }
 
-.sprite-95 {
+.sprite-cart-95 {
     width: 48px;
     height: 48px;
     background-position: -63px -1107px;
 }
 
-.sprite-96 {
+.sprite-cart-96 {
     width: 48px;
     height: 48px;
     background-position: -121px -1107px;
 }
 
-.sprite-97 {
+.sprite-cart-97 {
     width: 48px;
     height: 48px;
     background-position: -179px -1107px;
 }
 
-.sprite-98 {
+.sprite-cart-98 {
     width: 48px;
     height: 48px;
     background-position: -237px -1107px;
 }
 
-.sprite-99 {
+.sprite-cart-99 {
     width: 48px;
     height: 48px;
     background-position: -295px -1107px;
