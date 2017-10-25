@@ -1685,9 +1685,11 @@ function setIconTheme(value){
 
 
 function populateSettingsPanels(){
+    _defaultSettings['icon_theme_buttons'] = "og";
     var container = $('.settings-panel[data-panel="filters"]').children('.panel-body');
     var newHtml =
             '<h5>Raid Level Filters</h5><br>';
+  
     for (var i = 1; i <= 5; i++){
         var partHtml =
             '<div class="text-center">' +
@@ -1838,10 +1840,9 @@ function setSettingsDefaults(){
     _defaultSettings['instinct_gym_filter'] = "active";
     _defaultSettings['empty_gym_filter'] = "active";
     _defaultSettings['open_spot_gym_filter'] = "active";
-    _defaultSettings['gen1_buttons'] = "display_gen1"; // CONTINUE HERE
+    _defaultSettings['gen1_buttons'] = "display_gen1";
     _defaultSettings['gen2_buttons'] = "display_gen2";
     _defaultSettings['gen3_buttons'] = "display_gen3";
-    _defaultSettings['icon_theme_buttons'] = "og";
 
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";

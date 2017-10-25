@@ -5,13 +5,13 @@
     <title>{{ area_name }}</title>
     <link rel="stylesheet" href='static/css/leaflet.css'>
     <link rel="stylesheet" href='static/css/bootstrap.min.css'>
-    <link rel="stylesheet" href='static/css/main.css?258'>
+    <link rel="stylesheet" href='static/css/main.css?259'>
     <link rel="stylesheet" href='static/css/spritesheet_medium_v5_og.css'>
     <link rel="stylesheet" href='static/css/spritesheet_medium_v3_cart.css'>
-    <link rel="stylesheet" href='static/css/spritesheet_medium_v5_alt.css'>
+    <link rel="stylesheet" href='static/css/spritesheet_medium_v6_alt.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.css'>
     <link rel="stylesheet" href='static/css/MarkerCluster.default.css'>
-    <link rel="stylesheet" href='static/css/ticker.css?258'>
+    <link rel="stylesheet" href='static/css/ticker.css?259'>
     <link rel="apple-touch-icon" sizes="180x180" href="static/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="static/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="static/favicon/favicon-16x16.png">
@@ -109,9 +109,14 @@
                 <hr />
                 <h5>Choose icon theme</h5>
                 <div id="icon_theme_button_group" class="btn-group" role="group" data-group="icon_theme_buttons">
-                    <button type="button" class="btn btn-default" data-value="og">Original</button>
-                    <button type="button" class="btn btn-default" data-value="cart">2D Cartoon</button>
-                    <button type="button" class="btn btn-default" data-value="alt">Alternate</button>
+                    <button type="button" class="btn btn-default og_btn" data-value="og">Original</button>
+                    <button type="button" class="btn btn-default cart_btn" data-value="cart">2D Cartoon</button>
+                    <button type="button" class="btn btn-default alt_btn" data-value="alt">Alternate</button>
+                </div>
+                <div class="theme_selection_icon_group">
+                    <img class="theme_icon" src='static/img/original.png'>
+                    <img class="theme_icon" src='static/img/cartoon.png'>
+                    <img class="theme_icon" src='static/img/alternate.png'>
                 </div>
                 <hr />
                 <h5>Reset all preferences</h5>
@@ -133,7 +138,7 @@
     <script src='static/js/leaflet.js'></script>
     <script src='static/js/leaflet.markercluster.js'></script>
     <script src='static/js/bootstrap.min.js'></script>
-    <script src='static/js/main.js?258'></script>
+    <script src='static/js/main.js?259'></script>
     <script src='static/js/ticker.js'></script>
 
     {{ extra_css_js }}
