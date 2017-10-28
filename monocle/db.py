@@ -294,7 +294,7 @@ class Sighting(Base):
     __tablename__ = 'sightings'
 
     id = Column(Integer, primary_key=True)
-    pokemon_id = Column(TINY_TYPE)
+    pokemon_id = Column(SmallInteger)
     spawn_id = Column(ID_TYPE)
     expire_timestamp = Column(Integer, index=True)
     encounter_id = Column(HUGE_TYPE, index=True)
@@ -321,7 +321,7 @@ class Mystery(Base):
     __tablename__ = 'mystery_sightings'
 
     id = Column(Integer, primary_key=True)
-    pokemon_id = Column(TINY_TYPE)
+    pokemon_id = Column(SmallInteger)
     spawn_id = Column(ID_TYPE, index=True)
     encounter_id = Column(HUGE_TYPE, index=True)
     lat = Column(FLOAT_TYPE)
@@ -394,7 +394,7 @@ class FortSighting(Base):
     last_modified = Column(Integer, index=True)
     team = Column(TINY_TYPE)
     is_in_battle = Column(TINY_TYPE, default=0)
-    guard_pokemon_id = Column(TINY_TYPE)
+    guard_pokemon_id = Column(SmallInteger)
     slots_available = Column(TINY_TYPE)
     time_occupied = Column(Integer)
 
@@ -416,7 +416,7 @@ class RaidSighting(Base):
     raid_end_ms = Column(Integer, index=True)
     raid_level = Column(Integer)
     complete = Column(TINY_TYPE)
-    pokemon_id = Column(TINY_TYPE)
+    pokemon_id = Column(SmallInteger)
     cp = Column(Integer)
     move_1 = Column(SmallInteger)
     move_2 = Column(SmallInteger)
