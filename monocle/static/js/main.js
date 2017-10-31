@@ -171,7 +171,7 @@ var RaidIcon = L.Icon.extend({
 
         if (this.options.raid_pokemon_id !== 0) {
             div.innerHTML =
-                '<div class="pokemarker">' +
+                '<div class="raidmarker">' +
                     '<div class="boss_raid_container">' +
                         '<img class="boss_during_raid" src="static/monocle-icons/larger-icons/' + this.options.raid_pokemon_id + '.png" />' +
                     '</div>' +
@@ -192,7 +192,7 @@ var RaidIcon = L.Icon.extend({
             }
         } else {
             div.innerHTML =
-                '<div class="pokemarker">' +
+                '<div class="raidmarker">' +
                     '<div class="pre_raid_container">' +
                         '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_level_' + this.options.raid_level + '.png?201" />' +
                     '</div>';

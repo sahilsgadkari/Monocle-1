@@ -576,6 +576,16 @@
     padding: 0;
 }
 
+.raidmarker {
+    position: absolute;
+    left: -16px;
+    top: -20px;
+    width: 32px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
 .raid_filter_container {
     display: inline-table;
 }
