@@ -21,6 +21,7 @@ except FileNotFoundError:
 banned = []
 invalid = []
 underlevel = []
+valid = []
 
 with accounts_file.open('w') as csvfile:
     writer = csv.writer(csvfile, delimiter=',')
@@ -35,6 +36,8 @@ with accounts_file.open('w') as csvfile:
             continue
         if account.get('level') < 2:
             underlevel.append(account)
+        if account.get('level') > 1:
+            valid.append(account)
         writer.writerow((account['username'],
                          account['password'],
                          account['provider'],
@@ -83,5 +86,17 @@ if underlevel:
         for account in underlevel:
             row = [account['username'], account['password'], account['provider'], account['model'], account['iOS'], account['id']]
             writer.writerow(row)
+
+if valid:
+    valid_file = monocle_dir / 'valid.csv'
+    write_header = not valid_file.exists()
+    with valid_file.open('a') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',')
+        if write_header:
+            writer.writerow(('username', 'password', 'provider', 'model', 'iOS', 'id'))
+        for account in valid:
+            row = [account['username'], account['password'], account['provider'], account['model'], account['iOS'], account['id']]
+            writer.writerow(row)
+
 
 print('Done!')
