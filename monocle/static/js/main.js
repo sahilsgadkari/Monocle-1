@@ -144,7 +144,7 @@ var AltFortIcon = L.Icon.extend({
         if (sponsor !== '') {
             div.innerHTML +=
                 '<div class="fort_sponsor_container">' +
-                    '<img class="sponsor_icon" src="static/monocle-icons/raids/' + sponsor + '.png" />' +
+                    '<img class="sponsor_icon_marker" src="static/monocle-icons/raids/' + sponsor + '.png" />' +
                 '</div>';
         }
         return div;
@@ -232,7 +232,7 @@ var markers = {};
 if (_DisplaySpawnpointsLayer === 'True') {
     var overlays = {
         Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-        Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
@@ -242,7 +242,7 @@ if (_DisplaySpawnpointsLayer === 'True') {
 } else {
     var overlays = {
         Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-        Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
@@ -1012,8 +1012,8 @@ function onOverLayAdd(e) {
     if (e.name == 'Gyms') {
         $('.gym_btn').css('visibility', 'visible');
     }
-  
     savedGymsToDisplay();
+    sponsoredGymLogoDisplay();
 }
 
 map.on('overlayremove', onOverLayRemove);
@@ -1102,6 +1102,8 @@ $('.instinct-gym-filter').on('click', function () {
     if (!map.hasLayer(overlays.Gyms)) {
         map.addLayer(overlays.Gyms);
     }
+    
+    sponsoredGymLogoDisplay()
 });
 
 $('.valor-gym-filter').on('click', function () {
@@ -1129,6 +1131,8 @@ $('.valor-gym-filter').on('click', function () {
     if (!map.hasLayer(overlays.Gyms)) {
         map.addLayer(overlays.Gyms);
     }
+    
+    sponsoredGymLogoDisplay()
 });
 
 $('.mystic-gym-filter').on('click', function () {
@@ -1156,6 +1160,8 @@ $('.mystic-gym-filter').on('click', function () {
     if (!map.hasLayer(overlays.Gyms)) {
         map.addLayer(overlays.Gyms);
     }
+   
+    sponsoredGymLogoDisplay()
 });
 
 $('.empty-gym-filter').on('click', function () {
@@ -1183,6 +1189,8 @@ $('.empty-gym-filter').on('click', function () {
     if (!map.hasLayer(overlays.Gyms)) {
         map.addLayer(overlays.Gyms);
     }
+    
+    sponsoredGymLogoDisplay()
 });
 
 $('.open-spot-gym-filter').on('click', function () {
@@ -1211,6 +1219,8 @@ $('.open-spot-gym-filter').on('click', function () {
     if (!map.hasLayer(overlays.Gyms)) {
         map.addLayer(overlays.Gyms);
     }
+    
+    sponsoredGymLogoDisplay()
 });
 
 $('.all-gyms-filter').on('click', function () {
@@ -1243,6 +1253,8 @@ $('.all-gyms-filter').on('click', function () {
     if (!map.hasLayer(overlays.Gyms)) {
         map.addLayer(overlays.Gyms);
     }
+    
+    sponsoredGymLogoDisplay()
 });
 
 $('#reset_btn').on('click', function () {
@@ -1386,7 +1398,14 @@ $('#settings').on('click', '.settings-panel button', function () {
     }else{
         setPreference(key, value);
     }
-    
+
+    if (key.indexOf('show_sponsored_gym_logo') > -1){
+        // This is the sponsored gym logo buttons switch
+        setSponsoredLogoDisplay(value);
+    }else{
+        setPreference(key, value);
+    }
+
     if (key.indexOf('gen1_buttons') > -1){
         setGen1Buttons(value);
     }else{
@@ -1638,6 +1657,14 @@ function savedGymsToDisplay() {
     }
 }
 
+function sponsoredGymLogoDisplay(){
+    if (getPreference("show_sponsored_gym_logo") === "hide_sponsored_gym_logo") {
+        $('.sponsor_icon_marker').css('visibility', 'hidden');
+    } else {
+        $('.sponsor_icon_marker').css('visibility', 'visible');
+    }
+}
+
 function setGymButtonsDisplay(value){
     setPreference("gym_filter_buttons", value);
     if (value == "display_gym_filters") {
@@ -1649,6 +1676,20 @@ function setGymButtonsDisplay(value){
             $(this).css('visibility', 'hidden');
         });
     }
+}
+
+function setSponsoredLogoDisplay(value){
+    setPreference("show_sponsored_gym_logo", value);
+    if (value == "display_sponsored_gym_logo") {
+        $(".sponsor_icon_marker").each(function() {
+            $(this).css('visibility','visible');
+        });
+    } else {
+        $(".sponsor_icon_marker").each(function() {
+            $(this).css('visibility','hidden');
+        });
+    }
+    
 }
 
 function setGen1Buttons(value){
@@ -1843,6 +1884,7 @@ function setSettingsDefaults(){
     _defaultSettings['gen1_buttons'] = "display_gen1";
     _defaultSettings['gen2_buttons'] = "display_gen2";
     _defaultSettings['gen3_buttons'] = "display_gen3";
+    _defaultSettings['show_sponsored_gym_logo'] = "display_sponsored_gym_logo";
 
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
@@ -1879,6 +1921,12 @@ if (getPreference("gym_filter_buttons") === "hide_gym_filters") {
     $('.gym_btn').css('visibility', 'hidden');
 } else {
     savedGymsToDisplay();
+}
+
+if (getPreference("show_sponsored_gym_logo") === "hide_sponsored_gym_logo") {
+    $('.sponsor_icon_marker').css('visibility', 'hidden');
+} else {
+    $('.sponsor_icon_marker').css('visibility', 'visible');
 }
 
 if ((getPreference("gen1_buttons") === "display_gen1")) {
