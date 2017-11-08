@@ -604,7 +604,7 @@ function FortMarker (raw) {
     var current_hour = current_time.getHours();
     var gym_start_hour = 20; // Start at 8pm
     var gym_end_hour = 4; // End at 4am
-
+  
     if (gym_end_hour < gym_start_hour) { // Time span goes past midnight
         if ((current_hour >= gym_start_hour && current_hour <= 23) || (current_hour >= 0 && current_hour <= gym_end_hour)) {
             var fort_icon = new AltFortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name, external_id: raw.external_id});
@@ -614,7 +614,7 @@ function FortMarker (raw) {
     
     } else {
         if (current_hour >= gym_start_hour && current_hour <= gym_end_hour) {
-            var fort_icon = new AltFortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
+            var fort_icon = new AltFortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name, external_id: raw.external_id});
         } else {
             var fort_icon = new FortIcon({fort_team: raw.team, open_slots: open_slots, gym_name: raw.gym_name});
         }
@@ -622,7 +622,7 @@ function FortMarker (raw) {
 
     var fort_marker = L.marker([raw.lat, raw.lon], {icon: fort_icon, opacity: 1, zIndexOffset: 1000});
     var selectedGym = getPreference('gym_selection');
-
+  
     if (selectedGym === raw.team.toString()) {
         fort_marker.overlay = 'Gyms';
     } else if (selectedGym == 4) {
@@ -638,6 +638,7 @@ function FortMarker (raw) {
         event.popup.setContent(getFortPopupContent(event.target.raw));
         event.popup.options.autoPan = false; // Don't fight user panning
     });
+    sponsoredGymLogoDisplay();
     fort_marker.bindPopup();
     return fort_marker;
 }
@@ -1103,7 +1104,7 @@ $('.instinct-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay()
+    sponsoredGymLogoDisplay();
 });
 
 $('.valor-gym-filter').on('click', function () {
@@ -1132,7 +1133,7 @@ $('.valor-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay()
+    sponsoredGymLogoDisplay();
 });
 
 $('.mystic-gym-filter').on('click', function () {
@@ -1161,7 +1162,7 @@ $('.mystic-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
    
-    sponsoredGymLogoDisplay()
+    sponsoredGymLogoDisplay();
 });
 
 $('.empty-gym-filter').on('click', function () {
@@ -1190,7 +1191,7 @@ $('.empty-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay()
+    sponsoredGymLogoDisplay();
 });
 
 $('.open-spot-gym-filter').on('click', function () {
@@ -1220,7 +1221,7 @@ $('.open-spot-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay()
+    sponsoredGymLogoDisplay();
 });
 
 $('.all-gyms-filter').on('click', function () {
@@ -1254,7 +1255,7 @@ $('.all-gyms-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay()
+    sponsoredGymLogoDisplay();
 });
 
 $('#reset_btn').on('click', function () {
