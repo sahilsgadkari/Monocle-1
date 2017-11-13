@@ -7,6 +7,15 @@ run_time_minutes=$(($run_time/60))
 running=1
 counter=1
 
+countdown () {
+seconds=$1
+while [ $seconds -gt 0 ]; do
+   echo -ne "Pausing for $seconds\033[0K\r"
+   sleep 1
+   : $((seconds--))
+done
+}
+
 echo "Executing Group" $group "level up sequencing. Running each for" $run_time "seconds. Pause for" $pause_time "seconds."
 
 cd /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group
@@ -24,7 +33,8 @@ fi
 echo "Starting initial scan. Will run for" $run_time "seconds (" $run_time_minutes "minutes )."
 python3 scan-group$group.py > /Users/Rob/Desktop/Monocle-Fork/logs/scan-group$group.log 2>&1 &
 
-sleep $run_time
+#sleep $run_time
+countdown $run_time
 
 process_count=`ps -e | grep scan-group$group.py | wc -l`
 echo "Checking process count:" $process_count
@@ -36,7 +46,8 @@ then
 fi
 
 echo "Pausing" $pause_time "seconds to check if stopped nicely."
-sleep $pause_time
+#sleep $pause_time
+countdown $pause_time
 
 process_count=`ps -e | grep scan-group$group.py | wc -l`
 echo "Rechecking process count:" $process_count
@@ -61,7 +72,8 @@ cd /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group
 echo "Starting initial level up sequence for" $run_time "seconds (" $run_time_minutes "minutes )."
 /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group > /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log 2>&1 &
 
-sleep $run_time
+#sleep $run_time
+countdown $run_time
 
 process_count=`ps -e | grep scan-group$group.py | wc -l`
 echo "Checking process count:" $process_count
@@ -111,7 +123,8 @@ while [ $accounts_left_count -gt 0 ]; do
         break
     fi
 
-    sleep $run_time
+    #sleep $run_time
+    countdown $run_time
 
     process_count=`ps -e | grep scan-group$group.py | wc -l`
 
@@ -122,7 +135,8 @@ while [ $accounts_left_count -gt 0 ]; do
     fi
 
     echo "Pausing" $pause_time "seconds to check if stopped nicely."
-    sleep $pause_time
+    #sleep $pause_time
+    countdown $pause_time
 
     process_count=`ps -e | grep scan-group$group.py | wc -l`
     echo "Rechecking process count:" $process_count
