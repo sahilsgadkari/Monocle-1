@@ -771,20 +771,32 @@ function addGymsToMap (data, map) {
         }
         
         // Check local storage for last setting
-        var selectedGym = getPreference('gym_selection');
-        
-        if (selectedGym === item.team.toString()) {
+        var mysticPref = getPreference('mystic_gym_filter');
+        var valorPref = getPreference('valor_gym_filter');
+        var instinctPref = getPreference('instinct_gym_filter');
+        var emptyPref = getPreference('empty_gym_filter');
+
+        if ((mysticPref === "active")  && (item.team === 1)) {
             marker = FortMarker(item);
             marker.addTo(overlays.Gyms);
-        } else if (selectedGym == 4) {
+            marker.overlay = "Gyms";
+        } else if ((valorPref === "active")  && (item.team === 2)) {
             marker = FortMarker(item);
             marker.addTo(overlays.Gyms);
+            marker.overlay = "Gyms";
+        } else if ((instinctPref === "active")  && (item.team === 3)) {
+            marker = FortMarker(item);
+            marker.addTo(overlays.Gyms);
+            marker.overlay = "Gyms";
+        } else if ((emptyPref === "active")  && (item.team === 0)) {
+            marker = FortMarker(item);
+            marker.addTo(overlays.Gyms);
+            marker.overlay = "Gyms";
         } else {
             marker = FortMarker(item);
             marker.addTo(hidden_overlays.FilteredGyms);
+            marker.overlay = "FilteredGyms";
         }
-        
-        
     });
 }
 
@@ -1095,7 +1107,8 @@ $('.instinct-gym-filter').on('click', function () {
             
     if (key.indexOf('gym_selection') > -1){
         // This is a gym's filter button
-        gymToDisplay(value);
+        //gymToDisplay(value);
+        savedGymsToDisplay();
     }else{
         setPreference(key, value);
     }
@@ -1111,7 +1124,7 @@ $('.valor-gym-filter').on('click', function () {
     var item = $(this);
     var key = item.parent().data('group');
     var value = item.data('value');
-
+    
     if ($(this).hasClass('active')) {
        $(this).removeClass('active');
        $('.valor-gym-filter').css('opacity', '0.4');
@@ -1121,10 +1134,11 @@ $('.valor-gym-filter').on('click', function () {
        $('.valor-gym-filter').css('opacity', '1.0');
        setPreference("valor_gym_filter", "active");
     }
-            
+
     if (key.indexOf('gym_selection') > -1){
         // This is a gym's filter button
-        gymToDisplay(value);
+        //gymToDisplay(value);
+        savedGymsToDisplay();
     }else{
         setPreference(key, value);
     }
@@ -1153,7 +1167,8 @@ $('.mystic-gym-filter').on('click', function () {
             
     if (key.indexOf('gym_selection') > -1){
         // This is a gym's filter button
-        gymToDisplay(value);
+        //gymToDisplay(value);
+        savedGymsToDisplay();
     }else{
         setPreference(key, value);
     }
@@ -1243,7 +1258,14 @@ $('.all-gyms-filter').on('click', function () {
     $('.empty-gym-filter').css('opacity', '1.0');
     $('.open-spot-gym-filter').css('opacity', '1.0');
     $('.open-spot-gym-filter').css('background-image', 'url(' + "static/img/all-gyms.png" + ')');
-        
+    
+    // Set all local preferences to active
+    setPreference("mystic_gym_filter", "active");
+    setPreference("valor_gym_filter", "active");
+    setPreference("instinct_gym_filter", "active");
+    setPreference("empty_gym_filter", "active");
+    setPreference("open_spot_gym_filter", "active");
+    
     if (key.indexOf('gym_selection') > -1){
         // This is a gym's filter button
         gymToDisplay(value);
@@ -1620,7 +1642,6 @@ function savedGymsToDisplay() {
         display_open_spots = false;
     }
 
-  
     for(var k in markers) {
         var m = markers[k];
         if (m !== undefined && m.raw.id.includes("fort-")) {

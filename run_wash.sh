@@ -1,4 +1,6 @@
 #!/bin/bash
+# To run execute: ./run_wash (group #) (time to run in seconds) (time to pause between restarts)
+# example: ./run_wash 5 600 60
 
 group=$1
 run_time=$2
