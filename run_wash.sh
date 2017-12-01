@@ -8,6 +8,7 @@ pause_time=$3
 run_time_minutes=$(($run_time/60))
 running=1
 counter=1
+start_time=`date -u +%s`
 
 countdown () {
 seconds=$1
@@ -181,8 +182,17 @@ if [ -e underlevel.csv ]; then
 fi
 rm /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log
 
-
 echo "Level up completed!"
+end_time=`date -u +%s`
+runtime=$((end_time-start_time))
+minutes=$((runtime/60))
+
+start=`date -r $start_time`
+end=`date -r $end_time`
+
+echo "Started:" $start
+echo "Ended:" $end
+echo "Run time of:" $runtime "seconds("$minutes"minutes)."
 
 
 
