@@ -1,10 +1,11 @@
 #!/bin/bash
-# To run execute: ./run_wash (group #) (time to run in seconds) (time to pause between restarts)
-# example: ./run_wash 5 600 60
+# To run execute: ./run_wash (group #) (time to run in seconds) (time to pause between restarts) (level to level up to)
+# example: ./run_wash 5 600 60 1   This runs group 5, 600 seconds, pauses 60 seconds, levels to level 1
 
 group=$1
 run_time=$2
 pause_time=$3
+level=$4
 run_time_minutes=$(($run_time/60))
 running=1
 counter=1
@@ -19,7 +20,7 @@ while [ $seconds -gt 0 ]; do
 done
 }
 
-echo "Executing Group" $group "level up sequencing. Running each for" $run_time "seconds. Pause for" $pause_time "seconds."
+echo "Executing Group" $group "level up sequencing to level $level. Running each for" $run_time "seconds. Pause for" $pause_time "seconds."
 
 cd /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group
 cp scan.py scan-group$group.py
@@ -71,7 +72,7 @@ echo "Initial run completed."
 ##### Level up runs
 cd /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group
 echo "Starting initial level up sequence for" $run_time "seconds (" $run_time_minutes "minutes )."
-/Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group > /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log 2>&1 &
+/Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group $level > /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log 2>&1 &
 
 countdown $run_time
 
@@ -111,11 +112,11 @@ fi
 
 accounts_left_count=$( wc -l /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/underlevel.csv | awk {'print $1'} )
 (( accounts_left_count-- )) # Decrement to not count header line
-echo "Checking accounts left to process:" $accounts_left_count
+echo "Checking accounts left to process to level $level:" $accounts_left_count
 
 while [ $accounts_left_count -gt 0 ]; do
     echo "Starting looping level up sequence" $counter "for" $run_time "seconds (" $run_time_minutes "minutes )."
-    /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group > /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log 2>&1 &
+    /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group $level > /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log 2>&1 &
 
     # If we are done early, bust out and clean up.
     if [ ! -e underlevel.csv ]
@@ -159,7 +160,7 @@ while [ $accounts_left_count -gt 0 ]; do
 
         if [ $accounts_left_count -gt 0 ]
         then
-            echo "Checking accounts left to process:" $accounts_left_count
+            echo "Checking accounts left to process to level $level:" $accounts_left_count
         else
             echo "No more accounts to process. All leveled up."
         fi

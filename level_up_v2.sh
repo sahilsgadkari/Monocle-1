@@ -1,5 +1,6 @@
 #!/bin/bash
 group=$1
+level=$2
 cd /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group
 
 # Clear underlevel file if it exists
@@ -12,7 +13,11 @@ else
 fi
 
 # Execute script to pull account stats
-python3 scripts/my_export_accounts_csv.py
+if [ $level -eq 1 ]; then
+    python3 scripts/my_export_accounts_csv_v2.py
+else
+    python3 scripts/my_export_accounts_csv.py
+fi
 
 # Check if underlevel was produced, if not exit script
 if [ ! -f underlevel.csv ]; then
