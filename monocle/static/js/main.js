@@ -1798,16 +1798,24 @@ function populateSettingsPanels(){
     newHtml +=
             '<hr />' +
             '<div data-group="hide_gen_1">' +
+                '<button type="button" class="btn btn-default" data-value="pokemon">Show Generation 1</button>   ' +
                 '<button type="button" class="btn btn-default" data-value="trash">Hide Generation 1</button>' +
             '</div><br>';
   
     for (var i = 1; i <= _pokemon_count_gen_1; i++){
         var partHtml =
-            '<div class="filter_buttons_group text-center">' +
-                '<div id="menu" class="sprite-' + getPreference("icon_theme_buttons") + '"><span class="sprite-' + getPreference("icon_theme_buttons") + '-'+i+'"></span></div>' +
-                '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+            '<div class="filter_buttons_group">' +
+                '<div class="filter_container">' +
+                    '<div class="filter_sprite_container">' +
+                        '<div id="menu" class="sprite-' + getPreference("icon_theme_buttons") + '"><span class="sprite-' + getPreference("icon_theme_buttons") + '-'+i+'"></span></div>' +
+                    '</div>' +
+                    '<div class="filter_button_container">' +
+                        '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
+                            '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
+                            '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="pokemon_name_container">' + pokemon_name[i] + '</div>' +
                 '</div>' +
             '</div>';
 
@@ -1834,16 +1842,24 @@ function populateSettingsPanels(){
     newHtml +=
             '<hr />' +
             '<div data-group="hide_gen_2">' +
+                '<button type="button" class="btn btn-default" data-value="pokemon">Show Generation 2</button>   ' +
                 '<button type="button" class="btn btn-default" data-value="trash">Hide Generation 2</button>' +
             '</div><br>';
 
     for (var i = _pokemon_count_gen_1 + 1; i <= _pokemon_count_gen_2; i++){
         var partHtml =
-            '<div class="filter_buttons_group text-center">' +
-                '<div id="menu" class="sprite-' + getPreference("icon_theme_buttons") + '"><span class="sprite-' + getPreference("icon_theme_buttons") + '-'+i+'"></span></div>' +
-                '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+            '<div class="filter_buttons_group">' +
+                '<div class="filter_container">' +
+                    '<div class="filter_sprite_container">' +
+                        '<div id="menu" class="sprite-' + getPreference("icon_theme_buttons") + '"><span class="sprite-' + getPreference("icon_theme_buttons") + '-'+i+'"></span></div>' +
+                    '</div>' +
+                    '<div class="filter_button_container">' +
+                        '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
+                            '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
+                            '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="pokemon_name_container">' + pokemon_name[i] + '</div>' +
                 '</div>' +
             '</div>';
 
@@ -1876,11 +1892,18 @@ function populateSettingsPanels(){
 
     for (var i = _pokemon_count_gen_2 + 1; i <= _pokemon_count_gen_3; i++){
         var partHtml =
-            '<div class="filter_buttons_group text-center">' +
-                '<div id="menu" class="sprite-' + getPreference("icon_theme_buttons") + '"><span class="sprite-' + getPreference("icon_theme_buttons") + '-'+i+'"></span></div>' +
-                '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
-                    '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+            '<div class="filter_buttons_group">' +
+                '<div class="filter_container">' +
+                    '<div class="filter_sprite_container">' +
+                        '<div id="menu" class="sprite-' + getPreference("icon_theme_buttons") + '"><span class="sprite-' + getPreference("icon_theme_buttons") + '-'+i+'"></span></div>' +
+                    '</div>' +
+                    '<div class="filter_button_container">' +
+                        '<div class="btn-group" role="group" data-group="filter-' + i + '">' +
+                            '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="pokemon">Display</button>' +
+                            '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="pokemon_name_container">' + pokemon_name[i] + '</div>' +
                 '</div>' +
             '</div>';
 

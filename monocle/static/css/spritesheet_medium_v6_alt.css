@@ -5,10 +5,7 @@
 }
 
 #menu.sprite-alt span {
-  position: relative;
-  float: left;
-  top: -8px;
-  left: 22%;
+    float: left;
 }
 
 .sprite-alt-1 {

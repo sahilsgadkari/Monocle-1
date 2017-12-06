@@ -639,20 +639,56 @@
 }
 
 .filter_buttons_group{
-    padding-top: 8px;
-    padding-bottom: 8px;
+    text-align: center;
+    display: inline-block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+.filter_container {
+    display: inline-block;
+    text-align: center;
+}
+
+.filter_sprite_container {
+    float: left;
+    display: inline;
+    width: 52px;
+    height: 60px;
+}
+
+.filter_button_container {
+    float: left;
+    display: inline;
+    padding-top: 10px;
+    width: 140px;
+    height: 60px;
+}
+
+.pokemon_name_container {
+    float: left;
+    display: inline;
+    padding-top: 15px;
+    text-align: left;
+    padding-left: 5px;
+    width: 90px;
+    height: 60px;
 }
 
 .gen_1{
-    display: ;
+    display: inline-block;
+    text-align: center;
 }
 
 .gen_2{
-    display: ;
+    display: inline-block;
+    text-align: center;
 }
 
 .gen_3{
-    display: ;
+    display: inline-block;
+    text-align: center;
 }
 
 .gen_label {
