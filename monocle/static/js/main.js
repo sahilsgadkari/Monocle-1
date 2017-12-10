@@ -173,7 +173,7 @@ var RaidIcon = L.Icon.extend({
             div.innerHTML =
                 '<div class="raidmarker">' +
                     '<div class="boss_raid_container">' +
-                        '<img class="boss_during_raid" src="static/monocle-icons/larger-icons/' + this.options.raid_pokemon_id + '.png" />' +
+                        '<img class="boss_during_raid" src="static/monocle-icons/larger-icons/' + this.options.raid_pokemon_id + '.png?100" />' +
                     '</div>' +
                     '<div class="raid_platform_container">' +
                         '<img class="pre_raid_icon" src="static/monocle-icons/raids/raid_start_level_' + this.options.raid_level + '.png?201" />' +
@@ -354,7 +354,7 @@ function getRaidPopupContent (item) {
   
     var content = '<div class="raid-popup">';
     if (item.raid_pokemon_id !== 0) {
-        content += '<div class="raid_popup-icon_container"><img class="boss-icon" src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png">';
+        content += '<div class="raid_popup-icon_container"><img class="boss-icon" src="static/monocle-icons/larger-icons/' + item.raid_pokemon_id + '.png?100">';
         if (item.gym_team > 0) {
             if (item.gym_team === 1 ) {
                 content += '<img class="team-logo" src="static/img/mystic.png">';
@@ -443,7 +443,7 @@ function getFortPopupContent (item) {
     var content = '<div class="fort-popup">'
   
     if (item.pokemon_id !== 0) {
-        content += '<div class="fort_popup-icon_container"><img class="guard-icon" src="static/monocle-icons/larger-icons/' + item.pokemon_id + '.png">';
+        content += '<div class="fort_popup-icon_container"><img class="guard-icon" src="static/monocle-icons/larger-icons/' + item.pokemon_id + '.png?100">';
     }
     if (item.team === 0) {
         content += '<b>An empty Gym!</b>';
