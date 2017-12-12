@@ -10,6 +10,7 @@ run_time_minutes=$(($run_time/60))
 running=1
 counter=1
 start_time=`date -u +%s`
+log=/Users/Rob/Desktop/Monocle-Fork/logs/scan-group$group.log
 
 countdown () {
 seconds=$1
@@ -35,7 +36,7 @@ fi
 
 ##### Initial run
 echo "Starting initial scan. Will run for" $run_time "seconds (" $run_time_minutes "minutes )."
-python3 scan-group$group.py > /Users/Rob/Desktop/Monocle-Fork/logs/scan-group$group.log 2>&1 &
+python3 -u scan-group$group.py > $log 2>&1 &
 
 countdown $run_time
 
@@ -72,7 +73,7 @@ echo "Initial run completed."
 ##### Level up runs
 cd /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group
 echo "Starting initial level up sequence for" $run_time "seconds (" $run_time_minutes "minutes )."
-/Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group $level > /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log 2>&1 &
+/Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group $level > $log 2>&1 &
 
 countdown $run_time
 
@@ -116,7 +117,7 @@ echo "Checking accounts left to process to level $level:" $accounts_left_count
 
 while [ $accounts_left_count -gt 0 ]; do
     echo "Starting looping level up sequence" $counter "for" $run_time "seconds (" $run_time_minutes "minutes )."
-    /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group $level > /Users/Rob/Desktop/Monocle-Fork/logs/level_up-group$group.log 2>&1 &
+    /Users/Rob/Desktop/Monocle-Fork/Monocle-Group$group/level_up_v2.sh $group $level > $log 2>&1 &
 
     # If we are done early, bust out and clean up.
     if [ ! -e underlevel.csv ]

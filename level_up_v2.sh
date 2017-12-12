@@ -47,4 +47,4 @@ if [ -f invalid.csv ]; then
 fi
 
 # Run scan
-python3 scan-group$group.py > /Users/Rob/Desktop/Monocle-Fork/logs/scan-group$group.log 2>&1 &
+python3 -u scan-group$group.py > /Users/Rob/Desktop/Monocle-Fork/logs/scan-group$group.log 2>&1 &
