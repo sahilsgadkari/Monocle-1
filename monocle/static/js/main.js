@@ -307,9 +307,9 @@ function getPopupContent (item) {
 
     var userPref = getPreference('filter-'+item.pokemon_id);
     if (userPref == 'trash'){
-        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="Pokemon" class="popup_filter_link">Display</a>';
+        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="pokemon" class="popup_filter_link">Display</a>';
     }else{
-        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="FilteredPokemon" class="popup_filter_link">Hide</a>';
+        content += '<a href="#" data-pokeid="'+item.pokemon_id+'" data-newlayer="trash" class="popup_filter_link">Hide</a>';
     }
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
@@ -1288,12 +1288,11 @@ $('#reset_btn').on('click', function () {
     }
 });
 
-
 $('body').on('click', '.popup_filter_link', function () {
     var id = $(this).data("pokeid");
     var layer = $(this).data("newlayer").toLowerCase();
-    moveToLayer(id, layer);
     var item = $("#settings button[data-id='"+id+"']");
+    moveToLayer(id, layer);
     item.removeClass("active").filter("[data-value='"+layer+"']").addClass("active");
 });
 
