@@ -202,6 +202,7 @@ def render_map():
         display_pokemon=conf.SHOW_POKEMON_BY_DEFAULT,
         display_gyms=conf.SHOW_GYMS_BY_DEFAULT,
         display_raids=conf.SHOW_RAIDS_BY_DEFAULT,
+        display_weather=conf.SHOW_WEATHER_BY_DEFAULT,
         display_scan_area=conf.SHOW_SCAN_AREA_BY_DEFAULT,
         display_spawnpoints=conf.SHOW_SPAWNPOINTS_BY_DEFAULT,
         show_iv_menu_item=show_iv_menu_item(),

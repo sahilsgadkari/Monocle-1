@@ -871,11 +871,9 @@ function addWeatherToMap (data, map) {
         if (item.day === 2) {
             day = 'night';
         }
-        console.log("item.coords:", item.coords);
-        L.polygon(item.coords, {'color': color}).addTo(overlays.Weather);
+        L.polygon(item.coords, {'color': color}, {'opacity': 0.5}).addTo(overlays.Weather);
         L.imageOverlay('static/monocle-icons/assets/weather_' + item.condition + '_' + day + '.png',
-           [item.coords[0], item.coords[2]]).addTo(overlays.Weather);
-        console.log("item.center: ", item.center);
+           [item.coords[0], item.coords[2]], {'opacity': 0.5}).addTo(overlays.Weather);
     });
 }
 
@@ -1016,8 +1014,9 @@ if (_DisplayGymsLayer === 'True') {
     map.addLayer(overlays.Gyms); }
 if (_DisplayRaidsLayer === 'True') {
     map.addLayer(overlays.Raids); }
+if (_DisplayWeatherLayer === 'True') {
+    map.addLayer(overlays.Weather); }
 if (_DisplayScanAreaLayer === 'True') {
-    map.addLayer(overlays.Weather);
     map.addLayer(overlays.ScanArea);
 }
 if (_DisplaySpawnpointsLayer === 'True') {
@@ -1041,12 +1040,13 @@ map.whenReady(function () {
         $('.hide-marker').show(); //Show hide My Location marker
     });
 
-    overlays.Weather.once('add', function(e) {
-        getWeather();
-    })
+    //overlays.Weather.once('add', function(e) {
+    //    getWeather();
+    //})
     getPokemon();
     getGyms();
     getRaids();
+    getWeather();
     getScanAreaCoords();
     if (_DisplaySpawnpointsLayer === 'True') {
         getSpawnPoints();
@@ -1055,7 +1055,7 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
-    setInterval(getWeather, 30000)
+    setInterval(getWeather, 300000)
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;
