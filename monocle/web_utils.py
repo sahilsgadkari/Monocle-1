@@ -4,9 +4,11 @@ from multiprocessing.managers import BaseManager, RemoteError
 from time import time
 
 from monocle import sanitized as conf
-from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint
+from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather
 from monocle.utils import Units, get_address
 from monocle.names import DAMAGE, MOVES, POKEMON
+
+import s2sphere
 
 if conf.MAP_WORKERS:
     try:
@@ -118,6 +120,27 @@ def get_pokemarkers(after_id=0):
             pokemons = pokemons.filter(~Sighting.pokemon_id.in_(conf.MAP_FILTER_IDS))
         return tuple(map(sighting_to_marker, pokemons))
 
+def get_vertex(cell, v):
+    vertex = s2sphere.LatLng.from_point(cell.get_vertex(v))
+    return (vertex.lat().degrees, vertex.lng().degrees)
+
+def get_weather():
+    with session_scope() as session:
+        weathers = session.query(Weather)
+        markers = []
+        for weather in weathers:
+            cell = s2sphere.Cell(s2sphere.CellId(weather.s2_cell_id))
+            center = s2sphere.LatLng.from_point(cell.get_center())
+            markers.append({
+                'id': 'weather-' + str(weather.id),
+                'coords': [(get_vertex(cell, v)) for v in range(0, 4)],
+                'center': (center.lat().degrees, center.lng().degrees),
+                'condition': weather.condition,
+                'alert_severity': weather.alert_severity,
+                'warn': weather.warn,
+                'day': weather.day
+            })
+        return markers
 
 def get_gym_markers(names=POKEMON):
     with session_scope() as session:

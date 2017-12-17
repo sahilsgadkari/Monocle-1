@@ -234,6 +234,9 @@ def pokemon_data():
     last_id = request.args.get('last_id', 0)
     return jsonify(get_pokemarkers(last_id))
 
+@app.route('/weather')
+def weather():
+    return jsonify(get_weather())
 
 @app.route('/gym_data')
 def gym_data():

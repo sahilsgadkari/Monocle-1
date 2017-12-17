@@ -234,6 +234,7 @@ if (_DisplaySpawnpointsLayer === 'True') {
         Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Weather: L.layerGroup([]),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Spawns: L.layerGroup([]),
@@ -244,6 +245,7 @@ if (_DisplaySpawnpointsLayer === 'True') {
         Pokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Weather: L.layerGroup([]),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
     };
@@ -271,6 +273,7 @@ function monitor (group, initial) {
 monitor(overlays.Pokemon, false)
 monitor(overlays.Gyms, false)
 monitor(overlays.Raids, false)
+monitor(overlays.Weather, false)
 monitor(overlays.ScanArea, true)
 monitor(hidden_overlays.FilteredRaids, false)
 if (_DisplaySpawnpointsLayer === 'True') {
@@ -853,6 +856,29 @@ function addPokestopsToMap (data, map) {
     });
 }
 
+function addWeatherToMap (data, map) {
+    overlays.Weather.clearLayers();
+    data.forEach(function (item) {
+        var color = 'grey';
+        if (item.alert_severity > 0) {
+            color = 'red';
+        }
+        else {
+            var colors = ['grey', 'yellow', 'darkblue', 'grey', 'darkgrey', 'purple', 'white', 'black'];
+            color = colors[item.condition];
+        }
+        var day = 'day';
+        if (item.day === 2) {
+            day = 'night';
+        }
+        console.log("item.coords:", item.coords);
+        L.polygon(item.coords, {'color': color}).addTo(overlays.Weather);
+        L.imageOverlay('static/monocle-icons/assets/weather_' + item.condition + '_' + day + '.png',
+           [item.coords[0], item.coords[2]]).addTo(overlays.Weather);
+        console.log("item.center: ", item.center);
+    });
+}
+
 function addScanAreaToMap (data, map) {
     data.forEach(function (item) {
         if (item.type === 'scanarea'){
@@ -934,6 +960,16 @@ function getPokestops() {
     });
 }
 
+function getWeather() {
+    new Promise(function (resolve, reject) {
+        $.get(_PoGoSDRegion+'/weather', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addWeatherToMap(data, map);
+    });
+}
+
 function getScanAreaCoords() {
     new Promise(function (resolve, reject) {
         $.get(_PoGoSDRegion+'/scan_coords', function (response) {
@@ -981,7 +1017,9 @@ if (_DisplayGymsLayer === 'True') {
 if (_DisplayRaidsLayer === 'True') {
     map.addLayer(overlays.Raids); }
 if (_DisplayScanAreaLayer === 'True') {
-    map.addLayer(overlays.ScanArea); }
+    map.addLayer(overlays.Weather);
+    map.addLayer(overlays.ScanArea);
+}
 if (_DisplaySpawnpointsLayer === 'True') {
     map.addLayer(overlays.Spawns);
     map.addLayer(overlays.Workers); }
@@ -1003,6 +1041,9 @@ map.whenReady(function () {
         $('.hide-marker').show(); //Show hide My Location marker
     });
 
+    overlays.Weather.once('add', function(e) {
+        getWeather();
+    })
     getPokemon();
     getGyms();
     getRaids();
@@ -1014,6 +1055,7 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
+    setInterval(getWeather, 30000)
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;
@@ -2165,3 +2207,11 @@ function getSponsorGymType(raw) {
     }
     return sponsor_type;
 }
+
+function getVertices(center_point) {
+    lat_radius = 0;
+    lon_radius = 0;
+    center_lat = center_point[0];
+    center_lon = center_point[1];
+}
+

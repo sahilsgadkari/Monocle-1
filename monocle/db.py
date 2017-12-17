@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from enum import Enum
 from time import time, mktime
 
-from sqlalchemy import Column, Integer, String, Float, SmallInteger, BigInteger, ForeignKey, UniqueConstraint, create_engine, cast, func, desc, asc, and_, exists
+from sqlalchemy import Column, Integer, String, Float, Boolean, SmallInteger, BigInteger, ForeignKey, UniqueConstraint, create_engine, cast, func, desc, asc, and_, exists
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.types import TypeDecorator, Numeric, Text
 from sqlalchemy.ext.declarative import declarative_base
@@ -270,11 +270,44 @@ class RaidCache:
         except (FileNotFoundError, TypeError, KeyError):
             pass
 
+class WeatherCache:
+    """Simple cache for storing actual weathers
+
+    It's used in order not to make as many queries to the database.
+    It schedules raids to be removed as soon as they expire.
+    """
+    def __init__(self):
+        self.store = {}
+
+    def __len__(self):
+        return len(self.store)
+
+    def add(self, weather):
+        self.store[weather['s2_cell_id']] = weather
+
+    def remove(self, cache_id):
+        try:
+            del self.store[cache_id]
+        except KeyError:
+            pass
+
+    def __contains__(self, raw_weather):
+        try:
+            weather = self.store[raw_weather['s2_cell_id']]
+            return (weather['condition'] == raw_weather['condition'] and
+                weather['alert_severity'] == raw_weather['alert_severity'] and
+                weather['warn'] == raw_weather['warn'] and
+                weather['day'] == raw_weather['day'])
+        except KeyError:
+            return False
+
+
 SIGHTING_CACHE = SightingCache()
 MYSTERY_CACHE = MysteryCache()
 FORT_CACHE = FortCache()
 RAID_CACHE = RaidCache()
 FORT_NAMES_CACHE = FortNameCache()
+WEATHER_CACHE = WeatherCache()
 
 Base = declarative_base()
 
@@ -437,6 +470,15 @@ class Pokestop(Base):
     lat = Column(FLOAT_TYPE, index=True)
     lon = Column(FLOAT_TYPE, index=True)
 
+class Weather(Base):
+    __tablename__ = 'weather'
+
+    id = Column(Integer, primary_key=True)
+    s2_cell_id = Column(BigInteger)
+    condition = Column(TINY_TYPE)
+    alert_severity = Column(TINY_TYPE)
+    warn = Column(Boolean)
+    day = Column(TINY_TYPE)
 
 @contextmanager
 def session_scope(autoflush=False):
@@ -672,6 +714,27 @@ def add_pokestop(session, raw_pokestop):
     session.add(pokestop)
     FORT_CACHE.pokestops.add(pokestop_id)
 
+def add_weather(session, raw_weather):
+    s2_cell_id = raw_weather['s2_cell_id']
+
+    weather = session.query(Weather) \
+        .filter(Weather.s2_cell_id == s2_cell_id) \
+        .first()
+    if not weather:
+        weather = Weather(
+            s2_cell_id=s2_cell_id,
+            condition=raw_weather['condition'],
+            alert_severity=raw_weather['alert_severity'],
+            warn=raw_weather['warn'],
+            day=raw_weather['day']
+        )
+        session.add(weather)
+    else:
+        weather.condition = raw_weather['condition']
+        weather.alert_severity = raw_weather['alert_severity']
+        weather.warn = raw_weather['warn']
+        weather.day = raw_weather['day']
+    WEATHER_CACHE.add(raw_weather)
 
 def update_failures(session, spawn_id, success, allowed=conf.FAILURES_ALLOWED):
     spawnpoint = session.query(Spawnpoint) \
