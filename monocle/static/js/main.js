@@ -122,6 +122,9 @@ var AltFortIcon = L.Icon.extend({
         var div = document.createElement('div');
         var sponsor = '';
         
+        // Apply sponsored/park logo settings
+        sponsoredGymLogoDisplay();
+        
         // Copying my code? HAHA!
         if (this.options.external_id.includes(".")) {
         } else {
@@ -132,6 +135,11 @@ var AltFortIcon = L.Icon.extend({
             }
         }
         
+        // Check for gyms at parks
+        if (this.options.gym_name.includes("Park")) {
+            sponsor = 'park_icon';
+        }
+      
         div.innerHTML =
             '<div class="fortmarker">' +
                 '<div class="fort_container">' +
@@ -167,6 +175,11 @@ var RaidIcon = L.Icon.extend({
             } else {
                 sponsor = 'sprint';
             }
+        }
+
+        // Check for gyms at parks
+        if (this.options.raid_gym_name.includes("Park")) {
+            sponsor = 'park_icon';
         }
 
         if (this.options.raid_pokemon_id !== 0) {
@@ -641,7 +654,7 @@ function FortMarker (raw) {
         event.popup.setContent(getFortPopupContent(event.target.raw));
         event.popup.options.autoPan = false; // Don't fight user panning
     });
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
     fort_marker.bindPopup();
     return fort_marker;
 }
@@ -864,7 +877,7 @@ function addWeatherToMap (data, map) {
             color = 'red';
         }
         else {
-            var colors = ['grey', 'yellow', 'darkblue', 'grey', 'darkgrey', 'purple', 'white', 'black'];
+            var colors = ['#c6c6c6', '#fcfacc', '#859db2', '#c9dae5', '#d0dbe2', '#fffee5', '#e3e2ff', '#a6bad8'];
             color = colors[item.condition];
         }
         var day = 'day';
@@ -872,8 +885,22 @@ function addWeatherToMap (data, map) {
             day = 'night';
         }
         L.polygon(item.coords, {'color': color}, {'opacity': 0.5}).addTo(overlays.Weather);
-        L.imageOverlay('static/monocle-icons/assets/weather_' + item.condition + '_' + day + '.png',
-           [item.coords[0], item.coords[2]], {'opacity': 0.5}).addTo(overlays.Weather);
+        
+        var weatherMarker = L.icon({
+            iconUrl: 'static/img/blank_1x1.png',
+            iconSize: [1,1],
+            shadowUrl: 'static/img/weather_' + item.condition + '_' + day + '.png',
+            shadowSize: [256,256]
+                 });
+        var weatherIcon = L.icon({
+            iconUrl: 'static/img/weather_icon_' + item.condition + '_' + day + '.png',
+            iconSize: [64,64],
+            iconAnchor: [64,64],
+            popupAnchor: [-32,-64]
+                 });
+        L.marker([item.center[0],item.center[1]], {icon: weatherMarker, opacity: 0.5}).addTo(overlays.Weather);
+        var weatherIconMarker = L.marker([item.coords[2][0],item.coords[2][1]],{icon: weatherIcon}).addTo(overlays.Weather);
+        weatherIconMarker.bindPopup('<div class="weather_popup">The following Pokemon types are weather boosted:<br><img src="static/img/boost-' + item.condition + '.png"></img></div>').openPopup();
     });
 }
 
@@ -1068,7 +1095,7 @@ function onOverLayAdd(e) {
         $('.gym_btn').css('visibility', 'visible');
     }
     savedGymsToDisplay();
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
 }
 
 map.on('overlayremove', onOverLayRemove);
@@ -1159,7 +1186,7 @@ $('.instinct-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
 });
 
 $('.valor-gym-filter').on('click', function () {
@@ -1189,7 +1216,7 @@ $('.valor-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
 });
 
 $('.mystic-gym-filter').on('click', function () {
@@ -1219,7 +1246,7 @@ $('.mystic-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
    
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
 });
 
 $('.empty-gym-filter').on('click', function () {
@@ -1248,7 +1275,7 @@ $('.empty-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
 });
 
 $('.open-spot-gym-filter').on('click', function () {
@@ -1278,7 +1305,7 @@ $('.open-spot-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
 });
 
 $('.all-gyms-filter').on('click', function () {
@@ -1319,7 +1346,7 @@ $('.all-gyms-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    sponsoredGymLogoDisplay();
+    //sponsoredGymLogoDisplay();
 });
 
 $('#reset_btn').on('click', function () {

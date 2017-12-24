@@ -197,6 +197,10 @@
     text-align: center;
 }
 
+.weather_popup {
+    text-align: center;
+    width: 150px;
+}
 
 .team-logo {
     position: absolute;
