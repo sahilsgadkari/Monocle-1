@@ -1883,7 +1883,7 @@ function populateSettingsPanels(){
                             '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="pokemon_name_container">' + pokemon_name[i] + '</div>' +
+                    '<div class="pokemon_name_container">' + pokemon_name_type[i][1] + '</div>' +
                 '</div>' +
             '</div>';
 
@@ -1927,7 +1927,7 @@ function populateSettingsPanels(){
                             '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="pokemon_name_container">' + pokemon_name[i] + '</div>' +
+                    '<div class="pokemon_name_container">' + pokemon_name_type[i][1] + '</div>' +
                 '</div>' +
             '</div>';
 
@@ -1971,7 +1971,7 @@ function populateSettingsPanels(){
                             '<button type="button" class="btn btn-default" data-id="' + i + '" data-value="trash">Hide</button>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="pokemon_name_container">' + pokemon_name[i] + '</div>' +
+                    '<div class="pokemon_name_container">' + pokemon_name_type[i][1] + '</div>' +
                 '</div>' +
             '</div>';
 
