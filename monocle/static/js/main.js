@@ -38,9 +38,14 @@ var PokemonIcon = L.Icon.extend({
     createIcon: function() {
         var div = document.createElement('div');
         var form_text = '';
+        var type_icon_html = getTypeIcons(this.options.iconID);
+        
+        typeIconDisplay();
+        
         if ( this.options.form ) {
             form_text = '<div class="form_text">' + this.options.form + '</div>';
         }
+                                
         if ( this.options.iv > 0 && this.options.iv < 80 ) {
             div.innerHTML =
                 '<div class="pokemarker">' +
@@ -89,8 +94,10 @@ var PokemonIcon = L.Icon.extend({
                     '</div>' +
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     form_text +
+                    type_icon_html +
                     '</div>';
         }
+        
         return div;
     }
 });
@@ -306,8 +313,16 @@ function getPopupContent (item) {
     } else {
        var pokemon_name = item.name;
     }
-  
-    var content = '<b>' + pokemon_name + '</b> - <a href="https://pokemongo.gamepress.gg/pokemon/' + item.pokemon_id + '">#' + item.pokemon_id + '</a>';
+
+    var content = '<div class="pokemon_popup_name"><b>' + pokemon_name + '</b> - <a href="https://pokemongo.gamepress.gg/pokemon/' + item.pokemon_id + '" target="_blank">#' + item.pokemon_id + '</a></div>';
+
+    content += '<div class="pokemon_popup_icons"><img src="static/img/' + pokemon_name_type[item.pokemon_id][2] + '.png">';
+    if ( pokemon_name_type[item.pokemon_id][3] != "none" ){
+        content += '<img src="static/img/' + pokemon_name_type[item.pokemon_id][3] + '.png">';
+    }
+    content += '</div>';
+    content += '<div class="pokemon_popup_text">';
+
     if(item.atk != undefined){
         var totaliv = 100 * (item.atk + item.def + item.sta) / 45;
         content += ' - <b>' + totaliv.toFixed(2) + '%</b><br>';
@@ -317,7 +332,7 @@ function getPopupContent (item) {
         content += 'Charge Move: ' + item.move2 + ' ( ' + item.damage2 + ' dps )<br>';
         content += 'IV: ' + item.atk + ' atk, ' + item.def + ' def, ' + item.sta + ' sta<br>'
     } else {
-        content += '<br>Disappears in: ' + expires_at + '<br>';
+        content += 'Disappears in: ' + expires_at + '<br>';
         content += 'Available until: ' + expires_time + '<br>';
     }
 
@@ -329,6 +344,7 @@ function getPopupContent (item) {
     }
     content += '&nbsp; | &nbsp;';
     content += '<a href="https://www.google.com/maps/?daddr='+ item.lat + ','+ item.lon +'" target="_blank" title="See in Google Maps">Get directions</a>';
+    content += '</div>';
     return content;
 }
 
@@ -408,9 +424,9 @@ function getRaidPopupContent (item) {
     }
     if (item.gym_name != null) {
         content += '<br><b>' + item.gym_name + ' Gym</b>';
-        if (item.image_url !== null) {
+        if ((item.image_url !== null) && (getPreference("gym_landmark") === "display")) {
              if (item.image_url !== '') { // Check if image_url is blank
-                 content += '<br><img class="gym_image" src="' + item.image_url + '">';
+                 content += '<br><div class="gym_image_container"><img class="gym_image" src="' + item.image_url + '"></div>';
              }
         }
       
@@ -464,9 +480,9 @@ function getFortPopupContent (item) {
     if (item.team === 0) {
         content += '<b>An empty Gym!</b>';
         content += '<br><b>' + item.gym_name + ' Gym</b><br>';
-        if (item.image_url !== null) {
+        if ((item.image_url !== null) && (getPreference("gym_landmark") === "display")) {
              if (item.image_url !== '') { // Check if image_url is blank
-                 content += '<br><img class="gym_image" src="' + item.image_url + '">';
+                 content += '<br><div class="gym_image_container"><img class="gym_image" src="' + item.image_url + '"></div>';
              }
         }
       
@@ -495,9 +511,9 @@ function getFortPopupContent (item) {
         content += '<img class="team-logo" src="static/img/' + team_logo + '"></div>';
         if (item.gym_name != null) {
             content += '<b>' + item.gym_name + ' Gym</b>';
-            if (item.image_url !== null) {
+            if ((item.image_url !== null) && (getPreference("gym_landmark") === "display")) {
                  if (item.image_url !== '') { // Check if image_url is blank
-                     content += '<br><img class="gym_image" src="' + item.image_url + '">';
+                     content += '<br><div class="gym_image_container"><img class="gym_image" src="' + item.image_url + '"></div>';
                  }
             }
 
@@ -654,7 +670,7 @@ function FortMarker (raw) {
         event.popup.setContent(getFortPopupContent(event.target.raw));
         event.popup.options.autoPan = false; // Don't fight user panning
     });
-    //sponsoredGymLogoDisplay();
+
     fort_marker.bindPopup();
     return fort_marker;
 }
@@ -873,6 +889,7 @@ function addWeatherToMap (data, map) {
     overlays.Weather.clearLayers();
     data.forEach(function (item) {
         var color = 'grey';
+        var conditions = ['Extreme', 'Clear', 'Rainy', 'Partly Cloudy', 'Overcast', 'Windy', 'Snow', 'Fog'];
         if (item.alert_severity > 0) {
             color = 'red';
         }
@@ -885,12 +902,30 @@ function addWeatherToMap (data, map) {
             day = 'night';
         }
         L.polygon(item.coords, {'color': color}, {'opacity': 0.5}).addTo(overlays.Weather);
-        
+
         var weatherMarker = L.icon({
             iconUrl: 'static/img/blank_1x1.png',
             iconSize: [1,1],
             shadowUrl: 'static/img/weather_' + item.condition + '_' + day + '.png',
             shadowSize: [256,256]
+                 });
+        var weatherMediumMarker = L.icon({
+            iconUrl: 'static/img/blank_1x1.png',
+            iconSize: [1,1],
+            shadowUrl: 'static/img/weather_' + item.condition + '_' + day + '.png',
+            shadowSize: [128,128]
+                 });
+        var weatherSmallMarker = L.icon({
+            iconUrl: 'static/img/blank_1x1.png',
+            iconSize: [1,1],
+            shadowUrl: 'static/img/weather_' + item.condition + '_' + day + '.png',
+            shadowSize: [64,64]
+                 });
+        var weatherTinyMarker = L.icon({
+            iconUrl: 'static/img/blank_1x1.png',
+            iconSize: [1,1],
+            shadowUrl: 'static/img/weather_' + item.condition + '_' + day + '.png',
+            shadowSize: [32,32]
                  });
         var weatherIcon = L.icon({
             iconUrl: 'static/img/weather_icon_' + item.condition + '_' + day + '.png',
@@ -898,10 +933,53 @@ function addWeatherToMap (data, map) {
             iconAnchor: [64,64],
             popupAnchor: [-32,-64]
                  });
-        L.marker([item.center[0],item.center[1]], {icon: weatherMarker, opacity: 0.5}).addTo(overlays.Weather);
+        var weatherMediumIcon = L.icon({
+            iconUrl: 'static/img/weather_icon_' + item.condition + '_' + day + '.png',
+            iconSize: [32,32],
+            iconAnchor: [32,32],
+            popupAnchor: [-16,-32]
+                 });
+        var weatherSmallIcon = L.icon({
+            iconUrl: 'static/img/weather_icon_' + item.condition + '_' + day + '.png',
+            iconSize: [16,16],
+            iconAnchor: [16,16],
+            popupAnchor: [-8,-16]
+                 });
+
+        var weatherOverlay = L.marker([item.center[0],item.center[1]], {icon: weatherMarker, opacity: 0.5}).addTo(overlays.Weather);
         var weatherIconMarker = L.marker([item.coords[2][0],item.coords[2][1]],{icon: weatherIcon}).addTo(overlays.Weather);
-        weatherIconMarker.bindPopup('<div class="weather_popup">The following Pokemon types are weather boosted:<br><img src="static/img/boost-' + item.condition + '.png"></img></div>').openPopup();
+
+        map.on('zoomend', function() {
+            var currentZoom = map.getZoom();
+
+            //Set marker size when zooming in and out
+            if (currentZoom > 11) {
+                weatherOverlay.setIcon(weatherMarker);
+                weatherIconMarker.setIcon(weatherIcon);
+            } else if (currentZoom === 12) {
+                console.log("zoom < 12", currentZoom);
+                weatherOverlay.setIcon(weatherMediumMarker);
+            } else if (currentZoom === 11) {
+                weatherOverlay.setIcon(weatherSmallMarker);
+                weatherIconMarker.setIcon(weatherMediumIcon);
+            } else {
+                weatherOverlay.setIcon(weatherTinyMarker);
+                weatherIconMarker.setIcon(weatherSmallIcon);
+            }
+        });
+
+        weatherIconMarker.bindPopup(
+            '<div class="weather_popup">' +
+                '<div class="weather_popup_icon"><img src="static/img/weather_' + item.condition + '_' + day + '.png">' + '</div>' +
+                '<div class="weather_popup_text"><h4>' + conditions[item.condition] + '</div>' +
+                '<hr>' +
+                '<div class="weather_popup_text">BOOSTED TYPES</div>' +
+                '<div class="weather_popup_boost_types"><img src="static/img/boost-' + item.condition + '.png"></img></div>' +
+                '<div class="weather_popup_text">These Pokemon types are stronger, appear more frequently, and give bonus Stardust when caught</div>' +
+            '</div>'
+        );
     });
+
 }
 
 function addScanAreaToMap (data, map) {
@@ -1095,7 +1173,6 @@ function onOverLayAdd(e) {
         $('.gym_btn').css('visibility', 'visible');
     }
     savedGymsToDisplay();
-    //sponsoredGymLogoDisplay();
 }
 
 map.on('overlayremove', onOverLayRemove);
@@ -1186,7 +1263,6 @@ $('.instinct-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    //sponsoredGymLogoDisplay();
 });
 
 $('.valor-gym-filter').on('click', function () {
@@ -1216,7 +1292,6 @@ $('.valor-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    //sponsoredGymLogoDisplay();
 });
 
 $('.mystic-gym-filter').on('click', function () {
@@ -1246,7 +1321,6 @@ $('.mystic-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
    
-    //sponsoredGymLogoDisplay();
 });
 
 $('.empty-gym-filter').on('click', function () {
@@ -1275,7 +1349,6 @@ $('.empty-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    //sponsoredGymLogoDisplay();
 });
 
 $('.open-spot-gym-filter').on('click', function () {
@@ -1305,7 +1378,6 @@ $('.open-spot-gym-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    //sponsoredGymLogoDisplay();
 });
 
 $('.all-gyms-filter').on('click', function () {
@@ -1346,7 +1418,6 @@ $('.all-gyms-filter').on('click', function () {
         map.addLayer(overlays.Gyms);
     }
     
-    //sponsoredGymLogoDisplay();
 });
 
 $('#reset_btn').on('click', function () {
@@ -1518,6 +1589,18 @@ $('#settings').on('click', '.settings-panel button', function () {
     if (key.indexOf('icon_theme_buttons') > -1){
         setIconTheme(value);
     }else{
+        setPreference(key, value);
+    }
+    
+    if (key.indexOf('show_pokemon_type') > -1){
+        setTypeIconDisplay(value);
+    }else{
+        setPreference(key,value);
+    }
+    
+    if (key.indexOf('gym_landmark') > -1){
+        setLandmarkDisplay(value);
+    } else {
         setPreference(key, value);
     }
 
@@ -1753,6 +1836,31 @@ function sponsoredGymLogoDisplay(){
     } else {
         $('.sponsor_icon_marker').css('visibility', 'visible');
     }
+}
+
+function typeIconDisplay() {
+    if (getPreference("show_pokemon_type") === "display") {
+        $('.type_icons').css('visibility','visible');
+    } else {
+        $('.type_icons').css('visibility','hidden');
+    }
+}
+
+function setTypeIconDisplay(value) {
+    setPreference("show_pokemon_type", value);
+    if (value == "display") {
+        $(".type_icons").each(function() {
+            $(this).css('visibility', 'visible');
+        });
+    } else {
+        $(".type_icons").each(function() {
+            $(this).css('visibility', 'hidden');
+        });
+    }
+}
+
+function setLandmarkDisplay(value) {
+    setPreference("gym_landmark", value);
 }
 
 function setGymButtonsDisplay(value){
@@ -1998,6 +2106,8 @@ function setSettingsDefaults(){
     _defaultSettings['gen2_buttons'] = "display_gen2";
     _defaultSettings['gen3_buttons'] = "display_gen3";
     _defaultSettings['show_sponsored_gym_logo'] = "display_sponsored_gym_logo";
+    _defaultSettings['show_pokemon_type'] = "hide";
+    _defaultSettings['gym_landmark'] = "display";
 
     for (var i = 1; i <= _pokemon_count; i++){
         _defaultSettings['filter-'+i] = (_defaultSettings['TRASH_IDS'].indexOf(i) > -1) ? "trash" : "pokemon";
@@ -2240,5 +2350,15 @@ function getVertices(center_point) {
     lon_radius = 0;
     center_lat = center_point[0];
     center_lon = center_point[1];
+}
+
+function getTypeIcons(pokemon_id) {
+    var innerHTML = '<div class="type_icons"><img src="static/img/' + pokemon_name_type[pokemon_id][2] + '.png">';
+  
+    if ( pokemon_name_type[pokemon_id][3] != "none") {
+        innerHTML += '<img src="static/img/' + pokemon_name_type[pokemon_id][3] + '.png">';
+    }
+    innerHTML += '</div>';
+    return innerHTML;
 }
 

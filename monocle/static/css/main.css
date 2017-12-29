@@ -199,7 +199,21 @@
 
 .weather_popup {
     text-align: center;
-    width: 150px;
+    width: 200px;
+}
+
+.weather_popup_icon img {
+    max-width: 200px;
+    height: auto;
+}
+
+.weather_popup_text {
+    display: inline-block;
+}
+
+.weather_popup_boost_types img {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .team-logo {
@@ -538,6 +552,10 @@
 }
 
 
+.gym_image_container {
+
+}
+
 .gym_image {
     max-width: 100px;
     height: auto;
@@ -678,6 +696,39 @@
     padding-left: 5px;
     width: 90px;
     height: 60px;
+}
+
+.pokemon_popup_name {
+    text-align: center;
+}
+
+.pokemon_popup_text {
+    text-align: center;
+    width: 135px;
+}
+
+.pokemon_popup_icons {
+    text-align: center;
+    width: 135px;
+}
+
+.pokemon_popup_icons img {
+    max-width: 15px;
+    height: auto;
+    text-align: center;
+}
+
+.type_icons {
+    text-align: center;
+    width: 48px;
+    position: relative;
+    top: -50px;
+    visibility: hidden;
+}
+
+.type_icons img{
+    width: 15px;
+    text-align: center;
 }
 
 .gen_1{
