@@ -316,9 +316,10 @@ function getPopupContent (item) {
 
     var content = '<div class="pokemon_popup_name"><b>' + pokemon_name + '</b> - <a href="https://pokemongo.gamepress.gg/pokemon/' + item.pokemon_id + '" target="_blank">#' + item.pokemon_id + '</a></div>';
 
-    content += '<div class="pokemon_popup_icons"><img src="static/img/' + pokemon_name_type[item.pokemon_id][2] + '.png">';
+    content += '<div class="pokemon_popup_icons"><img id="type" class="type-' + pokemon_name_type[item.pokemon_id][2] + '" src="static/img/blank_1x1.png">';
+
     if ( pokemon_name_type[item.pokemon_id][3] != "none" ){
-        content += '<img src="static/img/' + pokemon_name_type[item.pokemon_id][3] + '.png">';
+        content += '<img id="type" class="type-' + pokemon_name_type[item.pokemon_id][3] + '" src="static/img/blank_1x1.png">';
     }
     content += '</div>';
     content += '<div class="pokemon_popup_text">';
@@ -2353,10 +2354,10 @@ function getVertices(center_point) {
 }
 
 function getTypeIcons(pokemon_id) {
-    var innerHTML = '<div class="type_icons"><img src="static/img/' + pokemon_name_type[pokemon_id][2] + '.png">';
-  
+    var innerHTML = '<div class="type_icons"><img id="type" class="type-' + pokemon_name_type[pokemon_id][2] + '" src="static/img/blank_1x1.png">';
+
     if ( pokemon_name_type[pokemon_id][3] != "none") {
-        innerHTML += '<img src="static/img/' + pokemon_name_type[pokemon_id][3] + '.png">';
+        innerHTML += '<img id="type" class="type-' + pokemon_name_type[pokemon_id][3] + '" src="static/img/blank_1x1.png">';
     }
     innerHTML += '</div>';
     return innerHTML;

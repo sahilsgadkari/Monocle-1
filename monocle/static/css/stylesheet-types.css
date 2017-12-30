@@ -1,0 +1,114 @@
+#type {
+    background-image: url(../img/spritesheet-types.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin: auto
+}
+
+.type-bug {
+    width: 15px;
+    height: 15px;
+    background-position: -5px -5px;
+}
+
+.type-dark {
+    width: 15px;
+    height: 15px;
+    background-position: -30px -5px;
+}
+
+.type-dragon {
+    width: 15px;
+    height: 15px;
+    background-position: -55px -5px;
+}
+
+.type-electric {
+    width: 15px;
+    height: 15px;
+    background-position: -80px -5px;
+}
+
+.type-fairy {
+    width: 15px;
+    height: 15px;
+    background-position: -5px -30px;
+}
+
+.type-fighting {
+    width: 15px;
+    height: 15px;
+    background-position: -30px -30px;
+}
+
+.type-fire {
+    width: 15px;
+    height: 15px;
+    background-position: -55px -30px;
+}
+
+.type-flying {
+    width: 15px;
+    height: 15px;
+    background-position: -80px -30px;
+}
+
+.type-ghost {
+    width: 15px;
+    height: 15px;
+    background-position: -5px -55px;
+}
+
+.type-grass {
+    width: 15px;
+    height: 15px;
+    background-position: -30px -55px;
+}
+
+.type-ground {
+    width: 15px;
+    height: 15px;
+    background-position: -55px -55px;
+}
+
+.type-ice {
+    width: 15px;
+    height: 15px;
+    background-position: -80px -55px;
+}
+
+.type-normal {
+    width: 15px;
+    height: 15px;
+    background-position: -5px -80px;
+}
+
+.type-poison {
+    width: 15px;
+    height: 15px;
+    background-position: -30px -80px;
+}
+
+.type-psychic {
+    width: 15px;
+    height: 15px;
+    background-position: -55px -80px;
+}
+
+.type-rock {
+    width: 15px;
+    height: 15px;
+    background-position: -80px -80px;
+}
+
+.type-steel {
+    width: 15px;
+    height: 15px;
+    background-position: -105px -5px;
+}
+
+.type-water {
+    width: 15px;
+    height: 15px;
+    background-position: -105px -30px;
+}
