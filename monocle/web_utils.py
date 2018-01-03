@@ -6,7 +6,7 @@ from time import time
 from monocle import sanitized as conf
 from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather
 from monocle.utils import Units, get_address
-from monocle.names import DAMAGE, MOVES, POKEMON
+from monocle.names import DAMAGE, MOVES, POKEMON, TYPES
 
 import s2sphere
 
@@ -86,8 +86,10 @@ def get_worker_markers(workers):
     } for worker_no, ((lat, lon), timestamp, speed, total_seen, visits, seen_here) in workers.data]
 
 
-def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE):
+def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types=TYPES):
     pokemon_id = pokemon.pokemon_id
+    boost = check_boost(pokemon)
+
     marker = {
         'id': 'pokemon-' + str(pokemon.id),
         'trash': pokemon_id in conf.TRASH_IDS,
@@ -96,7 +98,10 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE):
         'lat': pokemon.lat,
         'lon': pokemon.lon,
         'expires_at': pokemon.expire_timestamp,
-        'form': pokemon.form
+        'form': pokemon.form,
+        'type1': types[pokemon_id][1],
+        'type2': types[pokemon_id][2],
+        'boost': boost
     }
     move1 = pokemon.move_1
     if conf.MAP_SHOW_DETAILS and move1:
@@ -110,6 +115,71 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE):
         marker['damage2'] = damage[move2]
     return marker
 
+
+def check_boost(pokemon, types=TYPES):
+    pokemon_id = pokemon.pokemon_id
+    pokemon_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(pokemon.lat,pokemon.lon)).parent(10)
+    boost = 'normal'
+    condition = ''
+    
+    with session_scope() as session:
+        weathers = session.query(Weather)
+        markers = []
+        for weather in weathers:
+            cell = s2sphere.Cell(s2sphere.CellId(weather.s2_cell_id).parent(10))
+            center = s2sphere.LatLng.from_point(cell.get_center())
+            weather_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
+ 
+            if weather_s2_cell_id.id() == pokemon_s2_cell_id.id():
+                condition = weather.condition
+
+    if condition == 0:
+        pass
+    elif condition == 1:
+        if ( types[pokemon_id][1] == 'grass' ) or ( types[pokemon_id][2] == 'grass' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'fire' ) or ( types[pokemon_id][2] == 'fire' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'ground' ) or ( types[pokemon_id][2] == 'ground' ):
+            boost = 'boosted'
+    elif condition == 2:
+        if ( types[pokemon_id][1] == 'water' ) or ( types[pokemon_id][2] == 'water' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'electric' ) or ( types[pokemon_id][2] == 'electric' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'bug' ) or ( types[pokemon_id][2] == 'bug' ):
+            boost = 'boosted'
+    elif condition == 3:
+        if ( types[pokemon_id][1] == 'normal' ) or ( types[pokemon_id][2] == 'normal' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'rock' ) or ( types[pokemon_id][2] == 'rock' ):
+            boost = 'boosted'
+    elif condition == 4:
+        if ( types[pokemon_id][1] == 'fairy' ) or ( types[pokemon_id][2] == 'fairy' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'fighting' ) or ( types[pokemon_id][2] == 'fighting' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'poison' ) or ( types[pokemon_id][2] == 'poison' ):
+            boost = 'boosted'
+    elif condition == 5:
+        if ( types[pokemon_id][1] == 'flying' ) or ( types[pokemon_id][2] == 'flying' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'dragon' ) or ( types[pokemon_id][2] == 'dragon' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'psychic' ) or ( types[pokemon_id][2] == 'psychic' ):
+            boost = 'boosted'
+    elif condition == 6:
+        if ( types[pokemon_id][1] == 'ice' ) or ( types[pokemon_id][2] == 'ice' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'steel' ) or ( types[pokemon_id][2] == 'steel' ):
+            boost = 'boosted'
+    elif condition == 7:
+        if ( types[pokemon_id][1] == 'dark' ) or ( types[pokemon_id][2] == 'dark' ):
+            boost = 'boosted'
+        elif ( types[pokemon_id][1] == 'ghost' ) or ( types[pokemon_id][2] == 'ghost' ):
+            boost = 'boosted'
+
+    return boost
 
 def get_pokemarkers(after_id=0):
     with session_scope() as session:
@@ -131,6 +201,7 @@ def get_weather():
         for weather in weathers:
             cell = s2sphere.Cell(s2sphere.CellId(weather.s2_cell_id).parent(10))
             center = s2sphere.LatLng.from_point(cell.get_center())
+            s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
             markers.append({
                 'id': 'weather-' + str(weather.id),
                 'coords': [(get_vertex(cell, v)) for v in range(0, 4)],
@@ -138,7 +209,8 @@ def get_weather():
                 'condition': weather.condition,
                 'alert_severity': weather.alert_severity,
                 'warn': weather.warn,
-                'day': weather.day
+                'day': weather.day,
+                's2_cell_id': s2_cell_id.id()
             })
         return markers
 

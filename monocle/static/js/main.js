@@ -39,8 +39,10 @@ var PokemonIcon = L.Icon.extend({
         var div = document.createElement('div');
         var form_text = '';
         var type_icon_html = getTypeIcons(this.options.iconID);
+        var boosted_icon_html = checkBoost(this.options.boost_status);
         
         typeIconDisplay();
+        boostedPokemonDisplay();
         
         if ( this.options.form ) {
             form_text = '<div class="form_text">' + this.options.form + '</div>';
@@ -95,6 +97,7 @@ var PokemonIcon = L.Icon.extend({
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     form_text +
                     type_icon_html +
+                    boosted_icon_html +
                     '</div>';
         }
         
@@ -328,8 +331,13 @@ function getPopupContent (item) {
         content += '<img id="type" class="type-' + pokemon_name_type[item.pokemon_id][3] + '" src="static/img/blank_1x1.png">';
     }
     content += '</div>';
+  
+    if ( item.boost != "normal" ) {
+        content += '<div class="boosted_popup"><b>Boosted</b></div>';
+    }
+  
     content += '<div class="pokemon_popup_text">';
-
+    
     if(item.atk != undefined){
         var totaliv = 100 * (item.atk + item.def + item.sta) / 45;
         content += ' - <b>' + totaliv.toFixed(2) + '%</b><br>';
@@ -579,7 +587,7 @@ function PokemonMarker (raw) {
     }
     // I know you stole this stuff from me
     var unown_letter = getForm(raw.form);
-    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at});
+    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at, boost_status: raw.boost});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
 
     var intId = parseInt(raw.id.split('-')[1]);
@@ -1753,6 +1761,12 @@ $('#settings').on('click', '.settings-panel button', function () {
         setPreference(key, value);
     }
     
+    if (key.indexOf('show_boosted_pokemon') > -1){
+        setBoostedPokemonDisplay(value);
+    }else{
+        setPreference(key,value);
+    }
+    
     if (key.indexOf('show_pokemon_type') > -1){
         setTypeIconDisplay(value);
     }else{
@@ -2054,11 +2068,32 @@ function sponsoredGymLogoDisplay(){
     }
 }
 
+function boostedPokemonDisplay() {
+    if (getPreference("show_boosted_pokemon") === "display") {
+        $('.boosted_type').css('visibility','visible');
+    } else {
+        $('.boosted_type').css('visibility','hidden');
+    }
+}
+
 function typeIconDisplay() {
     if (getPreference("show_pokemon_type") === "display") {
         $('.type_icons').css('visibility','visible');
     } else {
         $('.type_icons').css('visibility','hidden');
+    }
+}
+
+function setBoostedPokemonDisplay(value) {
+    setPreference("show_boosted_pokemon", value);
+    if (value == "display") {
+        $(".boosted_type").each(function() {
+            $(this).css('visibility', 'visible');
+        });
+    } else {
+        $(".boosted_type").each(function() {
+            $(this).css('visibility', 'hidden');
+        });
     }
 }
 
@@ -2394,6 +2429,7 @@ function setSettingsDefaults(){
     _defaultSettings['gen2_buttons'] = "display_gen2";
     _defaultSettings['gen3_buttons'] = "display_gen3";
     _defaultSettings['show_sponsored_gym_logo'] = "display_sponsored_gym_logo";
+    _defaultSettings['show_boosted_pokemon'] = "hide";
     _defaultSettings['show_pokemon_type'] = "hide";
     _defaultSettings['gym_landmark'] = "display";
     _defaultSettings['POKEMON_GEN1_LAYER'] = "display";
@@ -2701,6 +2737,16 @@ function getTypeIcons(pokemon_id) {
         innerHTML += '<img id="type" class="type-' + pokemon_name_type[pokemon_id][3] + '" src="static/img/blank_1x1.png">';
     }
     innerHTML += '</div>';
+    return innerHTML;
+}
+
+function checkBoost(boost_status) {
+    var innerHTML = '';
+    console.log("function called!: ", boost_status);
+    if ( boost_status === "boosted" ) {
+        innerHTML = '<div class="boosted_type"><img src="static/img/boosted.png"></div>';
+        console.log("its boosted!");
+    }
     return innerHTML;
 }
 

@@ -738,6 +738,26 @@
     text-align: center;
 }
 
+.boosted_type img{
+    width: 40px;
+    text-align: center;
+    position: relative;
+    top: -55px;
+    right: -5px;
+    z-index: -100;
+}
+
+.boosted_popup {
+    background-image: url('../img/boosted.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30px 30px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    position: relative;
+    text-align: center;
+}
+
 .gen_1{
     display: inline-block;
     text-align: center;
