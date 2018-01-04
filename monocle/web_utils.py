@@ -88,7 +88,7 @@ def get_worker_markers(workers):
 
 def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types=TYPES):
     pokemon_id = pokemon.pokemon_id
-    boost = check_boost(pokemon)
+    boost, condition, time = check_boost(pokemon)
 
     marker = {
         'id': 'pokemon-' + str(pokemon.id),
@@ -101,7 +101,9 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types
         'form': pokemon.form,
         'type1': types[pokemon_id][1],
         'type2': types[pokemon_id][2],
-        'boost': boost
+        'boost': boost,
+        'boost_condition': condition,
+        'boost_day': time
     }
     move1 = pokemon.move_1
     if conf.MAP_SHOW_DETAILS and move1:
@@ -120,7 +122,8 @@ def check_boost(pokemon, types=TYPES):
     pokemon_id = pokemon.pokemon_id
     pokemon_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(pokemon.lat,pokemon.lon)).parent(10)
     boost = 'normal'
-    condition = ''
+    condition = 0
+    time = 'day'
     
     with session_scope() as session:
         weathers = session.query(Weather)
@@ -132,6 +135,9 @@ def check_boost(pokemon, types=TYPES):
  
             if weather_s2_cell_id.id() == pokemon_s2_cell_id.id():
                 condition = weather.condition
+                time_data = weather.day
+                if time_data == 2:
+                    time = 'night'
 
     if condition == 0:
         pass
@@ -179,7 +185,7 @@ def check_boost(pokemon, types=TYPES):
         elif ( types[pokemon_id][1] == 'ghost' ) or ( types[pokemon_id][2] == 'ghost' ):
             boost = 'boosted'
 
-    return boost
+    return boost, condition, time
 
 def get_pokemarkers(after_id=0):
     with session_scope() as session:

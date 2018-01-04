@@ -333,7 +333,7 @@ function getPopupContent (item) {
     content += '</div>';
   
     if ( item.boost != "normal" ) {
-        content += '<div class="boosted_popup"><b>Boosted</b></div>';
+        content += '<div class="boosted_popup"><img id="weather" class="weather_' + item.boost_condition + '_' + item.boost_day + '" src="static/img/blank_1x1.png"><div class="boosted_popup_text"><b>Boosted</b></div></div>';
     }
   
     content += '<div class="pokemon_popup_text">';
@@ -1002,8 +1002,8 @@ function addWeatherToMap (data, map) {
                 weatherOverlay.setIcon(weatherMarker);
                 weatherIconMarker.setIcon(weatherIcon);
             } else if (currentZoom === 12) {
-                console.log("zoom < 12", currentZoom);
                 weatherOverlay.setIcon(weatherMediumMarker);
+                weatherIconMarker.setIcon(weatherIcon);
             } else if (currentZoom === 11) {
                 weatherOverlay.setIcon(weatherSmallMarker);
                 weatherIconMarker.setIcon(weatherMediumIcon);
@@ -1013,9 +1013,14 @@ function addWeatherToMap (data, map) {
             }
         });
 
+        if ( item.condition == 0 ) {
+            var weather_icon_bg = 'extreme_icon';
+        } else {
+            var weather_icon_bg = 'icon';
+        }
         weatherIconMarker.bindPopup(
             '<div class="weather_popup">' +
-                '<div class="weather_popup_icon"><img src="static/img/weather_' + item.condition + '_' + day + '.png">' + '</div>' +
+                '<div class="weather_popup_' + weather_icon_bg + '"><img src="static/img/weather_' + item.condition + '_' + day + '.png">' + '</div>' +
                 '<div class="weather_popup_text"><h4>' + conditions[item.condition] + '</div>' +
                 '<hr>' +
                 '<div class="weather_popup_text">BOOSTED TYPES</div>' +
