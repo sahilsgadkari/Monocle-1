@@ -592,9 +592,9 @@ function PokemonMarker (raw) {
     } else {
         if ( (raw.pokemon_id >= 1) && (raw.pokemon_id <= 151) ) {
             marker.overlay = 'Pokemon_Gen1';
-        } else if ( (raw.pokemon_id >= 152) && (raw.pokemon_id < 251)) {
+        } else if ( (raw.pokemon_id >= 152) && (raw.pokemon_id <= 251)) {
             marker.overlay = 'Pokemon_Gen2';
-        } else {
+        } else if ( (raw.pokemon_id >= 252) && (raw.pokemon_id <= 386)){
             marker.overlay = 'Pokemon_Gen3';
         }
     }
@@ -602,9 +602,9 @@ function PokemonMarker (raw) {
     if (userPreference === 'pokemon'){
         if ( (raw.pokemon_id >= 1) && (raw.pokemon_id <= 151) ) {
             marker.overlay = 'Pokemon_Gen1';
-        } else if ( (raw.pokemon_id >= 152) && (raw.pokemon_id < 251)) {
+        } else if ( (raw.pokemon_id >= 152) && (raw.pokemon_id <= 251)) {
             marker.overlay = 'Pokemon_Gen2';
-        } else {
+        } else if ( (raw.pokemon_id >= 252) && (raw.pokemon_id <= 386)) {
             marker.overlay = 'Pokemon_Gen3';
         }
     }else if (userPreference === 'trash'){
@@ -634,12 +634,25 @@ function PokemonMarker (raw) {
         if (diff > 0) {
             marker.setOpacity(getOpacity(diff));
         } else {
-            overlays.Pokemon_Gen1.removeLayer(marker);
-            overlays.Pokemon_Gen2.removeLayer(marker);
-            overlays.Pokemon_Gen3.removeLayer(marker);
-            overlays.Pokemon_Gen1.refreshClusters(marker);
-            overlays.Pokemon_Gen2.refreshClusters(marker);
-            overlays.Pokemon_Gen3.refreshClusters(marker);
+            if ( marker.overlay === "Pokemon_Gen1" ) {
+                overlays.Pokemon_Gen1.removeLayer(marker);
+                overlays.Pokemon_Gen1.refreshClusters(marker);
+            }
+            
+            if ( marker.overlay === "Pokemon_Gen2" ) {
+                overlays.Pokemon_Gen2.removeLayer(marker);
+                overlays.Pokemon_Gen2.refreshClusters(marker);
+            }
+            
+            if ( marker.overlay === "Pokemon_Gen3" ) {
+                overlays.Pokemon_Gen3.removeLayer(marker);
+                overlays.Pokemon_Gen3.refreshClusters(marker);
+            }
+            
+            if ( marker.overlay === "FilteredPokemon" ) {
+                overlays.FilteredPokemon.removeLayer(marker);
+                overlays.FilteredPokemon.refreshClusters(marker);
+            }
             markers[marker.raw.id] = undefined;
             clearInterval(marker.opacityInterval);
         }
