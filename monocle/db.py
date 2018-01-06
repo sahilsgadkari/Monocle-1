@@ -274,26 +274,42 @@ class WeatherCache:
     """Simple cache for storing actual weathers
 
     It's used in order not to make as many queries to the database.
-    It schedules raids to be removed as soon as they expire.
     """
     def __init__(self):
-        self.store = {}
-
+        self.weather = {}
+        self.class_version = 2
+        self.unpickle()
+    
     def __len__(self):
-        return len(self.store)
+        return len(self.weather)
 
     def add(self, weather):
-        self.store[weather['s2_cell_id']] = weather
+        self.weather[weather['s2_cell_id']] = weather
+        self.pickle()
 
     def remove(self, cache_id):
         try:
-            del self.store[cache_id]
+            del self.weather[cache_id]
         except KeyError:
             pass
 
+    def items(self):
+        return self.weather.items()
+
+    def get_condition(self, s2_cell_id_to_find):
+        condition_to_find = ''
+        time = 'day'
+        for s2_cell_id, item in self.items():
+            if s2_cell_id_to_find == s2_cell_id:
+                condition_to_find = item['condition']
+                day = item['day']
+                if day == 2:
+                    time = 'night'
+        return condition_to_find, time
+
     def __contains__(self, raw_weather):
         try:
-            weather = self.store[raw_weather['s2_cell_id']]
+            weather = self.weather[raw_weather['s2_cell_id']]
             return (weather['condition'] == raw_weather['condition'] and
                 weather['alert_severity'] == raw_weather['alert_severity'] and
                 weather['warn'] == raw_weather['warn'] and
@@ -301,6 +317,22 @@ class WeatherCache:
         except KeyError:
             return False
 
+    def pickle(self):
+        state = self.__dict__.copy()
+        state['class_version'] == self.class_version
+        state['db_hash'] = spawns.db_hash
+        state['bounds_hash'] = hash(bounds)
+        dump_pickle('weather', state)
+
+    def unpickle(self):
+        try:
+            state = load_pickle('weather', raise_exception=True)
+            if all((state['class_version'] == self.class_version,
+                    state['db_hash'] == spawns.db_hash,
+                    state['bounds_hash'] == hash(bounds))):
+                self.__dict__.update(state)
+        except (FileNotFoundError, TypeError, KeyError):
+            pass
 
 SIGHTING_CACHE = SightingCache()
 MYSTERY_CACHE = MysteryCache()
@@ -474,11 +506,13 @@ class Weather(Base):
     __tablename__ = 'weather'
 
     id = Column(Integer, primary_key=True)
-    s2_cell_id = Column(BigInteger)
+    raw_s2_cell_id = Column(BigInteger)
+    s2_cell_id = Column(String(20))
     condition = Column(TINY_TYPE)
     alert_severity = Column(TINY_TYPE)
     warn = Column(Boolean)
     day = Column(TINY_TYPE)
+    updated = Column(Integer, index=True)
 
 @contextmanager
 def session_scope(autoflush=False):
@@ -715,18 +749,22 @@ def add_pokestop(session, raw_pokestop):
     FORT_CACHE.pokestops.add(pokestop_id)
 
 def add_weather(session, raw_weather):
+    raw_s2_cell_id = raw_weather['raw_s2_cell_id']
     s2_cell_id = raw_weather['s2_cell_id']
-
+    timestamp = round(datetime.now().timestamp())
+    
     weather = session.query(Weather) \
         .filter(Weather.s2_cell_id == s2_cell_id) \
         .first()
     if not weather:
         weather = Weather(
+            raw_s2_cell_id=raw_s2_cell_id,
             s2_cell_id=s2_cell_id,
             condition=raw_weather['condition'],
             alert_severity=raw_weather['alert_severity'],
             warn=raw_weather['warn'],
-            day=raw_weather['day']
+            day=raw_weather['day'],
+            updated=timestamp
         )
         session.add(weather)
     else:

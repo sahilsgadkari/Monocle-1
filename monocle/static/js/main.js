@@ -42,7 +42,6 @@ var PokemonIcon = L.Icon.extend({
         var boosted_icon_html = checkBoost(this.options.boost_status);
         
         typeIconDisplay();
-        boostedPokemonDisplay();
         
         if ( this.options.form ) {
             form_text = '<div class="form_text">' + this.options.form + '</div>';
@@ -585,11 +584,13 @@ function PokemonMarker (raw) {
     }else{
         var totaliv = 0;
     }
+  
+    boostedPokemonDisplay();
+  
     // I know you stole this stuff from me
     var unown_letter = getForm(raw.form);
     var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at, boost_status: raw.boost});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
-
     var intId = parseInt(raw.id.split('-')[1]);
     if (_last_pokemon_id < intId){
         _last_pokemon_id = intId;
@@ -1120,6 +1121,7 @@ function getWeather() {
         });
     }).then(function (data) {
         addWeatherToMap(data, map);
+        checkIfWeatherChanged(data);
     });
 }
 
@@ -1209,7 +1211,8 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
-    setInterval(getWeather, 300000)
+    //setInterval(getWeather, 300000)
+    setInterval(getWeather, 30000) // FOR DEBUG PURPOSES
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;
@@ -1227,6 +1230,7 @@ function onOverLayAdd(e) {
         var hide_button = $("#pokemon_gen1_layer button[data-value='hide']");
         var display_button = $("#pokemon_gen1_layer button[data-value='display']");
       
+        boostedPokemonDisplay();
         hide_button.removeClass("active")
         display_button.addClass("active");
         setPreference("POKEMON_GEN1_LAYER",'display');
@@ -1236,6 +1240,7 @@ function onOverLayAdd(e) {
         var hide_button = $("#pokemon_gen2_layer button[data-value='hide']");
         var display_button = $("#pokemon_gen2_layer button[data-value='display']");
       
+        boostedPokemonDisplay();
         hide_button.removeClass("active")
         display_button.addClass("active");
         setPreference("POKEMON_GEN2_LAYER",'display');
@@ -1245,6 +1250,7 @@ function onOverLayAdd(e) {
         var hide_button = $("#pokemon_gen3_layer button[data-value='hide']");
         var display_button = $("#pokemon_gen3_layer button[data-value='display']");
       
+        boostedPokemonDisplay();
         hide_button.removeClass("active")
         display_button.addClass("active");
         setPreference("POKEMON_GEN3_LAYER",'display');
@@ -1855,13 +1861,14 @@ function moveToLayer(id, layer){
         if ((k.indexOf("pokemon-") > -1) && (m !== undefined) && (m.raw.pokemon_id === id)){
             m.removeFrom(overlays[m.overlay]);
             if (layer === 'pokemon'){
+                boostedPokemonDisplay();
                 if ( (m.raw.pokemon_id >= 1) && (m.raw.pokemon_id <= 151) ) {
                     m.overlay = 'Pokemon_Gen1';
                     m.addTo(overlays.Pokemon_Gen1);
-                } else if ( (m.raw.pokemon_id >= 152) && (m.raw.pokemon_id < 251)) {
+                } else if ( (m.raw.pokemon_id >= 152) && (m.raw.pokemon_id <= 251)) {
                     m.overlay = 'Pokemon_Gen2';
                     m.addTo(overlays.Pokemon_Gen2);
-                } else {
+                } else if ( (m.raw.pokemon_id >= 252) && (m.raw.pokemon_id <= 386)) {
                     m.overlay = 'Pokemon_Gen3';
                     m.addTo(overlays.Pokemon_Gen3);
                 }
@@ -2088,10 +2095,10 @@ function sponsoredGymLogoDisplay(){
 }
 
 function boostedPokemonDisplay() {
-    if (getPreference("show_boosted_pokemon") === "display") {
-        $('.boosted_type').css('visibility','visible');
+    if (getPreference("show_boosted_pokemon") === "hide") {
+        $('.boosted_type img').css('visibility','hidden');
     } else {
-        $('.boosted_type').css('visibility','hidden');
+        $('.boosted_type img').css('visibility','visible');
     }
 }
 
@@ -2106,11 +2113,11 @@ function typeIconDisplay() {
 function setBoostedPokemonDisplay(value) {
     setPreference("show_boosted_pokemon", value);
     if (value == "display") {
-        $(".boosted_type").each(function() {
+        $(".boosted_type img").each(function() {
             $(this).css('visibility', 'visible');
         });
     } else {
-        $(".boosted_type").each(function() {
+        $(".boosted_type img").each(function() {
             $(this).css('visibility', 'hidden');
         });
     }
@@ -2503,6 +2510,12 @@ if (getPreference("show_sponsored_gym_logo") === "hide_sponsored_gym_logo") {
     $('.sponsor_icon_marker').css('visibility', 'visible');
 }
 
+if (getPreference("show_boosted_pokemon") === "hide") {
+    $('.boosted_type img').css('visibility','hidden');
+} else {
+    $('.boosted_type img').css('visibility','visible');
+}
+
 if ((getPreference("gen1_buttons") === "display_gen1")) {
     $('.gen_1').css('display', '');
 } else {
@@ -2768,3 +2781,11 @@ function checkBoost(boost_status) {
     return innerHTML;
 }
 
+// For future use
+function checkIfWeatherChanged(data) {
+    var current_time = new Date().getTime() / 1000;
+    //data.forEach(function (item) {
+        //console.log("Updated time is: " + item.updated + "  id:" + item.id);
+        //console.log("Current time is: " + Math.round(current_time));
+    //});
+}

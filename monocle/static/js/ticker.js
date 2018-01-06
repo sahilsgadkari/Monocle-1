@@ -8,9 +8,6 @@ $(document).ready(function() {
   var ticker_width = $(".ticker").width();
   var text_x = ticker_width;
 
-  console.log(block_arr.indexOf(ticker_item.get(0)));
-  console.log(block_arr.length);
-
   scroll_ticker = function() {
     text_x--;
     ticker_item.css("left", text_x);

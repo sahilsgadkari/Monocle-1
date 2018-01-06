@@ -751,12 +751,13 @@
     top: -55px;
     right: -5px;
     z-index: -100;
+    visibility: hidden;
 }
 
 .boosted_popup {
     position: relative;
     text-align: center;
-    padding-top: 30px;
+    padding-top: 40px;
     padding-bottom: 0px;
 }
 
@@ -764,94 +765,6 @@
     position: relative;
     text-align: center;
     z-index: 100px;
-}
-
-.boosted_popup-0 {
-    background-image: url('../img/boost-0.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
-}
-
-.boosted_popup-1 {
-    background-image: url('../img/boost-1.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
-}
-
-.boosted_popup-2 {
-    background-image: url('../img/boost-2.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
-}
-
-.boosted_popup-3 {
-    background-image: url('../img/boost-3.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
-}
-
-.boosted_popup-4 {
-    background-image: url('../img/boost-4.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
-}
-
-.boosted_popup-5 {
-    background-image: url('../img/boost-5.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
-}
-
-.boosted_popup-6 {
-    background-image: url('../img/boost-6.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
-}
-
-.boosted_popup-7 {
-    background-image: url('../img/boost-7.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 30px 30px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    position: relative;
-    text-align: center;
 }
 
 .gen_1{

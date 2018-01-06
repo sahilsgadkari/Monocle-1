@@ -4,7 +4,7 @@ from multiprocessing.managers import BaseManager, RemoteError
 from time import time
 
 from monocle import sanitized as conf
-from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather
+from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather, WEATHER_CACHE
 from monocle.utils import Units, get_address
 from monocle.names import DAMAGE, MOVES, POKEMON, TYPES
 
@@ -88,7 +88,7 @@ def get_worker_markers(workers):
 
 def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types=TYPES):
     pokemon_id = pokemon.pokemon_id
-    boost, condition, time = check_boost(pokemon)
+    boost, condition, time, pokemon_s2_cell_id = check_boost(pokemon)
 
     marker = {
         'id': 'pokemon-' + str(pokemon.id),
@@ -103,7 +103,8 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types
         'type2': types[pokemon_id][2],
         'boost': boost,
         'boost_condition': condition,
-        'boost_day': time
+        'boost_day': time,
+        'pokemon_s2_cell_id': pokemon_s2_cell_id
     }
     move1 = pokemon.move_1
     if conf.MAP_SHOW_DETAILS and move1:
@@ -121,24 +122,15 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types
 def check_boost(pokemon, types=TYPES):
     pokemon_id = pokemon.pokemon_id
     pokemon_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(pokemon.lat,pokemon.lon)).parent(10)
+    pokemon_s2_cell_id_int = int(pokemon_s2_cell_id.id())
+    
     boost = 'normal'
     condition = 0
-    time = 'day'
-    
-    with session_scope() as session:
-        weathers = session.query(Weather)
-        markers = []
-        for weather in weathers:
-            cell = s2sphere.Cell(s2sphere.CellId(weather.s2_cell_id).parent(10))
-            center = s2sphere.LatLng.from_point(cell.get_center())
-            weather_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
- 
-            if weather_s2_cell_id.id() == pokemon_s2_cell_id.id():
-                condition = weather.condition
-                time_data = weather.day
-                if time_data == 2:
-                    time = 'night'
+    day = 'day'
 
+    condition, day = WEATHER_CACHE.get_condition(pokemon_s2_cell_id_int)
+    print("condition: " + str(condition) + "  time: " + str(day)) # FOR DEBUG PURPOSES
+    
     if condition == 0:
         pass
     elif condition == 1:
@@ -185,7 +177,7 @@ def check_boost(pokemon, types=TYPES):
         elif ( types[pokemon_id][1] == 'ghost' ) or ( types[pokemon_id][2] == 'ghost' ):
             boost = 'boosted'
 
-    return boost, condition, time
+    return boost, condition, day, pokemon_s2_cell_id_int
 
 def get_pokemarkers(after_id=0):
     with session_scope() as session:
@@ -201,11 +193,13 @@ def get_vertex(cell, v):
     return (vertex.lat().degrees, vertex.lng().degrees)
 
 def get_weather():
+    # Load weather pickle for Pokemon
+    WEATHER_CACHE.unpickle()
     with session_scope() as session:
         weathers = session.query(Weather)
         markers = []
         for weather in weathers:
-            cell = s2sphere.Cell(s2sphere.CellId(weather.s2_cell_id).parent(10))
+            cell = s2sphere.Cell(s2sphere.CellId(weather.raw_s2_cell_id).parent(10))
             center = s2sphere.LatLng.from_point(cell.get_center())
             s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
             markers.append({
@@ -216,7 +210,8 @@ def get_weather():
                 'alert_severity': weather.alert_severity,
                 'warn': weather.warn,
                 'day': weather.day,
-                's2_cell_id': s2_cell_id.id()
+                's2_cell_id': s2_cell_id.id(),
+                'updated': weather.updated
             })
         return markers
 
