@@ -932,10 +932,32 @@ function addPokestopsToMap (data, map) {
 }
 
 function addWeatherToMap (data, map) {
+    var currentZoom = map.getZoom();
+    var currentCenter = map.getCenter();
     overlays.Weather.clearLayers();
     data.forEach(function (item) {
         var color = 'grey';
         var conditions = ['Extreme', 'Clear', 'Rainy', 'Partly Cloudy', 'Overcast', 'Windy', 'Snow', 'Fog'];
+        
+        if ( localStorage.getItem(item.id) === null ) {
+            localStorage.setItem(item.id, item.updated); // Save initial last update to local storage
+            console.log("storing: " + item.updated + "  in: " + item.id);
+        } else {
+            stored_last_updated = localStorage.getItem(item.id);
+            console.log("Comparing stored value: " + item.id + ":" + stored_last_updated + " to cached value: " + item.id + ":" + item.updated);
+            if ( stored_last_updated != item.updated ) {
+                console.log("Change detected. Refresh markers.");
+                localStorage.setItem(item.id, item.updated);
+                console.log("Updated local storage.");
+                localStorage.setItem("lastZoom", currentZoom);
+                console.log("Saved last zoom to storage: " + currentZoom);
+                localStorage.setItem("lastCenterLat", currentCenter.lat);
+                localStorage.setItem("lastCenterLng", currentCenter.lng)
+                console.log("Saved last center to storage: " + currentCenter);
+                location.reload(); // THIS WORKS JUST BY ITSELF
+            }
+        }
+        
         if (item.alert_severity > 0) {
             color = 'red';
         }
@@ -1121,7 +1143,6 @@ function getWeather() {
         });
     }).then(function (data) {
         addWeatherToMap(data, map);
-        checkIfWeatherChanged(data);
     });
 }
 
@@ -1158,11 +1179,17 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
                       maxZoom: 18,
                       zoom: params.zoom || 16
                       });
-}
-else{
-  var map = L.map('main-map', {
-                preferCanvas: true,
-                maxZoom: 18,}).setView(_MapCoords, 16);
+} else {
+    if ( ( localStorage.getItem("lastZoom") == null ) || ( localStorage.getItem("lastCenterLat") == null ) || ( localStorage.getItem("lastCenterLng") == null ) ) {
+        var map = L.map('main-map', {
+                    preferCanvas: true,
+                    maxZoom: 18,}).setView(_MapCoords, 16);
+    } else {
+        var coords = localStorage.getItem("lastCenter");
+        var map = L.map('main-map', {
+                    preferCanvas: true,
+                    maxZoom: 18,}).setView([localStorage.getItem("lastCenterLat"), localStorage.getItem("lastCenterLng")], localStorage.getItem("lastZoom"));
+    }
 }
 
 if (_DisplayPokemonLayer === 'True') {
@@ -2781,11 +2808,3 @@ function checkBoost(boost_status) {
     return innerHTML;
 }
 
-// For future use
-function checkIfWeatherChanged(data) {
-    var current_time = new Date().getTime() / 1000;
-    //data.forEach(function (item) {
-        //console.log("Updated time is: " + item.updated + "  id:" + item.id);
-        //console.log("Current time is: " + Math.round(current_time));
-    //});
-}

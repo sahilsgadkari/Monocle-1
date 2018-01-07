@@ -129,7 +129,7 @@ def check_boost(pokemon, types=TYPES):
     day = 'day'
 
     condition, day = WEATHER_CACHE.get_condition(pokemon_s2_cell_id_int)
-    print("condition: " + str(condition) + "  time: " + str(day)) # FOR DEBUG PURPOSES
+    #print("condition: " + str(condition) + "  time: " + str(day)) # FOR DEBUG PURPOSES
     
     if condition == 0:
         pass

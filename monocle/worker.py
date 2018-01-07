@@ -1394,7 +1394,8 @@ class Worker:
             'type': 'weather',
             'raw_s2_cell_id': raw.s2_cell_id,
             's2_cell_id': s2_cell_id.id(),
-            'condition': raw.gameplay_weather.gameplay_condition,
+            #'condition': raw.gameplay_weather.gameplay_condition,
+            'condition': 1,
             'alert_severity': alert_severity,
             'warn': warn,
             'day': time_of_day

@@ -772,6 +772,7 @@ def add_weather(session, raw_weather):
         weather.alert_severity = raw_weather['alert_severity']
         weather.warn = raw_weather['warn']
         weather.day = raw_weather['day']
+        weather.updated = timestamp
     WEATHER_CACHE.add(raw_weather)
 
 def update_failures(session, spawn_id, success, allowed=conf.FAILURES_ALLOWED):
