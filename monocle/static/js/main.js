@@ -258,6 +258,8 @@ if (_DisplaySpawnpointsLayer === 'True') {
         Pokemon_Gen3: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        EX_Raid_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Parks: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Weather: L.layerGroup([]),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
@@ -271,6 +273,8 @@ if (_DisplaySpawnpointsLayer === 'True') {
         Pokemon_Gen3: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        EX_Raid_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Parks: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Weather: L.layerGroup([]),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
@@ -1073,6 +1077,20 @@ function addWorkersToMap (data, map) {
     });
 }
 
+// BEGIN: INTEGRATE RAIDEX *************************************
+function addParksToMap (data, map) {
+    data.forEach(function (item) {
+        L.polygon(item.coords, {'color': 'limegreen'}).addTo(overlays.Parks);
+    });
+}
+
+function addCellsToMap (data, map) {
+    data.forEach(function (item) {
+        L.polygon(item.coords, {'color': 'grey'}).addTo(overlays.EX_Raid_Cells);
+    });
+}
+// END: INTEGRATE RAIDEX ***************************************
+
 function getPokemon () {
     if (overlays.Pokemon_Gen1.hidden && overlays.Pokemon_Gen2.hidden && overlays.Pokemon_Gen3.hidden && overlays.FilteredPokemon.hidden) {
         return;
@@ -1169,6 +1187,34 @@ function getWorkers() {
     });
 }
 
+// BEGIN: INTEGRATE RAIDEX *************************************
+function getParks() {
+    if (overlays.Parks.hidden) {
+        return;
+    }
+    new Promise(function (resolve, reject) {
+        $.get(_PoGoSDRegion+'/parks', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addParksToMap(data, map);
+    });
+}
+
+function getCells() {
+    if (overlays.EX_Raid_Cells.hidden) {
+        return;
+    }
+    new Promise(function (resolve, reject) {
+        $.get(_PoGoSDRegion+'/cells', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addCellsToMap(data, map);
+    });
+}
+// END: INTEGRATE RAIDEX ***************************************
+
 var params = {};
 window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
                              params[key] = value;
@@ -1244,6 +1290,15 @@ map.whenReady(function () {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;
     }
+    
+    // BEGIN: INTEGRATE RAIDEX *************************************
+    overlays.Parks.once('add', function(e) {
+        getParks();
+    })
+    overlays.EX_Raid_Cells.once('add', function(e) {
+        getCells();
+    })
+    // END: INTEGRATE RAIDEX ***************************************
 });
 
 map.on('overlayadd', onOverLayAdd);

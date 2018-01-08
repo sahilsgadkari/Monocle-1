@@ -17,6 +17,7 @@ from monocle.names import POKEMON
 from monocle.web_utils import *
 from monocle.bounds import area, center
 
+from shapely.geometry import Polygon, Point
 
 app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'), static_folder=resource_filename('monocle', 'static'))
 
@@ -261,6 +262,13 @@ def get_pokestops():
 def scan_coords():
     return jsonify(get_scan_coords())
 
+@app.route('/parks')
+def parks():
+    return jsonify(get_all_parks())
+
+@app.route('/cells')
+def cells():
+    return jsonify(get_s2_cells())
 
 if conf.MAP_WORKERS:
     workers = Workers()
