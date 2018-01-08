@@ -199,9 +199,9 @@ def get_weather():
         weathers = session.query(Weather)
         markers = []
         for weather in weathers:
-            cell = s2sphere.Cell(s2sphere.CellId(weather.raw_s2_cell_id).parent(10))
+            cell = s2sphere.Cell(s2sphere.CellId(weather.s2_cell_id).parent(10))
             center = s2sphere.LatLng.from_point(cell.get_center())
-            s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
+            converted_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
             markers.append({
                 'id': 'weather-' + str(weather.id),
                 'coords': [(get_vertex(cell, v)) for v in range(0, 4)],
@@ -210,7 +210,7 @@ def get_weather():
                 'alert_severity': weather.alert_severity,
                 'warn': weather.warn,
                 'day': weather.day,
-                's2_cell_id': s2_cell_id.id(),
+                's2_cell_id': converted_s2_cell_id.id(),
                 'updated': weather.updated
             })
         return markers

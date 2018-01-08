@@ -1384,7 +1384,7 @@ class Worker:
         warn = False
         cell = s2sphere.Cell(s2sphere.CellId(raw.s2_cell_id).parent(10))
         center = s2sphere.LatLng.from_point(cell.get_center())
-        s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
+        converted_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
         if raw.alerts:
             for a in raw.alerts:
                 warn = warn or a.warn_weather
@@ -1392,10 +1392,10 @@ class Worker:
                     alert_severity = a.severity
         return {
             'type': 'weather',
-            'raw_s2_cell_id': raw.s2_cell_id,
-            's2_cell_id': s2_cell_id.id(),
-            #'condition': raw.gameplay_weather.gameplay_condition,
-            'condition': 1,
+            's2_cell_id': raw.s2_cell_id,
+            'converted_s2_cell_id': converted_s2_cell_id.id(),
+            'condition': raw.gameplay_weather.gameplay_condition,
+            #'condition': 1,
             'alert_severity': alert_severity,
             'warn': warn,
             'day': time_of_day

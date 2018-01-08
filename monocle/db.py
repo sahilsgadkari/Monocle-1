@@ -284,7 +284,7 @@ class WeatherCache:
         return len(self.weather)
 
     def add(self, weather):
-        self.weather[weather['s2_cell_id']] = weather
+        self.weather[weather['converted_s2_cell_id']] = weather
         self.pickle()
 
     def remove(self, cache_id):
@@ -299,8 +299,8 @@ class WeatherCache:
     def get_condition(self, s2_cell_id_to_find):
         condition_to_find = ''
         time = 'day'
-        for s2_cell_id, item in self.items():
-            if s2_cell_id_to_find == s2_cell_id:
+        for converted_s2_cell_id, item in self.items():
+            if s2_cell_id_to_find == converted_s2_cell_id:
                 condition_to_find = item['condition']
                 day = item['day']
                 if day == 2:
@@ -309,7 +309,7 @@ class WeatherCache:
 
     def __contains__(self, raw_weather):
         try:
-            weather = self.weather[raw_weather['s2_cell_id']]
+            weather = self.weather[raw_weather['converted_s2_cell_id']]
             return (weather['condition'] == raw_weather['condition'] and
                 weather['alert_severity'] == raw_weather['alert_severity'] and
                 weather['warn'] == raw_weather['warn'] and
@@ -506,8 +506,8 @@ class Weather(Base):
     __tablename__ = 'weather'
 
     id = Column(Integer, primary_key=True)
-    raw_s2_cell_id = Column(BigInteger)
-    s2_cell_id = Column(String(20))
+    s2_cell_id = Column(BigInteger)
+    converted_s2_cell_id = Column(String(20))
     condition = Column(TINY_TYPE)
     alert_severity = Column(TINY_TYPE)
     warn = Column(Boolean)
@@ -749,8 +749,8 @@ def add_pokestop(session, raw_pokestop):
     FORT_CACHE.pokestops.add(pokestop_id)
 
 def add_weather(session, raw_weather):
-    raw_s2_cell_id = raw_weather['raw_s2_cell_id']
     s2_cell_id = raw_weather['s2_cell_id']
+    converted_s2_cell_id = raw_weather['converted_s2_cell_id']
     timestamp = round(datetime.now().timestamp())
     
     weather = session.query(Weather) \
@@ -758,8 +758,8 @@ def add_weather(session, raw_weather):
         .first()
     if not weather:
         weather = Weather(
-            raw_s2_cell_id=raw_s2_cell_id,
             s2_cell_id=s2_cell_id,
+            converted_s2_cell_id=converted_s2_cell_id,
             condition=raw_weather['condition'],
             alert_severity=raw_weather['alert_severity'],
             warn=raw_weather['warn'],
