@@ -137,7 +137,7 @@ overlays.ScanArea.addTo(map);
 
 var control = L.control.layers(null, overlays).addTo(map);
 L.tileLayer(_MapProviderUrl, {
-    opacity: 0.75,
+    opacity: 1.0,
     attribution: _MapProviderAttribution
 }).addTo(map);
 map.whenReady(function () {

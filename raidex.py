@@ -40,8 +40,13 @@ def gym_data():
     parks = get_all_parks()
     for g in get_gym_markers():
         for p in parks:
-            if Polygon(p['coords']).contains(Point(g['lat'], g['lon'])):
-                gyms.append(g)
+            coords = p['coords']
+            if len(coords) == 2:
+                if LineString(coords).within(Point(g['lat'], g['lon'])):
+                    gyms.append(g)
+            elif len(coords) > 2:
+                if Polygon(coords).contains(Point(g['lat'], g['lon'])):
+                    gyms.append(g)
     return jsonify(gyms)
 
 @app.route('/parks')

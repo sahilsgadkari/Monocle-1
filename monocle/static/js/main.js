@@ -145,9 +145,9 @@ var AltFortIcon = L.Icon.extend({
         }
         
         // Check for gyms at parks
-        if (this.options.gym_name.includes("Park")) {
-            sponsor = 'park_icon';
-        }
+        //if (this.options.gym_name.includes("Park")) {
+        //    sponsor = 'park_icon';
+        //}
       
         div.innerHTML =
             '<div class="fortmarker">' +
@@ -165,6 +165,24 @@ var AltFortIcon = L.Icon.extend({
                 '</div>';
         }
         return div;
+    }
+});
+
+var ExGymIcon = L.Icon.extend({
+    options: {
+        iconSize: [20, 20],
+        shadowSize: [20, 20],
+        popupAnchor: [0, -10],
+        className: 'ex_gym_icon'
+    }
+});
+
+var ExRaidIcon = L.Icon.extend({
+    options: {
+        iconSize: [20, 20],
+        shadowSize: [70, 70],
+        popupAnchor: [0, -10],
+        className: 'ex_raid_icon'
     }
 });
 
@@ -187,9 +205,9 @@ var RaidIcon = L.Icon.extend({
         }
 
         // Check for gyms at parks
-        if (this.options.raid_gym_name.includes("Park")) {
-            sponsor = 'park_icon';
-        }
+        //if (this.options.raid_gym_name.includes("Park")) {
+        //    sponsor = 'park_icon';
+        //}
 
         if (this.options.raid_pokemon_id !== 0) {
             div.innerHTML =
@@ -258,8 +276,9 @@ if (_DisplaySpawnpointsLayer === 'True') {
         Pokemon_Gen3: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-        EX_Raid_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-        Parks: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        //EX_Raid_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Parks_In_S2_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        EX_Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Weather: L.layerGroup([]),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
@@ -273,8 +292,9 @@ if (_DisplaySpawnpointsLayer === 'True') {
         Pokemon_Gen3: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 8 }),
         Raids: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-        EX_Raid_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
-        Parks: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        //EX_Raid_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        Parks_In_S2_Cells: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
+        EX_Gyms: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
         Weather: L.layerGroup([]),
         ScanArea: L.layerGroup([]),
         FilteredPokemon: L.markerClusterGroup({ disableClusteringAtZoom: 12 })
@@ -744,6 +764,7 @@ function RaidMarker (raw) {
     raid_marker.sponsor = getSponsorGymType(raw);
     raid_marker.raw = raw;
     markers[raw.id] = raid_marker;
+    ex_raid_marker_id = "ex-" + raid_marker.raw.id;
     raid_marker.on('popupopen',function popupopen (event) {
         event.popup.options.autoPan = true; // Pan into view once
         event.popup.setContent(getRaidPopupContent(event.target.raw));
@@ -763,6 +784,7 @@ function RaidMarker (raw) {
         var diff = (raid_marker.raw.raid_end - new Date().getTime() / 1000);
         if (diff < 0) { // Raid ended, remove marker
             raid_marker.removeFrom(overlays.Raids);
+            removeExRaidMarker(ex_raid_marker_id);
             markers[raid_marker.raw.id] = undefined;
             clearInterval(raid_marker.opacityInterval);
         }
@@ -770,6 +792,36 @@ function RaidMarker (raw) {
   
     raid_marker.bindPopup();
     return raid_marker;
+}
+
+function ExGymMarker (raw) {
+    var icon = new ExGymIcon({iconUrl: 'static/img/blank_1x1.png', shadowUrl: 'static/img/boosted.png'});
+    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
+    //console.log("Tried to draw icon for: " + raw.id);
+    marker.raw = raw;
+    markers["ex-"+raw.id] = marker;
+    /*marker.on('popupopen',function popupopen (event) {
+        var content = ''
+        content += '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        event.popup.setContent(content);
+    });
+    marker.bindPopup();*/
+    return marker;
+}
+
+function ExRaidMarker (raw) {
+    var icon = new ExRaidIcon({iconUrl: 'static/img/blank_1x1.png', shadowUrl: 'static/img/boosted.png'});
+    var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
+    //console.log("Tried to draw icon for: " + raw.id);
+    marker.raw = raw;
+    markers["ex-"+raw.id] = marker;
+    /*marker.on('popupopen',function popupopen (event) {
+        var content = ''
+        content += '<br>=&gt; <a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        event.popup.setContent(content);
+    });
+    marker.bindPopup();*/
+    return marker;
 }
 
 function WorkerMarker (raw) {
@@ -1080,13 +1132,27 @@ function addWorkersToMap (data, map) {
 // BEGIN: INTEGRATE RAIDEX *************************************
 function addParksToMap (data, map) {
     data.forEach(function (item) {
-        L.polygon(item.coords, {'color': 'limegreen'}).addTo(overlays.Parks);
+        L.polygon(item.coords, {'color': 'limegreen'}).addTo(overlays.Parks_In_S2_Cells);
     });
 }
 
 function addCellsToMap (data, map) {
     data.forEach(function (item) {
-        L.polygon(item.coords, {'color': 'grey'}).addTo(overlays.EX_Raid_Cells);
+        L.polygon(item.coords, {'color': 'grey'}).addTo(overlays.Parks_In_S2_Cells);
+    });
+}
+
+function addExGymsToMap (data, map) {
+    data.forEach(function (item) {
+        marker = ExGymMarker(item); // CREATE NEW MARKER FOR EX ELIGIBLES
+        marker.addTo(overlays.EX_Gyms);
+    });
+}
+
+function addExRaidsToMap (data, map) {
+    data.forEach(function (item) {
+        marker = ExRaidMarker(item); // CREATE NEW MARKER FOR EX ELIGIBLES
+        marker.addTo(overlays.EX_Gyms);
     });
 }
 // END: INTEGRATE RAIDEX ***************************************
@@ -1189,7 +1255,7 @@ function getWorkers() {
 
 // BEGIN: INTEGRATE RAIDEX *************************************
 function getParks() {
-    if (overlays.Parks.hidden) {
+    if (overlays.Parks_In_S2_Cells.hidden) {
         return;
     }
     new Promise(function (resolve, reject) {
@@ -1202,7 +1268,7 @@ function getParks() {
 }
 
 function getCells() {
-    if (overlays.EX_Raid_Cells.hidden) {
+    if (overlays.Parks_In_S2_Cells.hidden) {
         return;
     }
     new Promise(function (resolve, reject) {
@@ -1211,6 +1277,32 @@ function getCells() {
         });
     }).then(function (data) {
         addCellsToMap(data, map);
+    });
+}
+
+function getExGyms() {
+    if (overlays.EX_Gyms.hidden) {
+        return;
+    }
+    new Promise(function (resolve, reject) {
+        $.get(_PoGoSDRegion+'/ex_gym_data', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addExGymsToMap(data, map);
+    });
+}
+
+function getExRaids() {
+    if (overlays.EX_Gyms.hidden) {
+        return;
+    }
+    new Promise(function (resolve, reject) {
+        $.get(_PoGoSDRegion+'/ex_raid_data', function (response) {
+            resolve(response);
+        });
+    }).then(function (data) {
+        addExRaidsToMap(data, map);
     });
 }
 // END: INTEGRATE RAIDEX ***************************************
@@ -1292,11 +1384,16 @@ map.whenReady(function () {
     }
     
     // BEGIN: INTEGRATE RAIDEX *************************************
-    overlays.Parks.once('add', function(e) {
+    overlays.Parks_In_S2_Cells.once('add', function(e) {
+        getCells();
         getParks();
     })
-    overlays.EX_Raid_Cells.once('add', function(e) {
-        getCells();
+//    overlays.EX_Raid_Cells.once('add', function(e) {
+//        getCells();
+//    })
+    overlays.EX_Gyms.once('add', function(e) {
+        getExGyms();
+        getExRaids();
     })
     // END: INTEGRATE RAIDEX ***************************************
 });
@@ -1354,6 +1451,24 @@ function onOverLayAdd(e) {
         hide_button.removeClass("active")
         display_button.addClass("active");
         setPreference("RAIDS_LAYER",'display');
+    }
+
+    if (e.name == 'Parks_In_S2_Cells') {
+        var hide_button = $("#parks_in_s2_cells_layer button[data-value='hide']");
+        var display_button = $("#parks_in_s2_cells_layer button[data-value='display']");
+      
+        hide_button.removeClass("active")
+        display_button.addClass("active");
+        setPreference("PARKS_IN_S2_CELLS_LAYER",'display');
+    }
+
+    if (e.name == 'EX_Gyms') {
+        var hide_button = $("#ex_gyms_layer button[data-value='hide']");
+        var display_button = $("#ex_gyms_layer button[data-value='display']");
+      
+        hide_button.removeClass("active")
+        display_button.addClass("active");
+        setPreference("EX_GYMS_LAYER",'display');
     }
 
     if (e.name == 'Weather') {
@@ -1436,6 +1551,24 @@ function onOverLayRemove(e) {
         setPreference("RAIDS_LAYER",'hide');
     }
 
+    if (e.name == 'Parks_In_S2_Cells') {
+        var hide_button = $("#parks_in_s2_cells_layer button[data-value='hide']");
+        var display_button = $("#parks_in_s2_cells_layer button[data-value='display']");
+      
+        hide_button.addClass("active")
+        display_button.removeClass("active");
+        setPreference("PARKS_IN_S2_CELLS_LAYER",'hide');
+    }
+
+    if (e.name == 'EX_Gyms') {
+        var hide_button = $("#ex_gyms_layer button[data-value='hide']");
+        var display_button = $("#ex_gyms_layer button[data-value='display']");
+      
+        hide_button.addClass("active")
+        display_button.removeClass("active");
+        setPreference("EX_GYMS_LAYER",'hide');
+    }
+  
     if (e.name == 'Weather') {
         var hide_button = $("#weather_layer button[data-value='hide']");
         var display_button = $("#weather_layer button[data-value='display']");
@@ -1915,6 +2048,18 @@ $('#settings').on('click', '.settings-panel button', function () {
     } else {
         setPreference(key, value);
     }
+
+    if (key.indexOf('PARKS_IN_S2_CELLS_LAYER') > -1){
+        setParksInS2CellsLayerDisplay(value);
+    } else {
+        setPreference(key, value);
+    }
+
+    if (key.indexOf('EX_GYMS_LAYER') > -1){
+        setExGymsLayerDisplay(value);
+    } else {
+        setPreference(key, value);
+    }
     
     if (key.indexOf('WEATHER_LAYER') > -1){
         setWeatherLayerDisplay(value);
@@ -2267,6 +2412,24 @@ function setRaidsLayerDisplay(value) {
     }
 }
 
+function setParksInS2CellsLayerDisplay(value) {
+    setPreference("PARKS_IN_S2_CELLS_LAYER", value)
+    if ( value === "display" ) {
+        map.addLayer(overlays.Parks_In_S2_Cells);
+    } else {
+        map.removeLayer(overlays.Parks_In_S2_Cells);
+    }
+}
+
+function setExGymsLayerDisplay(value) {
+    setPreference("EX_GYMS_LAYER", value)
+    if ( value === "display" ) {
+        map.addLayer(overlays.EX_Gyms);
+    } else {
+        map.removeLayer(overlays.EX_Gyms);
+    }
+}
+
 function setWeatherLayerDisplay(value) {
     setPreference("WEATHER_LAYER", value)
     if ( value === "display" ) {
@@ -2545,6 +2708,8 @@ function setSettingsDefaults(){
     _defaultSettings['POKEMON_GEN3_LAYER'] = "display";
     _defaultSettings['GYM_LAYER'] = "hide";
     _defaultSettings['RAIDS_LAYER'] = "hide";
+    _defaultSettings['PARKS_IN_S2_CELLS_LAYER'] = "hide";
+    _defaultSettings['EX_GYMS_LAYER'] = "hide";
     _defaultSettings['WEATHER_LAYER'] = "hide";
     _defaultSettings['SCAN_AREA_LAYER'] = "display";
     _defaultSettings['FILTERED_POKEMON_LAYER'] = "hide";
@@ -2644,6 +2809,18 @@ if ( getPreference("RAIDS_LAYER") === "display" ) {
     map.addLayer(overlays.Raids);
 } else {
     map.removeLayer(overlays.Raids);
+}
+
+if ( getPreference("PARKS_IN_S2_CELLS_LAYER") === "display" ) {
+    map.addLayer(overlays.Parks_In_S2_Cells);
+} else {
+    map.removeLayer(overlays.Parks_In_S2_Cells);
+}
+
+if ( getPreference("EX_GYMS_LAYER") === "display" ) {
+    map.addLayer(overlays.EX_Gyms);
+} else {
+    map.removeLayer(overlays.EX_Gyms);
 }
 
 if ( getPreference("WEATHER_LAYER") === "display" ) {
@@ -2863,3 +3040,17 @@ function checkBoost(boost_status) {
     return innerHTML;
 }
 
+function removeExRaidMarker(ex_raid_marker_id) {
+    for(var k in markers) {
+        var m = markers[k];
+        //if ( m !== undefined ){
+        //    console.log("m.raw.id is: " + m.raw.id + " compared to: " + ex_raid_marker_id);
+        //}
+      
+        if ( ( m !== undefined ) && ( m.raw.id.includes("raid-") ) && ( ("ex-" + m.raw.id) === ex_raid_marker_id ) ){
+            console.log("Removing marker: ex-" + m.raw.id + " from overlays.EX_Gyms");
+            m.removeFrom(overlays.EX_Gyms); // Remove this marker from EX_Gyms
+            markers[k] = undefined;
+        }
+    }
+}
