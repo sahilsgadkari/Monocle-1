@@ -42,6 +42,7 @@ var PokemonIcon = L.Icon.extend({
         var boosted_icon_html = checkBoost(this.options.boost_status);
         
         typeIconDisplay();
+        boostedPokemonDisplay();
         
         if ( this.options.form ) {
             form_text = '<div class="form_text">' + this.options.form + '</div>';
@@ -997,20 +998,14 @@ function addWeatherToMap (data, map) {
         
         if ( localStorage.getItem(item.id) === null ) {
             localStorage.setItem(item.id, item.updated); // Save initial last update to local storage
-            console.log("storing: " + item.updated + "  in: " + item.id);
         } else {
             stored_last_updated = localStorage.getItem(item.id);
-            console.log("Comparing stored value: " + item.id + ":" + stored_last_updated + " to cached value: " + item.id + ":" + item.updated);
-            if ( stored_last_updated != item.updated ) {
-                console.log("Change detected. Refresh markers.");
+            if ( ( item.updated != null ) && ( stored_last_updated != item.updated ) ) {
                 localStorage.setItem(item.id, item.updated);
-                console.log("Updated local storage.");
                 localStorage.setItem("lastZoom", currentZoom);
-                console.log("Saved last zoom to storage: " + currentZoom);
                 localStorage.setItem("lastCenterLat", currentCenter.lat);
                 localStorage.setItem("lastCenterLng", currentCenter.lng)
-                console.log("Saved last center to storage: " + currentCenter);
-                location.reload(); // THIS WORKS JUST BY ITSELF
+                location.reload();
             }
         }
         
@@ -2323,9 +2318,9 @@ function sponsoredGymLogoDisplay(){
 
 function boostedPokemonDisplay() {
     if (getPreference("show_boosted_pokemon") === "hide") {
-        $('.boosted_type img').css('visibility','hidden');
+        $('.boosted_type').css('visibility','hidden');
     } else {
-        $('.boosted_type img').css('visibility','visible');
+        $('.boosted_type').css('visibility','visible');
     }
 }
 
@@ -2340,11 +2335,11 @@ function typeIconDisplay() {
 function setBoostedPokemonDisplay(value) {
     setPreference("show_boosted_pokemon", value);
     if (value == "display") {
-        $(".boosted_type img").each(function() {
+        $(".boosted_type").each(function() {
             $(this).css('visibility', 'visible');
         });
     } else {
-        $(".boosted_type img").each(function() {
+        $(".boosted_type").each(function() {
             $(this).css('visibility', 'hidden');
         });
     }
@@ -2758,9 +2753,9 @@ if (getPreference("show_sponsored_gym_logo") === "hide_sponsored_gym_logo") {
 }
 
 if (getPreference("show_boosted_pokemon") === "hide") {
-    $('.boosted_type img').css('visibility','hidden');
+    $('.boosted_type').css('visibility','hidden');
 } else {
-    $('.boosted_type img').css('visibility','visible');
+    $('.boosted_type').css('visibility','visible');
 }
 
 if ((getPreference("gen1_buttons") === "display_gen1")) {
@@ -3035,7 +3030,7 @@ function checkBoost(boost_status) {
     var innerHTML = '';
   
     if ( boost_status === "boosted" ) {
-        innerHTML = '<div class="boosted_type"><img src="static/img/boosted.png"></div>';
+        innerHTML = '<div class="boosted_type"><img id="boost" class="boosted_icon" src="static/img/blank_1x1.png"></div>';
     }
     return innerHTML;
 }
