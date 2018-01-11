@@ -1233,8 +1233,8 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
-    //setInterval(getWeather, 300000)
-    setInterval(getWeather, 30000) // FOR DEBUG PURPOSES
+    setInterval(getWeather, 300000)
+
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;
