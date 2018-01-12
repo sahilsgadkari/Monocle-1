@@ -1796,7 +1796,7 @@ $('#settings').on('click', '.settings-panel button', function () {
         setPreference(key, value);
     }
     
-    if (key.indexOf('GYM_LAYER') > -1){
+    if (key.indexOf('GYMS_LAYER') > -1){
         setGymLayerDisplay(value);
     } else {
         setPreference(key, value);
@@ -2120,7 +2120,7 @@ function setPokemonGen3LayerDisplay(value) {
 }
 
 function setGymLayerDisplay(value) {
-    setPreference("GYM_LAYER", value)
+    setPreference("GYMS_LAYER", value)
     if ( value === "display" ) {
         map.addLayer(overlays.Gyms);
     } else {
@@ -2412,7 +2412,7 @@ function setSettingsDefaults(){
     _defaultSettings['POKEMON_GEN1_LAYER'] = "display";
     _defaultSettings['POKEMON_GEN2_LAYER'] = "display";
     _defaultSettings['POKEMON_GEN3_LAYER'] = "display";
-    _defaultSettings['GYM_LAYER'] = "hide";
+    _defaultSettings['GYMS_LAYER'] = "hide";
     _defaultSettings['RAIDS_LAYER'] = "hide";
     _defaultSettings['WEATHER_LAYER'] = "hide";
     _defaultSettings['SCAN_AREA_LAYER'] = "display";
@@ -2497,7 +2497,7 @@ if ( getPreference("POKEMON_GEN3_LAYER") === "display" ) {
     map.removeLayer(overlays.Pokemon_Gen3);
 }
 
-if ( getPreference("GYM_LAYER") === "display" ) {
+if ( getPreference("GYMS_LAYER") === "display" ) {
     map.addLayer(overlays.Gyms);
 } else {
     map.removeLayer(overlays.Gyms);
