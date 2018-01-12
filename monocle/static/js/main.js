@@ -933,8 +933,6 @@ function addPokestopsToMap (data, map) {
 }
 
 function addWeatherToMap (data, map) {
-    var currentZoom = map.getZoom();
-    var currentCenter = map.getCenter();
     overlays.Weather.clearLayers();
     data.forEach(function (item) {
         var color = 'grey';
@@ -945,10 +943,13 @@ function addWeatherToMap (data, map) {
         } else {
             stored_last_updated = localStorage.getItem(item.id);
             if ( ( item.updated != null ) && ( stored_last_updated != item.updated ) ) {
+                var currentZoom = map.getZoom();
+                var currentCenter = map.getCenter();
+                
                 localStorage.setItem(item.id, item.updated);
-                localStorage.setItem("lastZoom", currentZoom);
-                localStorage.setItem("lastCenterLat", currentCenter.lat);
-                localStorage.setItem("lastCenterLng", currentCenter.lng)
+                localStorage.setItem(_PoGoSDRegion+"lastZoom", currentZoom);
+                localStorage.setItem(_PoGoSDRegion+"lastCenterLat", currentCenter.lat);
+                localStorage.setItem(_PoGoSDRegion+"lastCenterLng", currentCenter.lng);
                 location.reload();
             }
         }
@@ -1175,15 +1176,19 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
                       zoom: params.zoom || 16
                       });
 } else {
-    if ( ( localStorage.getItem("lastZoom") == null ) || ( localStorage.getItem("lastCenterLat") == null ) || ( localStorage.getItem("lastCenterLng") == null ) ) {
+    if ( ( localStorage.getItem(_PoGoSDRegion+"lastZoom") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLat") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLng") == null ) ) {
         var map = L.map('main-map', {
                     preferCanvas: true,
                     maxZoom: 18,}).setView(_MapCoords, 16);
     } else {
-        var coords = localStorage.getItem("lastCenter");
+        var coords = localStorage.getItem(_PoGoSDRegion+"lastCenter");
         var map = L.map('main-map', {
                     preferCanvas: true,
-                    maxZoom: 18,}).setView([localStorage.getItem("lastCenterLat"), localStorage.getItem("lastCenterLng")], localStorage.getItem("lastZoom"));
+                    maxZoom: 18,}).setView([localStorage.getItem(_PoGoSDRegion+"lastCenterLat"), localStorage.getItem(_PoGoSDRegion+"lastCenterLng")], localStorage.getItem(_PoGoSDRegion+"lastZoom"));
+      
+        localStorage.setItem(_PoGoSDRegion+"lastZoom", null);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLat", null);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLng", null);
     }
 }
 
@@ -1219,6 +1224,11 @@ map.whenReady(function () {
         map.setZoom(currentZoom);
         map.on('locationfound', onLocationFound);
         $('.hide-marker').show(); //Show hide My Location marker
+        
+        var currentCenter = map.getCenter();
+        localStorage.setItem(_PoGoSDRegion+"lastZoom", currentZoom);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLat", currentCenter.lat);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLng", currentCenter.lng);
     });
 
     getPokemon();
@@ -1233,7 +1243,8 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
-    setInterval(getWeather, 300000)
+    //setInterval(getWeather, 300000)
+    setInterval(getWeather, 10000) // DEBUG
 
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
