@@ -17,6 +17,7 @@ from monocle.names import POKEMON
 from monocle.web_utils import *
 from monocle.bounds import area, center
 
+from shapely.geometry import Polygon, Point
 
 app = Flask(__name__, template_folder=resource_filename('monocle', 'templates'), static_folder=resource_filename('monocle', 'static'))
 
@@ -261,6 +262,46 @@ def get_pokestops():
 def scan_coords():
     return jsonify(get_scan_coords())
 
+@app.route('/ex_gym_data')
+def ex_gym_data():
+    gyms = []
+    parks = get_all_parks()
+    for g in get_gym_markers():
+        g['id'] = 'ex-' + g['id']
+        for p in parks:
+            coords = p['coords']
+            if len(coords) == 2:
+                if LineString(coords).within(Point(g['lat'], g['lon'])):
+                    gyms.append(g)
+            elif len(coords) > 2:
+                if Polygon(coords).contains(Point(g['lat'], g['lon'])):
+                    gyms.append(g)
+    return jsonify(gyms)
+
+@app.route('/ex_raid_data')
+def ex_raid_data():
+    raids = []
+    parks = get_all_parks()
+    for r in get_raid_markers():
+        r['id'] = 'ex-' + r['id']
+        for p in parks:
+            coords = p['coords']
+            if len(coords) == 2:
+                if LineString(coords).within(Point(r['lat'], r['lon'])):
+                    raids.append(r)
+            elif len(coords) > 2:
+                if Polygon(coords).contains(Point(r['lat'], r['lon'])):
+                    raids.append(r)
+    return jsonify(raids)
+
+
+@app.route('/parks')
+def parks():
+    return jsonify(get_all_parks())
+
+@app.route('/cells')
+def cells():
+    return jsonify(get_s2_cells())
 
 if conf.MAP_WORKERS:
     workers = Workers()
