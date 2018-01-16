@@ -793,7 +793,7 @@ function ExGymMarker (raw) {
     marker.on('popupopen',function popupopen (event) {
         var content = ''
         content += '<div class="ex_gym_popup">';
-        content += 'This gym has been idenified as being an <b>EX Raid Eligible Gym</b>';
+        content += 'This gym has been idenified as being an <br><b>EX Raid Eligible Gym</b>';
         content += '<br><br><a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
         content += '</div>';
         event.popup.setContent(content);
@@ -812,11 +812,12 @@ function ExRaidMarker (raw) {
     marker.on('popupopen',function popupopen (event) {
         var content = ''
         content += '<div class="ex_gym_popup">';
-        content += 'This raid has been idenified as being an <b>EX Raid Eligible Raid</b>';
+        content += 'This raid has been idenified as being an <br><b>EX Raid Eligible Raid</b>';
         content += '<br><br><a href="#" data-action="display" class="ex_raid_popup_show_raids">Show Current Raids</a>';
         content += '&nbsp; | &nbsp;';
         content += '<a href="#" data-action="hide" class="ex_raid_popup_show_raids">Hide Current Raids</a>';
         content += '<br><br><a href=https://www.google.com/maps/?daddr='+ raw.lat + ','+ raw.lon +' target="_blank" title="See in Google Maps">Get directions</a>';
+        content += '<br>' + raw.id;
         content += '</div>';
         event.popup.setContent(content);
     });
@@ -936,7 +937,7 @@ function addGymsToMap (data, map) {
 
 function addRaidsToMap (data, map) {
     data.forEach(function (item) {
-        // No change since last time? Then don't do anything
+        // If existing, go ahead and remove marker and refresh it just in case Boss Pokemon is revealed
         var existing = markers[item.id];
         if (typeof existing !== 'undefined') {
             existing.removeFrom(overlays.Raids);
@@ -953,6 +954,18 @@ function addRaidsToMap (data, map) {
         } else {
             marker = RaidMarker(item);
             marker.addTo(overlays.Raids);
+        }
+        
+        // Check if raid was already added, if so, don't do anything
+        if (typeof existing !== 'undefined') {
+            return;
+        } else {
+            if ( markers[item.id.replace(/^raid-+/i, 'ex-fort-')] != undefined ) { // Check if raid is at an identified ex_gym
+                var ex_item = item;
+                ex_item.id = 'ex-'+ex_item.id;
+                ex_marker = ExRaidMarker(ex_item); // CREATE NEW MARKER FOR EX ELIGIBLES
+                ex_marker.addTo(overlays.EX_Gyms);
+            }
         }
     });
 }
@@ -1124,6 +1137,7 @@ function addExGymsToMap (data, map) {
     });
 }
 
+/*
 function addExRaidsToMap (data, map) {
     data.forEach(function (item) {
         // If marker already exists don't do anything
@@ -1134,6 +1148,7 @@ function addExRaidsToMap (data, map) {
         marker.addTo(overlays.EX_Gyms);
     });
 }
+*/
 
 function getPokemon () {
     if (overlays.Pokemon_Gen1.hidden && overlays.Pokemon_Gen2.hidden && overlays.Pokemon_Gen3.hidden && overlays.FilteredPokemon.hidden) {
@@ -1263,6 +1278,7 @@ function getCells() {
     });
 }
 
+/*
 function getExRaids() {
     if (overlays.EX_Gyms.hidden) {
         return;
@@ -1275,6 +1291,7 @@ function getExRaids() {
         addExRaidsToMap(data, map);
     });
 }
+*/
 
 function getExGyms() {
     if (overlays.EX_Gyms.hidden) {
@@ -1355,11 +1372,11 @@ map.whenReady(function () {
 
     getPokemon();
     getGyms();
+    getExGyms();
     getRaids();
     getCells();
     getParks();
-    getExGyms();
-    getExRaids();
+    //getExRaids();
     getWeather();
     getScanAreaCoords();
     if (_DisplaySpawnpointsLayer === 'True') {
@@ -1369,7 +1386,7 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
-    setInterval(getExRaids, 60000);
+    //setInterval(getExRaids, 60000);
     setInterval(getWeather, 300000);
     
     if (_DisplaySpawnpointsLayer === 'True') {

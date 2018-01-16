@@ -247,7 +247,7 @@ def get_all_parks():
     try:
         parks = load_pickle('parks', raise_exception=True)
     except (FileNotFoundError, TypeError, KeyError):
-        # all osm parks at 10/07/2016
+        # all osm parks at 07/17/2016
         api = overpy.Overpass()
         request = '[timeout:620][date:"2016-07-17T00:00:00Z"];(way["leisure"="park"];way["landuse"="recreation_ground"];way["leisure"="recreation_ground"];way["leisure"="pitch"];way["leisure"="garden"];way["leisure"="golf_course"];way["leisure"="playground"];way["landuse"="meadow"];way["landuse"="grass"];way["landuse"="greenfield"];way["natural"="scrub"];way["natural"="heath"];way["natural"="grassland"];way["landuse"="farmyard"];way["landuse"="vineyard"];);out;>;out skel qt;'
         request = '[bbox:{},{},{},{}]{}'.format(south, west, north, east, request)
@@ -279,3 +279,33 @@ def get_s2_cells(level=12):
             'coords': [(get_vertex(cell, v)) for v in range(0, 4)]
         })
     return markers
+
+def get_ex_gyms():
+    ex_gyms = []
+    parks = get_all_parks()
+    try:
+        ex_gyms = load_pickle('ex_gyms', raise_exception=True)
+    except (FileNotFoundError, TypeError, KeyError):
+        for g in get_gym_markers():
+            g['id'] = 'ex-' + g['id']
+            for p in parks:
+                coords = p['coords']
+                if len(coords) == 2:
+                    if LineString(coords).within(Point(g['lat'], g['lon'])):
+                        ex_gyms.append({
+                            'id': g['id'],
+                            'external_id': g['external_id'],
+                            'lat': g['lat'],
+                            'lon': g['lon']
+                        })
+                elif len(coords) > 2:
+                    if Polygon(coords).contains(Point(g['lat'], g['lon'])):
+                        ex_gyms.append({
+                            'id': g['id'],
+                            'external_id': g['external_id'],
+                            'lat': g['lat'],
+                            'lon': g['lon']
+                        })
+
+        dump_pickle('ex_gyms', ex_gyms)
+    return ex_gyms
