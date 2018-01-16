@@ -252,6 +252,7 @@ var PokestopIcon = L.Icon.extend({
 });
 
 var markers = {};
+var weather = {};
 if (_DisplaySpawnpointsLayer === 'True') {
     var overlays = {
         Pokemon_Gen1: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
@@ -317,6 +318,7 @@ function getPopupContent (item) {
     var expires_at = minutes + 'm ' + seconds + 's';
     var expires_time = convertToTwelveHourTime(item.expires_at);
     var form = getForm(item.form);
+    var day = ['none','day','night'];
     if (item.form > 0) {
        var pokemon_name = item.name + ' - ' + form;
     } else {
@@ -331,9 +333,9 @@ function getPopupContent (item) {
         content += '<img id="type" class="type-' + pokemon_name_type[item.pokemon_id][3] + '" src="static/img/blank_1x1.png">';
     }
     content += '</div>';
-  
+
     if ( item.boost != "normal" ) {
-        content += '<div class="boosted_popup"><img id="weather" class="weather_' + item.boost_condition + '_' + item.boost_day + '" src="static/img/blank_1x1.png"><div class="boosted_popup_text"><b>Boosted</b></div></div>';
+        content += '<div class="boosted_popup"><img id="weather" class="weather_' + weather[item.pokemon_s2_cell_id].condition + '_' + day[weather[item.pokemon_s2_cell_id].day] + '" src="static/img/blank_1x1.png"><div class="boosted_popup_text"><b>Boosted</b></div></div>';
     }
   
     content += '<div class="pokemon_popup_text">';
@@ -590,7 +592,8 @@ function PokemonMarker (raw) {
   
     // I know you stole this stuff from me
     var unown_letter = getForm(raw.form);
-    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at, boost_status: raw.boost});
+    var boost_status = getBoostStatus(raw);
+    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at, boost_status: boost_status});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
     var intId = parseInt(raw.id.split('-')[1]);
     if (_last_pokemon_id < intId){
@@ -938,6 +941,8 @@ function addWeatherToMap (data, map) {
         var color = 'grey';
         var conditions = ['Extreme', 'Clear', 'Rainy', 'Partly Cloudy', 'Overcast', 'Windy', 'Snow', 'Fog'];
         
+        weather[item.s2_cell_id] = item;
+
         if ( localStorage.getItem(item.id) === null ) {
             localStorage.setItem(item.id, item.updated); // Save initial last update to local storage
         } else {
@@ -1176,11 +1181,12 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
                       zoom: params.zoom || 16
                       });
 } else {
-    if ( ( localStorage.getItem(_PoGoSDRegion+"lastZoom") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLat") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLng") == null ) ) {
+// TEST THIS
+//    if ( ( localStorage.getItem(_PoGoSDRegion+"lastZoom") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLat") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLng") == null ) ) {
         var map = L.map('main-map', {
                     preferCanvas: true,
                     maxZoom: 18,}).setView(_MapCoords, 16);
-    } else {
+/*    } else {
         var coords = localStorage.getItem(_PoGoSDRegion+"lastCenter");
         var map = L.map('main-map', {
                     preferCanvas: true,
@@ -1189,7 +1195,7 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
         localStorage.setItem(_PoGoSDRegion+"lastZoom", null);
         localStorage.setItem(_PoGoSDRegion+"lastCenterLat", null);
         localStorage.setItem(_PoGoSDRegion+"lastCenterLng", null);
-    }
+    } */
 }
 
 if (_DisplayPokemonLayer === 'True') {
@@ -2814,3 +2820,62 @@ function checkBoost(boost_status) {
     return innerHTML;
 }
 
+function getBoostStatus(pokemon) {
+    var boost = 'normal';
+
+    if ( weather[pokemon.pokemon_s2_cell_id].condition == 0 ) {
+        return;
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 1 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'grass' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'grass' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'fire' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'fire' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'ground' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'ground' ) ){
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 2 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'water' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'water' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'electric' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'electric' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'bug' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'bug' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 3 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'normal' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'normal' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'rock' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'rock' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 4 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'fairy' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'fairy' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'fighting' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'fighing' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'poison' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'poison' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 5 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'flying' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'flying' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'dragon' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'dragon' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'psychic' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'psychic' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 6 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'ice' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'ice' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'steel' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'steel' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 7 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'dark' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'dark' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'ghost' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'ghost' ) ) {
+            boost = 'boosted';
+        }
+    }
+
+    return boost;
+}

@@ -88,7 +88,7 @@ def get_worker_markers(workers):
 
 def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types=TYPES):
     pokemon_id = pokemon.pokemon_id
-    boost, condition, time, pokemon_s2_cell_id = check_boost(pokemon)
+    pokemon_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(pokemon.lat,pokemon.lon)).parent(10)
 
     marker = {
         'id': 'pokemon-' + str(pokemon.id),
@@ -101,10 +101,7 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types
         'form': pokemon.form,
         'type1': types[pokemon_id][1],
         'type2': types[pokemon_id][2],
-        'boost': boost,
-        'boost_condition': condition,
-        'boost_day': time,
-        'pokemon_s2_cell_id': pokemon_s2_cell_id
+        'pokemon_s2_cell_id': pokemon_s2_cell_id.id()
     }
     move1 = pokemon.move_1
     if conf.MAP_SHOW_DETAILS and move1:
@@ -117,67 +114,6 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types
         marker['damage1'] = damage[move1]
         marker['damage2'] = damage[move2]
     return marker
-
-
-def check_boost(pokemon, types=TYPES):
-    pokemon_id = pokemon.pokemon_id
-    pokemon_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(pokemon.lat,pokemon.lon)).parent(10)
-    pokemon_s2_cell_id_int = int(pokemon_s2_cell_id.id())
-    
-    boost = 'normal'
-    condition = 0
-    day = 'day'
-
-    condition, day = WEATHER_CACHE.get_condition(pokemon_s2_cell_id_int)
-    #print("condition: " + str(condition) + "  time: " + str(day)) # FOR DEBUG PURPOSES
-    
-    if condition == 0:
-        pass
-    elif condition == 1:
-        if ( types[pokemon_id][1] == 'grass' ) or ( types[pokemon_id][2] == 'grass' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'fire' ) or ( types[pokemon_id][2] == 'fire' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'ground' ) or ( types[pokemon_id][2] == 'ground' ):
-            boost = 'boosted'
-    elif condition == 2:
-        if ( types[pokemon_id][1] == 'water' ) or ( types[pokemon_id][2] == 'water' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'electric' ) or ( types[pokemon_id][2] == 'electric' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'bug' ) or ( types[pokemon_id][2] == 'bug' ):
-            boost = 'boosted'
-    elif condition == 3:
-        if ( types[pokemon_id][1] == 'normal' ) or ( types[pokemon_id][2] == 'normal' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'rock' ) or ( types[pokemon_id][2] == 'rock' ):
-            boost = 'boosted'
-    elif condition == 4:
-        if ( types[pokemon_id][1] == 'fairy' ) or ( types[pokemon_id][2] == 'fairy' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'fighting' ) or ( types[pokemon_id][2] == 'fighting' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'poison' ) or ( types[pokemon_id][2] == 'poison' ):
-            boost = 'boosted'
-    elif condition == 5:
-        if ( types[pokemon_id][1] == 'flying' ) or ( types[pokemon_id][2] == 'flying' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'dragon' ) or ( types[pokemon_id][2] == 'dragon' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'psychic' ) or ( types[pokemon_id][2] == 'psychic' ):
-            boost = 'boosted'
-    elif condition == 6:
-        if ( types[pokemon_id][1] == 'ice' ) or ( types[pokemon_id][2] == 'ice' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'steel' ) or ( types[pokemon_id][2] == 'steel' ):
-            boost = 'boosted'
-    elif condition == 7:
-        if ( types[pokemon_id][1] == 'dark' ) or ( types[pokemon_id][2] == 'dark' ):
-            boost = 'boosted'
-        elif ( types[pokemon_id][1] == 'ghost' ) or ( types[pokemon_id][2] == 'ghost' ):
-            boost = 'boosted'
-
-    return boost, condition, day, pokemon_s2_cell_id_int
 
 def get_pokemarkers(after_id=0):
     with session_scope() as session:
