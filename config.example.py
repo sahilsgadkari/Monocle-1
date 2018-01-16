@@ -417,8 +417,11 @@ FUNDING_GOAL = '310'
 SHOW_POKEMON_BY_DEFAULT = True
 SHOW_GYMS_BY_DEFAULT = False
 SHOW_RAIDS_BY_DEFAULT = False
+SHOW_PARKS_IN_S2_CELLS_BY_DEFAULT = False
+SHOW_EX_GYMS_BY_DEFAULT = False
 SHOW_WEATHER_BY_DEFAULT = False
 SHOW_SCAN_AREA_BY_DEFAULT = True
+SHOW_FILTERED_POKEMON_BY_DEFAULT = False
 SHOW_SPAWNPOINTS_BY_DEFAULT = False ## This shows both spawnpoints and workers
 
 ## Switch scan to Gym Scan Only Mode. This requires a modification to your database copying your gym points into a separate table and treating them as spawnpoints for workers to visit. Utilizes a minimal amount of workers to perform gym and raid scans.

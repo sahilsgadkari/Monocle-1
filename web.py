@@ -204,7 +204,10 @@ def render_map():
         display_gyms=conf.SHOW_GYMS_BY_DEFAULT,
         display_raids=conf.SHOW_RAIDS_BY_DEFAULT,
         display_weather=conf.SHOW_WEATHER_BY_DEFAULT,
+        display_parks_in_s2_cells=conf.SHOW_PARKS_IN_S2_CELLS_BY_DEFAULT,
+        display_ex_gyms=conf.SHOW_EX_GYMS_BY_DEFAULT,
         display_scan_area=conf.SHOW_SCAN_AREA_BY_DEFAULT,
+        display_filtered_pokemon=conf.SHOW_FILTERED_POKEMON_BY_DEFAULT,
         display_spawnpoints=conf.SHOW_SPAWNPOINTS_BY_DEFAULT,
         show_iv_menu_item=show_iv_menu_item(),
         show_form_menu_item=show_form_menu_item(),
@@ -257,7 +260,6 @@ def spawn_points():
 def get_pokestops():
     return jsonify(get_pokestop_markers())
 
-
 @app.route('/scan_coords')
 def scan_coords():
     return jsonify(get_scan_coords())
@@ -293,7 +295,6 @@ def ex_raid_data():
                 if Polygon(coords).contains(Point(r['lat'], r['lon'])):
                     raids.append(r)
     return jsonify(raids)
-
 
 @app.route('/parks')
 def parks():
