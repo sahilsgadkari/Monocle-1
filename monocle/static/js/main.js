@@ -348,7 +348,7 @@ function getPopupContent (item) {
         content += '<img id="type" class="type-' + pokemon_name_type[item.pokemon_id][3] + '" src="static/img/blank_1x1.png">';
     }
     content += '</div>';
-
+console.log("class= weather_" + weather[item.pokemon_s2_cell_id].condition + "_" + day[weather[item.pokemon_s2_cell_id].day]);
     if ( item.boost != "normal" ) {
         content += '<div class="boosted_popup"><img id="weather" class="weather_' + weather[item.pokemon_s2_cell_id].condition + '_' + day[weather[item.pokemon_s2_cell_id].day] + '" src="static/img/blank_1x1.png"><div class="boosted_popup_text"><b>Boosted</b></div></div>';
     }
@@ -623,11 +623,7 @@ function PokemonMarker (raw) {
             marker.overlay = 'Pokemon_Gen1';
         } else if ( (raw.pokemon_id >= 152) && (raw.pokemon_id <= 251)) {
             marker.overlay = 'Pokemon_Gen2';
-<<<<<<< HEAD
-        } else if ( (raw.pokemon_id >= 252) && (raw.pokemon_id <= 386)){
-=======
         } else if ( (raw.pokemon_id >= 252) && (raw.pokemon_id <= 386)) {
->>>>>>> production_2_9_boosted
             marker.overlay = 'Pokemon_Gen3';
         }
     }
@@ -686,10 +682,7 @@ function PokemonMarker (raw) {
                 overlays.FilteredPokemon.removeLayer(marker);
                 overlays.FilteredPokemon.refreshClusters(marker);
             }
-<<<<<<< HEAD
-=======
             
->>>>>>> production_2_9_boosted
             markers[marker.raw.id] = undefined;
             clearInterval(marker.opacityInterval);
         }
@@ -1362,27 +1355,22 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
                       maxZoom: 18,
                       zoom: params.zoom || 16
                       });
-<<<<<<< HEAD
     map.createPane('sub_shadow');
     map.createPane('at_shadow');
     map.getPane('sub_shadow').style.zIndex = 450;
     map.getPane('at_shadow').style.zIndex = 500;
-}
-else{
-  var map = L.map('main-map', {
-                preferCanvas: true,
-                maxZoom: 18,}).setView(_MapCoords, 16);
-  map.createPane('sub_shadow');
-  map.createPane('at_shadow');
-  map.getPane('sub_shadow').style.zIndex = 450;
-  map.getPane('at_shadow').style.zIndex = 500;
-=======
+
 } else {
 // TEST THIS
 //    if ( ( localStorage.getItem(_PoGoSDRegion+"lastZoom") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLat") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLng") == null ) ) {
         var map = L.map('main-map', {
                     preferCanvas: true,
                     maxZoom: 18,}).setView(_MapCoords, 16);
+  
+        map.createPane('sub_shadow');
+        map.createPane('at_shadow');
+        map.getPane('sub_shadow').style.zIndex = 450;
+        map.getPane('at_shadow').style.zIndex = 500;
 /*    } else {
         var coords = localStorage.getItem(_PoGoSDRegion+"lastCenter");
         var map = L.map('main-map', {
@@ -1393,7 +1381,6 @@ else{
         localStorage.setItem(_PoGoSDRegion+"lastCenterLat", null);
         localStorage.setItem(_PoGoSDRegion+"lastCenterLng", null);
     } */
->>>>>>> production_2_9_boosted
 }
 
 if (_DisplayPokemonLayer === 'True') {
@@ -1456,15 +1443,9 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
-<<<<<<< HEAD
-    //setInterval(getExRaids, 60000);
-    setInterval(getWeather, 300000);
-    
-=======
     //setInterval(getWeather, 300000)
     setInterval(getWeather, 10000) // DEBUG
 
->>>>>>> production_2_9_boosted
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;

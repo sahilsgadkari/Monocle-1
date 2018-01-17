@@ -4,16 +4,10 @@ from multiprocessing.managers import BaseManager, RemoteError
 from time import time
 
 from monocle import sanitized as conf
-<<<<<<< HEAD
-from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather
-from monocle.utils import Units, get_address, dump_pickle, load_pickle
-from monocle.names import DAMAGE, MOVES, POKEMON
-from monocle.bounds import north, south, east, west
-=======
 from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather, WEATHER_CACHE
-from monocle.utils import Units, get_address
+from monocle.utils import Units, get_address, dump_pickle, load_pickle
 from monocle.names import DAMAGE, MOVES, POKEMON, TYPES
->>>>>>> production_2_9_boosted
+from monocle.bounds import north, south, east, west
 
 import s2sphere
 import overpy
