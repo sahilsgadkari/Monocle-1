@@ -16,6 +16,8 @@ from .utils import round_coords, load_pickle, get_device_info, get_start_coords,
 from .shared import get_logger, LOOP, SessionManager, run_threaded, ACCOUNTS
 from . import altitudes, avatar, bounds, db_proc, spawns, sanitized as conf
 
+import s2sphere
+
 if conf.NOTIFY:
     from .notification import Notifier
 
@@ -1380,6 +1382,9 @@ class Worker:
     def normalize_weather(raw, time_of_day):
         alert_severity = 0
         warn = False
+        cell = s2sphere.Cell(s2sphere.CellId(raw.s2_cell_id).parent(10))
+        center = s2sphere.LatLng.from_point(cell.get_center())
+        converted_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
         if raw.alerts:
             for a in raw.alerts:
                 warn = warn or a.warn_weather
@@ -1388,7 +1393,9 @@ class Worker:
         return {
             'type': 'weather',
             's2_cell_id': raw.s2_cell_id,
-            'condition': raw.gameplay_weather.gameplay_condition,
+            'converted_s2_cell_id': converted_s2_cell_id.id(),
+            #'condition': raw.gameplay_weather.gameplay_condition,
+            'condition': 6,
             'alert_severity': alert_severity,
             'warn': warn,
             'day': time_of_day

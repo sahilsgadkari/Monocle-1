@@ -39,8 +39,10 @@ var PokemonIcon = L.Icon.extend({
         var div = document.createElement('div');
         var form_text = '';
         var type_icon_html = getTypeIcons(this.options.iconID);
+        var boosted_icon_html = checkBoost(this.options.boost_status);
         
         typeIconDisplay();
+        boostedPokemonDisplay();
         
         if ( this.options.form ) {
             form_text = '<div class="form_text">' + this.options.form + '</div>';
@@ -95,6 +97,7 @@ var PokemonIcon = L.Icon.extend({
                     '<div class="remaining_text" data-expire="' + this.options.expires_at + '">' + calculateRemainingTime(this.options.expires_at) + '</div>' +
                     form_text +
                     type_icon_html +
+                    boosted_icon_html +
                     '</div>';
         }
         
@@ -257,6 +260,7 @@ var PokestopIcon = L.Icon.extend({
 });
 
 var markers = {};
+var weather = {};
 if (_DisplaySpawnpointsLayer === 'True') {
     var overlays = {
         Pokemon_Gen1: L.markerClusterGroup({ disableClusteringAtZoom: 12 }),
@@ -329,6 +333,7 @@ function getPopupContent (item) {
     var expires_at = minutes + 'm ' + seconds + 's';
     var expires_time = convertToTwelveHourTime(item.expires_at);
     var form = getForm(item.form);
+    var day = ['none','day','night'];
     if (item.form > 0) {
        var pokemon_name = item.name + ' - ' + form;
     } else {
@@ -343,8 +348,13 @@ function getPopupContent (item) {
         content += '<img id="type" class="type-' + pokemon_name_type[item.pokemon_id][3] + '" src="static/img/blank_1x1.png">';
     }
     content += '</div>';
-    content += '<div class="pokemon_popup_text">';
 
+    if ( item.boost != "normal" ) {
+        content += '<div class="boosted_popup"><img id="weather" class="weather_' + weather[item.pokemon_s2_cell_id].condition + '_' + day[weather[item.pokemon_s2_cell_id].day] + '" src="static/img/blank_1x1.png"><div class="boosted_popup_text"><b>Boosted</b></div></div>';
+    }
+  
+    content += '<div class="pokemon_popup_text">';
+    
     if(item.atk != undefined){
         var totaliv = 100 * (item.atk + item.def + item.sta) / 45;
         content += ' - <b>' + totaliv.toFixed(2) + '%</b><br>';
@@ -593,11 +603,14 @@ function PokemonMarker (raw) {
     }else{
         var totaliv = 0;
     }
+  
+    boostedPokemonDisplay();
+  
     // I know you stole this stuff from me
     var unown_letter = getForm(raw.form);
-    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at});
+    var boost_status = getBoostStatus(raw);
+    var icon = new PokemonIcon({iconID: raw.pokemon_id, iv: totaliv, form: unown_letter, expires_at: raw.expires_at, boost_status: boost_status});
     var marker = L.marker([raw.lat, raw.lon], {icon: icon, opacity: 1});
-
     var intId = parseInt(raw.id.split('-')[1]);
     if (_last_pokemon_id < intId){
         _last_pokemon_id = intId;
@@ -610,7 +623,11 @@ function PokemonMarker (raw) {
             marker.overlay = 'Pokemon_Gen1';
         } else if ( (raw.pokemon_id >= 152) && (raw.pokemon_id <= 251)) {
             marker.overlay = 'Pokemon_Gen2';
+<<<<<<< HEAD
         } else if ( (raw.pokemon_id >= 252) && (raw.pokemon_id <= 386)){
+=======
+        } else if ( (raw.pokemon_id >= 252) && (raw.pokemon_id <= 386)) {
+>>>>>>> production_2_9_boosted
             marker.overlay = 'Pokemon_Gen3';
         }
     }
@@ -669,6 +686,10 @@ function PokemonMarker (raw) {
                 overlays.FilteredPokemon.removeLayer(marker);
                 overlays.FilteredPokemon.refreshClusters(marker);
             }
+<<<<<<< HEAD
+=======
+            
+>>>>>>> production_2_9_boosted
             markers[marker.raw.id] = undefined;
             clearInterval(marker.opacityInterval);
         }
@@ -1005,6 +1026,25 @@ function addWeatherToMap (data, map) {
     data.forEach(function (item) {
         var color = 'grey';
         var conditions = ['Extreme', 'Clear', 'Rainy', 'Partly Cloudy', 'Overcast', 'Windy', 'Snow', 'Fog'];
+        
+        weather[item.s2_cell_id] = item;
+
+        if ( localStorage.getItem(item.id) === null ) {
+            localStorage.setItem(item.id, item.updated); // Save initial last update to local storage
+        } else {
+            stored_last_updated = localStorage.getItem(item.id);
+            if ( ( item.updated != null ) && ( stored_last_updated != item.updated ) ) {
+                var currentZoom = map.getZoom();
+                var currentCenter = map.getCenter();
+                
+                localStorage.setItem(item.id, item.updated);
+                localStorage.setItem(_PoGoSDRegion+"lastZoom", currentZoom);
+                localStorage.setItem(_PoGoSDRegion+"lastCenterLat", currentCenter.lat);
+                localStorage.setItem(_PoGoSDRegion+"lastCenterLng", currentCenter.lng);
+                location.reload();
+            }
+        }
+        
         if (item.alert_severity > 0) {
             color = 'red';
         }
@@ -1073,6 +1113,7 @@ function addWeatherToMap (data, map) {
                 weatherIconMarker.setIcon(weatherIcon);
             } else if (currentZoom === 12) {
                 weatherOverlay.setIcon(weatherMediumMarker);
+                weatherIconMarker.setIcon(weatherIcon);
             } else if (currentZoom === 11) {
                 weatherOverlay.setIcon(weatherSmallMarker);
                 weatherIconMarker.setIcon(weatherMediumIcon);
@@ -1082,9 +1123,14 @@ function addWeatherToMap (data, map) {
             }
         });
 
+        if ( item.condition == 0 ) {
+            var weather_icon_bg = 'extreme_icon';
+        } else {
+            var weather_icon_bg = 'icon';
+        }
         weatherIconMarker.bindPopup(
             '<div class="weather_popup">' +
-                '<div class="weather_popup_icon"><img src="static/img/weather_' + item.condition + '_' + day + '.png">' + '</div>' +
+                '<div class="weather_popup_' + weather_icon_bg + '"><img src="static/img/weather_' + item.condition + '_' + day + '.png">' + '</div>' +
                 '<div class="weather_popup_text"><h4>' + conditions[item.condition] + '</div>' +
                 '<hr>' +
                 '<div class="weather_popup_text">BOOSTED TYPES</div>' +
@@ -1316,6 +1362,7 @@ if(parseFloat(params.lat) && parseFloat(params.lon)){
                       maxZoom: 18,
                       zoom: params.zoom || 16
                       });
+<<<<<<< HEAD
     map.createPane('sub_shadow');
     map.createPane('at_shadow');
     map.getPane('sub_shadow').style.zIndex = 450;
@@ -1329,6 +1376,24 @@ else{
   map.createPane('at_shadow');
   map.getPane('sub_shadow').style.zIndex = 450;
   map.getPane('at_shadow').style.zIndex = 500;
+=======
+} else {
+// TEST THIS
+//    if ( ( localStorage.getItem(_PoGoSDRegion+"lastZoom") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLat") == null ) || ( localStorage.getItem(_PoGoSDRegion+"lastCenterLng") == null ) ) {
+        var map = L.map('main-map', {
+                    preferCanvas: true,
+                    maxZoom: 18,}).setView(_MapCoords, 16);
+/*    } else {
+        var coords = localStorage.getItem(_PoGoSDRegion+"lastCenter");
+        var map = L.map('main-map', {
+                    preferCanvas: true,
+                    maxZoom: 18,}).setView([localStorage.getItem(_PoGoSDRegion+"lastCenterLat"), localStorage.getItem(_PoGoSDRegion+"lastCenterLng")], localStorage.getItem(_PoGoSDRegion+"lastZoom"));
+      
+        localStorage.setItem(_PoGoSDRegion+"lastZoom", null);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLat", null);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLng", null);
+    } */
+>>>>>>> production_2_9_boosted
 }
 
 if (_DisplayPokemonLayer === 'True') {
@@ -1368,6 +1433,11 @@ map.whenReady(function () {
         map.setZoom(currentZoom);
         map.on('locationfound', onLocationFound);
         $('.hide-marker').show(); //Show hide My Location marker
+        
+        var currentCenter = map.getCenter();
+        localStorage.setItem(_PoGoSDRegion+"lastZoom", currentZoom);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLat", currentCenter.lat);
+        localStorage.setItem(_PoGoSDRegion+"lastCenterLng", currentCenter.lng);
     });
 
     getPokemon();
@@ -1386,9 +1456,15 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
+<<<<<<< HEAD
     //setInterval(getExRaids, 60000);
     setInterval(getWeather, 300000);
     
+=======
+    //setInterval(getWeather, 300000)
+    setInterval(getWeather, 10000) // DEBUG
+
+>>>>>>> production_2_9_boosted
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;
@@ -1406,6 +1482,7 @@ function onOverLayAdd(e) {
         var hide_button = $("#pokemon_gen1_layer button[data-value='hide']");
         var display_button = $("#pokemon_gen1_layer button[data-value='display']");
       
+        boostedPokemonDisplay();
         hide_button.removeClass("active")
         display_button.addClass("active");
         setPreference("POKEMON_GEN1_LAYER",'display');
@@ -1415,6 +1492,7 @@ function onOverLayAdd(e) {
         var hide_button = $("#pokemon_gen2_layer button[data-value='hide']");
         var display_button = $("#pokemon_gen2_layer button[data-value='display']");
       
+        boostedPokemonDisplay();
         hide_button.removeClass("active")
         display_button.addClass("active");
         setPreference("POKEMON_GEN2_LAYER",'display');
@@ -1424,6 +1502,7 @@ function onOverLayAdd(e) {
         var hide_button = $("#pokemon_gen3_layer button[data-value='hide']");
         var display_button = $("#pokemon_gen3_layer button[data-value='display']");
       
+        boostedPokemonDisplay();
         hide_button.removeClass("active")
         display_button.addClass("active");
         setPreference("POKEMON_GEN3_LAYER",'display');
@@ -2000,6 +2079,12 @@ $('#settings').on('click', '.settings-panel button', function () {
         setPreference(key, value);
     }
     
+    if (key.indexOf('show_boosted_pokemon') > -1){
+        setBoostedPokemonDisplay(value);
+    }else{
+        setPreference(key,value);
+    }
+    
     if (key.indexOf('show_pokemon_type') > -1){
         setTypeIconDisplay(value);
     }else{
@@ -2081,13 +2166,14 @@ function moveToLayer(id, layer){
         if ((k.indexOf("pokemon-") > -1) && (m !== undefined) && (m.raw.pokemon_id === id)){
             m.removeFrom(overlays[m.overlay]);
             if (layer === 'pokemon'){
+                boostedPokemonDisplay();
                 if ( (m.raw.pokemon_id >= 1) && (m.raw.pokemon_id <= 151) ) {
                     m.overlay = 'Pokemon_Gen1';
                     m.addTo(overlays.Pokemon_Gen1);
-                } else if ( (m.raw.pokemon_id >= 152) && (m.raw.pokemon_id < 251)) {
+                } else if ( (m.raw.pokemon_id >= 152) && (m.raw.pokemon_id <= 251)) {
                     m.overlay = 'Pokemon_Gen2';
                     m.addTo(overlays.Pokemon_Gen2);
-                } else {
+                } else if ( (m.raw.pokemon_id >= 252) && (m.raw.pokemon_id <= 386)) {
                     m.overlay = 'Pokemon_Gen3';
                     m.addTo(overlays.Pokemon_Gen3);
                 }
@@ -2313,11 +2399,32 @@ function sponsoredGymLogoDisplay(){
     }
 }
 
+function boostedPokemonDisplay() {
+    if (getPreference("show_boosted_pokemon") === "hide") {
+        $('.boosted_type').css('visibility','hidden');
+    } else {
+        $('.boosted_type').css('visibility','visible');
+    }
+}
+
 function typeIconDisplay() {
     if (getPreference("show_pokemon_type") === "display") {
         $('.type_icons').css('visibility','visible');
     } else {
         $('.type_icons').css('visibility','hidden');
+    }
+}
+
+function setBoostedPokemonDisplay(value) {
+    setPreference("show_boosted_pokemon", value);
+    if (value == "display") {
+        $(".boosted_type").each(function() {
+            $(this).css('visibility', 'visible');
+        });
+    } else {
+        $(".boosted_type").each(function() {
+            $(this).css('visibility', 'hidden');
+        });
     }
 }
 
@@ -2671,6 +2778,7 @@ function setSettingsDefaults(){
     _defaultSettings['gen2_buttons'] = "display_gen2";
     _defaultSettings['gen3_buttons'] = "display_gen3";
     _defaultSettings['show_sponsored_gym_logo'] = "display_sponsored_gym_logo";
+    _defaultSettings['show_boosted_pokemon'] = "hide";
     _defaultSettings['show_pokemon_type'] = "hide";
     _defaultSettings['gym_landmark'] = "display";
   
@@ -2759,6 +2867,12 @@ if (getPreference("show_sponsored_gym_logo") === "hide_sponsored_gym_logo") {
     $('.sponsor_icon_marker').css('visibility', 'hidden');
 } else {
     $('.sponsor_icon_marker').css('visibility', 'visible');
+}
+
+if (getPreference("show_boosted_pokemon") === "hide") {
+    $('.boosted_type').css('visibility','hidden');
+} else {
+    $('.boosted_type').css('visibility','visible');
 }
 
 if ((getPreference("gen1_buttons") === "display_gen1")) {
@@ -3029,3 +3143,71 @@ function getTypeIcons(pokemon_id) {
     return innerHTML;
 }
 
+function checkBoost(boost_status) {
+    var innerHTML = '';
+  
+    if ( boost_status === "boosted" ) {
+        innerHTML = '<div class="boosted_type"><img id="boost" class="boosted_icon" src="static/img/blank_1x1.png"></div>';
+    }
+    return innerHTML;
+}
+
+function getBoostStatus(pokemon) {
+    var boost = 'normal';
+
+    if ( weather[pokemon.pokemon_s2_cell_id].condition == 0 ) {
+        return;
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 1 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'grass' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'grass' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'fire' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'fire' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'ground' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'ground' ) ){
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 2 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'water' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'water' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'electric' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'electric' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'bug' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'bug' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 3 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'normal' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'normal' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'rock' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'rock' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 4 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'fairy' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'fairy' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'fighting' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'fighing' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'poison' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'poison' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 5 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'flying' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'flying' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'dragon' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'dragon' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'psychic' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'psychic' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 6 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'ice' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'ice' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'steel' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'steel' ) ) {
+            boost = 'boosted';
+        }
+    } else if ( weather[pokemon.pokemon_s2_cell_id].condition == 7 ) {
+        if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'dark' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'dark' ) ) {
+            boost = 'boosted';
+        } else if ( ( pokemon_name_type[pokemon.pokemon_id][2] == 'ghost' ) || ( pokemon_name_type[pokemon.pokemon_id][3] == 'ghost' ) ) {
+            boost = 'boosted';
+        }
+    }
+
+    return boost;
+}

@@ -1,0 +1,104 @@
+#weather {
+    background-image: url(../img/spritesheet-weather.png);
+    background-repeat: no-repeat;
+    display: block;
+    position: absolute;
+    top: -5px;
+    right: 45px;
+}
+
+.weather_0_day {
+    width: 50px;
+    height: 50px;
+    background-position: -5px -5px;
+}
+
+.weather_0_night {
+    width: 50px;
+    height: 50px;
+    background-position: -65px -5px;
+}
+
+.weather_1_day {
+    width: 50px;
+    height: 50px;
+    background-position: -125px -5px;
+}
+
+.weather_1_night {
+    width: 50px;
+    height: 50px;
+    background-position: -185px -5px;
+}
+
+.weather_2_day {
+    width: 50px;
+    height: 50px;
+    background-position: -5px -65px;
+}
+
+.weather_2_night {
+    width: 50px;
+    height: 50px;
+    background-position: -65px -65px;
+}
+
+.weather_3_day {
+    width: 50px;
+    height: 50px;
+    background-position: -125px -65px;
+}
+
+.weather_3_night {
+    width: 50px;
+    height: 50px;
+    background-position: -185px -65px;
+}
+
+.weather_4_day {
+    width: 50px;
+    height: 50px;
+    background-position: -5px -125px;
+}
+
+.weather_4_night {
+    width: 50px;
+    height: 50px;
+    background-position: -65px -125px;
+}
+
+.weather_5_day {
+    width: 50px;
+    height: 50px;
+    background-position: -125px -125px;
+}
+
+.weather_5_night {
+    width: 50px;
+    height: 50px;
+    background-position: -185px -125px;
+}
+
+.weather_6_day {
+    width: 50px;
+    height: 50px;
+    background-position: -5px -185px;
+}
+
+.weather_6_night {
+    width: 50px;
+    height: 50px;
+    background-position: -65px -185px;
+}
+
+.weather_7_day {
+    width: 50px;
+    height: 50px;
+    background-position: -125px -185px;
+}
+
+.weather_7_night {
+    width: 50px;
+    height: 50px;
+    background-position: -185px -185px;
+}

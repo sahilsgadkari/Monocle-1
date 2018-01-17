@@ -4,10 +4,16 @@ from multiprocessing.managers import BaseManager, RemoteError
 from time import time
 
 from monocle import sanitized as conf
+<<<<<<< HEAD
 from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather
 from monocle.utils import Units, get_address, dump_pickle, load_pickle
 from monocle.names import DAMAGE, MOVES, POKEMON
 from monocle.bounds import north, south, east, west
+=======
+from monocle.db import get_forts, get_raids, Pokestop, session_scope, Sighting, Spawnpoint, Weather, WEATHER_CACHE
+from monocle.utils import Units, get_address
+from monocle.names import DAMAGE, MOVES, POKEMON, TYPES
+>>>>>>> production_2_9_boosted
 
 import s2sphere
 import overpy
@@ -89,8 +95,10 @@ def get_worker_markers(workers):
     } for worker_no, ((lat, lon), timestamp, speed, total_seen, visits, seen_here) in workers.data]
 
 
-def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE):
+def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE, types=TYPES):
     pokemon_id = pokemon.pokemon_id
+    pokemon_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(pokemon.lat,pokemon.lon)).parent(10)
+
     marker = {
         'id': 'pokemon-' + str(pokemon.id),
         'trash': pokemon_id in conf.TRASH_IDS,
@@ -99,7 +107,10 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE):
         'lat': pokemon.lat,
         'lon': pokemon.lon,
         'expires_at': pokemon.expire_timestamp,
-        'form': pokemon.form
+        'form': pokemon.form,
+        'type1': types[pokemon_id][1],
+        'type2': types[pokemon_id][2],
+        'pokemon_s2_cell_id': pokemon_s2_cell_id.id()
     }
     move1 = pokemon.move_1
     if conf.MAP_SHOW_DETAILS and move1:
@@ -112,7 +123,6 @@ def sighting_to_marker(pokemon, names=POKEMON, moves=MOVES, damage=DAMAGE):
         marker['damage1'] = damage[move1]
         marker['damage2'] = damage[move2]
     return marker
-
 
 def get_pokemarkers(after_id=0):
     with session_scope() as session:
@@ -128,12 +138,15 @@ def get_vertex(cell, v):
     return (vertex.lat().degrees, vertex.lng().degrees)
 
 def get_weather():
+    # Load weather pickle for Pokemon
+    WEATHER_CACHE.unpickle()
     with session_scope() as session:
         weathers = session.query(Weather)
         markers = []
         for weather in weathers:
             cell = s2sphere.Cell(s2sphere.CellId(weather.s2_cell_id).parent(10))
             center = s2sphere.LatLng.from_point(cell.get_center())
+            converted_s2_cell_id = s2sphere.CellId.from_lat_lng(s2sphere.LatLng.from_degrees(center.lat().degrees, center.lng().degrees)).parent(10)
             markers.append({
                 'id': 'weather-' + str(weather.id),
                 'coords': [(get_vertex(cell, v)) for v in range(0, 4)],
@@ -141,7 +154,9 @@ def get_weather():
                 'condition': weather.condition,
                 'alert_severity': weather.alert_severity,
                 'warn': weather.warn,
-                'day': weather.day
+                'day': weather.day,
+                's2_cell_id': converted_s2_cell_id.id(),
+                'updated': weather.updated
             })
         return markers
 

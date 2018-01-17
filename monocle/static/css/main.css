@@ -211,6 +211,12 @@
     height: auto;
 }
 
+.weather_popup_extreme_icon img {
+    max-width: 200px;
+    height: auto;
+    background-color: grey;
+}
+
 .weather_popup_text {
     display: inline-block;
 }
@@ -740,6 +746,45 @@
 .type_icons img{
     width: 15px;
     text-align: center;
+}
+
+#boost {
+    background-image: url('../img/boosted.png');
+    background-repeat: no-repeat;
+    background-size: 40px, 40px;
+}
+
+.boosted_type {
+    text-align: center;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    top: -55px;
+    right: -5px;
+    z-index: -100;
+    visibility: hidden;
+}
+
+.boosted_type img{
+    text-align: center;
+}
+
+.boosted_icon {
+    width: 40px;
+    height: 40px;
+}
+
+.boosted_popup {
+    position: relative;
+    text-align: center;
+    padding-top: 40px;
+    padding-bottom: 0px;
+}
+
+.boosted_popup_text {
+    position: relative;
+    text-align: center;
+    z-index: 100px;
 }
 
 .gen_1{
