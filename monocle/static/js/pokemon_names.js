@@ -37,7 +37,7 @@ var pokemon_name_type = [
 [35,"Clefairy","fairy","none"],
 [36,"Clefable","fairy","none"],
 [37,"Vulpix","fire","none"],
-[38,"Ninetales","ice","none"],
+[38,"Ninetales","fire","none"],
 [39,"Jigglypuff","normal","fairy"],
 [40,"Wigglytuff","normal","fairy"],
 [41,"Zubat","poison","flying"],
