@@ -26,7 +26,7 @@ var pokemon_name_type = [
 [24,"Arbok","poison","none"],
 [25,"Pikachu","electric","none"],
 [26,"Raichu","electric","none"],
-[27,"Sandshrew","ice","none"],
+[27,"Sandshrew","ground","none"],
 [28,"Sandslash","ground","none"],
 [29,"Nidoran♀","poison","none"],
 [30,"Nidorina","poison","none"],
