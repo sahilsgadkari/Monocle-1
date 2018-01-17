@@ -1372,10 +1372,10 @@ map.whenReady(function () {
 
     getPokemon();
     getGyms();
-    getExGyms();
     getRaids();
     getCells();
     getParks();
+    getExGyms();
     //getExRaids();
     getWeather();
     getScanAreaCoords();
