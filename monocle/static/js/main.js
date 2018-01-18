@@ -1317,21 +1317,6 @@ function getCells() {
     });
 }
 
-/*
-function getExRaids() {
-    if (overlays.EX_Gyms.hidden) {
-        return;
-    }
-    new Promise(function (resolve, reject) {
-        $.get(_PoGoSDRegion+'/ex_raid_data', function (response) {
-            resolve(response);
-        });
-    }).then(function (data) {
-        addExRaidsToMap(data, map);
-    });
-}
-*/
-
 function getExGyms() {
     if (overlays.EX_Gyms.hidden) {
         return;
@@ -1429,11 +1414,10 @@ map.whenReady(function () {
 
     getPokemon();
     getGyms();
-    getExGyms();
     getRaids();
     getCells();
     getParks();
-    //getExRaids();
+    getExGyms();
     getWeather();
     getScanAreaCoords();
     if (_DisplaySpawnpointsLayer === 'True') {
@@ -1443,9 +1427,8 @@ map.whenReady(function () {
     setInterval(getPokemon, 30000);
     setInterval(getGyms, 45000)
     setInterval(getRaids, 60000);
-    //setInterval(getWeather, 300000)
-    setInterval(getWeather, 10000) // DEBUG
-
+    setInterval(getWeather, 300000);
+    
     if (_DisplaySpawnpointsLayer === 'True') {
         setInterval(getSpawnPoints, 30000);
         setInterval(getWorkers, 30000);;
